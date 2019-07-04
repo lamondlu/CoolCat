@@ -37,11 +37,18 @@ namespace DynamicPluginsDemoSite
             var assembly1 = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "DemoPlugin1.Views.dll");
             var viewAssemblyPart = new CompiledRazorAssemblyPart(assembly1);
 
+
+            var controllerAssemblyPart = new AssemblyPart(assembly);
+
             var mvcBuilders = services.AddMvc();
 
-            mvcBuilders.AddApplicationPart(assembly);
-            mvcBuilders.PartManager.ApplicationParts.Add(viewAssemblyPart);
-            mvcBuilders.AddControllersAsServices().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            mvcBuilders.ConfigureApplicationPartManager(apm =>
+            {
+                apm.ApplicationParts.Add(controllerAssemblyPart);
+                apm.ApplicationParts.Add(viewAssemblyPart);
+            });
+
+            mvcBuilders.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
