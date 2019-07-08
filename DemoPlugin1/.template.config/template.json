@@ -1,13 +1,13 @@
 {
-    "author": "Lamond Lu", //必须
-    "classifications": [ "Web/Plugins" ], //必须，这个对应模板的Tags
-    "name": "Lamond Dynamic Plugin", //必须，这个对应模板的Templates
-    "identity": "LamondDynamicPlugins", //可选，模板的唯一名称
-    "shortName": "ldp", //必须，这个对应模板的Short Name
+    "author": "Lamond Lu", 
+    "classifications": [ "Web/Plugins" ],
+    "name": "DemoPlugin1", 
+    "identity": "LamondDynamicPlugins", 
+    "shortName": "ldp", 
     "tags": {
       "language": "C#" ,
       "type":"project"
     },
-    "sourceName": "LamondDynamicPlugins",  // 可选，要替换的名字
-    "preferNameDirectory": true  // 可选，添加目录  
+    "sourceName": "DemoPlugin1",  
+    "preferNameDirectory": true
 }
