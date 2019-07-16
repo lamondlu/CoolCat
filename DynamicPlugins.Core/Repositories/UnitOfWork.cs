@@ -10,11 +10,25 @@ namespace DynamicPlugins.Core.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private DbHelper _dbHelper = null;
+        private IPluginRepository _pluginRepository = null;
         private List<string> _scripts;
 
         public UnitOfWork()
         {
             _scripts = new List<string>();
+        }
+
+        public IPluginRepository PluginRepository
+        {
+            get
+            {
+                if (_pluginRepository == null)
+                {
+                    _pluginRepository = new PluginRepository(_dbHelper);
+                }
+
+                return _pluginRepository;
+            }
         }
 
         public void Commit()

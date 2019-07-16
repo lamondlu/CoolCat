@@ -6,6 +6,8 @@ namespace DynamicPlugins.Core.Repositories
 {
     public interface IUnitOfWork
     {
+        IPluginRepository PluginRepository { get; }
+
         void Commit();
     }
 }
