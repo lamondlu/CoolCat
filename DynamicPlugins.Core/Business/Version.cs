@@ -6,6 +6,11 @@ namespace DynamicPlugins.Core.Business
 {
     public class Version
     {
+        public Version(string versionNumber)
+        {
+            this.VersionNumber = versionNumber;
+        }
+
         public string VersionNumber { get; set; }
 
         public static bool operator ==(Version left, Version right)
@@ -21,6 +26,11 @@ namespace DynamicPlugins.Core.Business
         public static bool operator !=(Version left, Version right)
         {
             return !(left == right);
+        }
+
+        public static implicit operator Version(string versionNumber)
+        {
+            return new Version(versionNumber);
         }
     }
 }

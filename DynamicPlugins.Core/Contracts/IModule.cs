@@ -8,6 +8,6 @@ namespace DynamicPlugins.Core.Contracts
     {
         string Name { get; }
 
-        Business.Version Version { get; set; }
+        Business.Version Version { get; }
     }
 }
