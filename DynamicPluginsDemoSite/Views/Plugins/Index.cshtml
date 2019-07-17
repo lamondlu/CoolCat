@@ -1,7 +1,40 @@
-﻿
+﻿@model List<DynamicPlugins.Core.ViewModels.PluginListItemViewModel>
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Plugin Management</h1>
 
+<button type="button" class="btn btn-primary">+ Add New</button>
+<table class="table">
+    <thead>
+        <tr>
+            <th>PluginId</th>
+            <th>UniqueKey</th>
+            <th>Version</th>
+            <th>Name</th>
+            <th>DisplayName</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var row in Model)
+            {
+            <tr>
+                <td>@row.PluginId</td>
+                <td>@row.UniqueKey</td>
+                <td>@row.Version</td>
+                <td>@row.Name</td>
+                <td>@row.DisplayName</td>
+            </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">No Data.</td>
+            </tr>
+        }
+    </tbody>
+</table>
