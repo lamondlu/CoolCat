@@ -17,7 +17,9 @@ namespace DynamicPlugins.Core.Repositories
 
         public List<PluginListItemViewModel> GetAllPlugins()
         {
-            var sql = "SELECT * from Modules";
+            var sql = "SELECT * from Plugins";
+
+            throw new NotImplementedException();
         }
     }
 }
