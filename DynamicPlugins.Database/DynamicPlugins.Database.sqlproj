@@ -58,7 +58,7 @@
     <Folder Include="Properties" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Modules.sql" />
+    <Build Include="Plugins.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="DynamicPlugins.Database.refactorlog" />

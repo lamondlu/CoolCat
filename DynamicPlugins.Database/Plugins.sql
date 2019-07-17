@@ -1,6 +1,6 @@
-﻿CREATE TABLE [dbo].[Modules]
+﻿CREATE TABLE [dbo].[Plugins]
 (
-	[ModuleId] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY, 
+	[PluginId] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY, 
     [UniqueKey] NVARCHAR(50) NOT NULL, 
     [Name] NVARCHAR(50) NOT NULL, 
     [DisplayName] NVARCHAR(MAX) NULL, 

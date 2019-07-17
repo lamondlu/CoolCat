@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using DynamicPlugins.Core.Helpers;
+using DynamicPlugins.Core.ViewModels;
 
 namespace DynamicPlugins.Core.Repositories
 {
@@ -14,6 +15,9 @@ namespace DynamicPlugins.Core.Repositories
             _dbHelper = dbHelper;
         }
 
-
+        public List<PluginListItemViewModel> GetAllPlugins()
+        {
+            var sql = "SELECT * from Modules";
+        }
     }
 }
