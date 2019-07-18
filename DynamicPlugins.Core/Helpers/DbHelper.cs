@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DynamicPlugins.Core.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -8,156 +9,252 @@ namespace DynamicPlugins.Core.Helpers
 {
     public class DbHelper
     {
-        private string _connectionString = string.Empty;
+        private string connectionString = string.Empty;
 
         public DbHelper(string connectionString)
         {
-            _connectionString = connectionString;
+            this.connectionString = connectionString;
         }
 
-        /// <summary>
-        /// 离线查询，返回DataTable
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="par"></param>
-        /// <returns></returns>
-        public DataTable ExecuteTable(string sql, params SqlParameter[] par)
+        public void ExecuteNoQuery(List<Command> queries)
         {
-            using (SqlDataAdapter sda = new SqlDataAdapter(sql, _connectionString))
+            using (SqlConnection Connection = new SqlConnection(connectionString))
             {
-                if (par != null && par.Length > 0)
-                {
-                    sda.SelectCommand.Parameters.AddRange(par);
-                }
-                DataTable dt = new DataTable();
-                sda.Fill(dt);
-                return dt;
-            }
+                Connection.Open();
+                SqlTransaction trans = Connection.BeginTransaction();
 
-        }
-        /// <summary>
-        /// 查询首行首列，返回object
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="par"></param>
-        /// <returns></returns>
-        public object ExecuteScalar(string sql, params SqlParameter[] par)
-        {
-            using (SqlConnection con = new SqlConnection(_connectionString))
-            {
-                using (SqlCommand com = new SqlCommand(sql, con))
+                try
                 {
-                    if (par != null && par.Length > 0)
+                    foreach (var query in queries)
                     {
-                        com.Parameters.AddRange(par);
+                        SqlCommand cmd = new SqlCommand(query.Sql, Connection);
+                        cmd.Transaction = trans;
+                        cmd.Parameters.AddRange(query.Parameters.ToArray());
+                        if (Connection.State != ConnectionState.Open)
+                        {
+                            Connection.Open();
+                        }
+
+                        cmd.ExecuteNonQuery();
                     }
-                    if (con.State != ConnectionState.Open)
-                    {
-                        con.Open();
-                    }
-                    return com.ExecuteScalar();
-                }
-            }
-        }
-        /// <summary>
-        /// 在线查询，返回SqlDataReader，存储过程
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="par"></param>
-        /// <returns></returns>
-        public SqlDataReader ExecuteReader1(string procname, params SqlParameter[] par)
-        {
-            SqlConnection con = new SqlConnection(_connectionString);
 
-            using (SqlCommand com = new SqlCommand(procname, con))
-            {
-                com.CommandType = CommandType.StoredProcedure;
-                if (par != null && par.Length > 0)
-                {
-                    com.Parameters.AddRange(par);
+                    trans.Commit();
                 }
-                if (con.State != ConnectionState.Open)
+                catch (Exception ex)
                 {
-                    con.Open();
-                }
-                return com.ExecuteReader(CommandBehavior.CloseConnection);
-
-            }
-        }
-        /// <summary>
-        /// 在线查询，返回SqlDataReader
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="par"></param>
-        /// <returns></returns>
-        public SqlDataReader ExecuteReader(string procname, params SqlParameter[] par)
-        {
-            SqlConnection con = new SqlConnection(_connectionString);
-
-            using (SqlCommand com = new SqlCommand(procname, con))
-            {
-
-                if (par != null && par.Length > 0)
-                {
-                    com.Parameters.AddRange(par);
-                }
-                if (con.State != ConnectionState.Open)
-                {
-                    con.Open();
-                }
-                return com.ExecuteReader(CommandBehavior.CloseConnection);
-
-            }
-        }
-        /// <summary>
-        /// 增删改方法
-        /// </summary>
-        /// <param name="sql"></param>
-        public int ExecuteNonQuery(string sql, params SqlParameter[] par)
-        {
-            using (SqlConnection con = new SqlConnection(_connectionString))
-            {
-                using (SqlCommand com = new SqlCommand(sql, con))
-                {
-                    if (par != null && par.Length > 0)
-                    {
-                        com.Parameters.AddRange(par);
-                    }
-                    if (con.State != ConnectionState.Open)
-                    {
-                        con.Open();
-                    }
-                    return com.ExecuteNonQuery();
+                    trans.Rollback();
+                    Console.WriteLine(ex.ToString());
                 }
             }
         }
 
-        /// <summary>
-        /// 增删改方法，存储过程
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="par"></param>
-        /// <returns></returns>
-        public int ExecuteNonQueryProc(string sql, params SqlParameter[] par)
+        public void ExecuteNoQuery(Dictionary<string, List<SqlParameter>> queries)
         {
-            using (SqlConnection con = new SqlConnection(_connectionString))
+            using (SqlConnection Connection = new SqlConnection(connectionString))
             {
-                using (SqlCommand com = new SqlCommand(sql, con))
+                Connection.Open();
+                SqlTransaction trans = Connection.BeginTransaction();
+
+                try
                 {
-                    com.CommandTimeout = 60;
-                    com.CommandType = CommandType.StoredProcedure;
-                    if (par != null && par.Length > 0)
+                    foreach (var query in queries)
                     {
-                        com.Parameters.AddRange(par);
+                        SqlCommand cmd = new SqlCommand(query.Key, Connection);
+                        cmd.Transaction = trans;
+                        cmd.Parameters.AddRange(query.Value.ToArray());
+                        if (Connection.State != ConnectionState.Open)
+                        {
+                            Connection.Open();
+                        }
+
+                        cmd.ExecuteNonQuery();
                     }
-                    if (con.State != ConnectionState.Open)
-                    {
-                        con.Open();
-                    }
-                    return com.ExecuteNonQuery();
+
+                    trans.Commit();
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                    Console.WriteLine(ex.ToString());
                 }
             }
         }
 
+        public int ExecuteNonQuery(string safeSql)
+        {
+            using (SqlConnection Connection = new SqlConnection(connectionString))
+            {
+                Connection.Open();
+                SqlTransaction trans = Connection.BeginTransaction();
+                try
+                {
+                    SqlCommand cmd = new SqlCommand(safeSql, Connection);
+                    cmd.Transaction = trans;
+
+                    if (Connection.State != ConnectionState.Open)
+                    {
+                        Connection.Open();
+                    }
+                    int result = cmd.ExecuteNonQuery();
+                    trans.Commit();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                    Console.WriteLine(ex.ToString());
+                    return 0;
+                }
+            }
+        }
+
+        public int ExecuteNonQuery(string sql, SqlParameter[] values)
+        {
+            using (SqlConnection Connection = new SqlConnection(connectionString))
+            {
+                Connection.Open();
+                SqlTransaction trans = Connection.BeginTransaction();
+                try
+                {
+                    SqlCommand cmd = new SqlCommand(sql, Connection);
+                    cmd.Transaction = trans;
+                    cmd.Parameters.AddRange(values);
+                    if (Connection.State != ConnectionState.Open)
+                    {
+                        Connection.Open();
+                    }
+                    int result = cmd.ExecuteNonQuery();
+                    trans.Commit();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                    Console.WriteLine(ex.ToString());
+                    return 0;
+                }
+            }
+        }
+
+        public int ExecuteScalar(string safeSql)
+        {
+            using (SqlConnection Connection = new SqlConnection(connectionString))
+            {
+                if (Connection.State != ConnectionState.Open)
+                    Connection.Open();
+                SqlCommand cmd = new SqlCommand(safeSql, Connection);
+                int result = Convert.ToInt32(cmd.ExecuteScalar());
+                return result;
+            }
+        }
+
+        public int ExecuteScalar(string sql, SqlParameter[] values)
+        {
+            using (SqlConnection Connection = new SqlConnection(connectionString))
+            {
+                if (Connection.State != ConnectionState.Open)
+                    Connection.Open();
+                SqlCommand cmd = new SqlCommand(sql, Connection);
+                cmd.Parameters.AddRange(values);
+                int result = Convert.ToInt32(cmd.ExecuteScalar());
+                return result;
+            }
+        }
+
+        public SqlDataReader ExecuteReader(string safeSql, SqlConnection Connection)
+        {
+            if (Connection.State != ConnectionState.Open)
+                Connection.Open();
+            SqlCommand cmd = new SqlCommand(safeSql, Connection);
+            SqlDataReader reader = cmd.ExecuteReader();
+            return reader;
+        }
+
+        public SqlDataReader ExecuteReader(string sql, SqlParameter[] values, SqlConnection Connection)
+        {
+            if (Connection.State != ConnectionState.Open)
+                Connection.Open();
+            SqlCommand cmd = new SqlCommand(sql, Connection);
+            cmd.Parameters.AddRange(values);
+            SqlDataReader reader = cmd.ExecuteReader();
+            return reader;
+        }
+
+        public DataTable ExecuteDataTable(CommandType type, string safeSql, params SqlParameter[] values)
+        {
+            using (SqlConnection Connection = new SqlConnection(connectionString))
+            {
+                if (Connection.State != ConnectionState.Open)
+                    Connection.Open();
+                DataSet ds = new DataSet();
+                SqlCommand cmd = new SqlCommand(safeSql, Connection);
+                cmd.CommandType = type;
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(ds);
+                return ds.Tables[0];
+            }
+        }
+
+        public DataTable ExecuteDataTable(string safeSql)
+        {
+            using (SqlConnection Connection = new SqlConnection(connectionString))
+            {
+                if (Connection.State != ConnectionState.Open)
+                    Connection.Open();
+                DataSet ds = new DataSet();
+                SqlCommand cmd = new SqlCommand(safeSql, Connection);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                try
+                {
+                    da.Fill(ds);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                return ds.Tables[0];
+            }
+        }
+
+        public DataTable ExecuteDataTable(string sql, params SqlParameter[] values)
+        {
+            using (SqlConnection Connection = new SqlConnection(connectionString))
+            {
+                if (Connection.State != ConnectionState.Open)
+                    Connection.Open();
+                DataSet ds = new DataSet();
+                SqlCommand cmd = new SqlCommand(sql, Connection);
+                cmd.CommandTimeout = 0;
+                cmd.Parameters.AddRange(values);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                da.Fill(ds);
+                return ds.Tables[0];
+            }
+        }
+
+        public DataSet GetDataSet(string safeSql, string tabName, params SqlParameter[] values)
+        {
+            using (SqlConnection Connection = new SqlConnection(connectionString))
+            {
+                if (Connection.State != ConnectionState.Open)
+                    Connection.Open();
+                DataSet ds = new DataSet();
+                SqlCommand cmd = new SqlCommand(safeSql, Connection);
+
+                if (values != null)
+                    cmd.Parameters.AddRange(values);
+
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                try
+                {
+                    da.Fill(ds, tabName);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                return ds;
+            }
+        }
     }
 }

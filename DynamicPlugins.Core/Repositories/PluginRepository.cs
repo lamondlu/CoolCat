@@ -28,7 +28,7 @@ namespace DynamicPlugins.Core.Repositories
             var plugins = new List<PluginListItemViewModel>();
             var sql = "SELECT * from Plugins";
 
-            var table = _dbHelper.ExecuteTable(sql);
+            var table = _dbHelper.ExecuteDataTable(sql);
 
             foreach (var row in table.Rows.Cast<DataRow>())
             {

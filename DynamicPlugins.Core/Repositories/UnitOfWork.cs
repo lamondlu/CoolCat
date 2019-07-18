@@ -14,11 +14,11 @@ namespace DynamicPlugins.Core.Repositories
         private DbHelper _dbHelper = null;
         private string _connectionString = string.Empty;
         private IPluginRepository _pluginRepository = null;
-        private List<string> _scripts;
+        private List<Command> _commands;
 
         public UnitOfWork(IOptions<ConnectionStringSetting> connectionStringAccessor)
         {
-            _scripts = new List<string>();
+            _commands = new List<Command>();
             _connectionString = connectionStringAccessor.Value.ConnectionString;
             _dbHelper = new DbHelper(_connectionString);
         }
@@ -46,9 +46,18 @@ namespace DynamicPlugins.Core.Repositories
                 {
                     try
                     {
-                        foreach (var script in _scripts)
+                        foreach (var command in _commands)
                         {
-                            var cmd = new SqlCommand(script, sqlConnection);
+                            var cmd = new SqlCommand(command.Sql, sqlConnection);
+
+                            if (command.Parameters.Count > 0)
+                            {
+                                foreach (var parameter in command.Parameters)
+                                {
+                                    cmd.Parameters.Add(parameter);
+                                }
+                            }
+
                             cmd.ExecuteNonQuery();
                         }
 
