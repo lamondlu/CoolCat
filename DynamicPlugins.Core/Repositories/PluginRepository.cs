@@ -5,6 +5,7 @@ using DynamicPlugins.Core.Helpers;
 using DynamicPlugins.Core.ViewModels;
 using System.Linq;
 using System.Data;
+using DynamicPlugins.Core.DTOs;
 
 namespace DynamicPlugins.Core.Repositories
 {
@@ -15,6 +16,11 @@ namespace DynamicPlugins.Core.Repositories
         public PluginRepository(DbHelper dbHelper)
         {
             _dbHelper = dbHelper;
+        }
+
+        public void AddPlugin(AddPluginDTO dto)
+        {
+            throw new NotImplementedException();
         }
 
         public List<PluginListItemViewModel> GetAllPlugins()

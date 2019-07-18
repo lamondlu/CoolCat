@@ -20,5 +20,10 @@ namespace DynamicPlugins.Core.BusinessLogics
         {
             return _unitOfWork.PluginRepository.GetAllPlugins();
         }
+
+        public void AddPlugins()
+        {
+
+        }
     }
 }
