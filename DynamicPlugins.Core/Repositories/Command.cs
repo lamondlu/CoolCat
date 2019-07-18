@@ -7,6 +7,11 @@ namespace DynamicPlugins.Core.Repositories
 {
     public class Command
     {
+        public Command()
+        {
+
+        }
+
         public Command(string sql, List<SqlParameter> parameters)
         {
             Sql = sql;

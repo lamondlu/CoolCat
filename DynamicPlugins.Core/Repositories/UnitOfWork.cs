@@ -29,7 +29,7 @@ namespace DynamicPlugins.Core.Repositories
             {
                 if (_pluginRepository == null)
                 {
-                    _pluginRepository = new PluginRepository(_dbHelper);
+                    _pluginRepository = new PluginRepository(_dbHelper, _commands);
                 }
 
                 return _pluginRepository;
@@ -62,6 +62,7 @@ namespace DynamicPlugins.Core.Repositories
                         }
 
                         scope.Commit();
+                        _commands.Clear();
                     }
                     catch
                     {

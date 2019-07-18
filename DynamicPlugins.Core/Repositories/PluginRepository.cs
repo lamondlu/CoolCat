@@ -12,15 +12,20 @@ namespace DynamicPlugins.Core.Repositories
     public class PluginRepository : IPluginRepository
     {
         private DbHelper _dbHelper = null;
+        private List<Command> _commands = null;
 
-        public PluginRepository(DbHelper dbHelper)
+        public PluginRepository(DbHelper dbHelper, List<Command> commands)
         {
             _dbHelper = dbHelper;
+            _commands = commands;
         }
 
         public void AddPlugin(AddPluginDTO dto)
         {
-            throw new NotImplementedException();
+            var command = new Command();
+            command.Sql = "INSERT INTO Plugin(PluginId, Name, UniqueKey, Version, DisplayName, DLLPath, ViewDLLPath) values(@pluginId, @name, @uniqueKey, @version, @displayName, @dllPath, @viewDllPath)";
+
+            _commands.Add(command);
         }
 
         public List<PluginListItemViewModel> GetAllPlugins()
