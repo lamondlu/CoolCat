@@ -22,9 +22,5 @@ namespace DynamicPlugins.Core.DTOs
         public string DisplayName { get; set; }
 
         public string Version { get; set; }
-
-        public string DLLPath { get; set; }
-
-        public string ViewDLLPath { get; set; }
     }
 }
