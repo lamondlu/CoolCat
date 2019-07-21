@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DynamicPlugins.Core.Business
+namespace DynamicPlugins.Core.DomainModel
 {
     public class Version
     {
