@@ -16,7 +16,7 @@ namespace DynamicPlugins.Core.Helpers
             this.connectionString = connectionString;
         }
 
-        public void ExecuteNoQuery(List<Command> queries)
+        public void ExecuteNonQuery(List<Command> commands)
         {
             using (SqlConnection Connection = new SqlConnection(connectionString))
             {
@@ -25,7 +25,7 @@ namespace DynamicPlugins.Core.Helpers
 
                 try
                 {
-                    foreach (var query in queries)
+                    foreach (var query in commands)
                     {
                         SqlCommand cmd = new SqlCommand(query.Sql, Connection);
                         cmd.Transaction = trans;
@@ -36,9 +36,11 @@ namespace DynamicPlugins.Core.Helpers
                         }
 
                         cmd.ExecuteNonQuery();
+
                     }
 
                     trans.Commit();
+                    commands.Clear();
                 }
                 catch (Exception ex)
                 {
@@ -48,7 +50,7 @@ namespace DynamicPlugins.Core.Helpers
             }
         }
 
-        public void ExecuteNoQuery(Dictionary<string, List<SqlParameter>> queries)
+        public void ExecuteNonQuery(Dictionary<string, List<SqlParameter>> queries)
         {
             using (SqlConnection Connection = new SqlConnection(connectionString))
             {

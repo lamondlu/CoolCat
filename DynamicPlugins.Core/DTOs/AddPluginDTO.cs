@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +7,12 @@ namespace DynamicPlugins.Core.DTOs
 {
     public class AddPluginDTO
     {
+        public AddPluginDTO()
+        {
+            PluginId = Guid.NewGuid();
+        }
+
+        [JsonIgnore]
         public Guid PluginId { get; set; }
 
         public string UniqueKey { get; set; }

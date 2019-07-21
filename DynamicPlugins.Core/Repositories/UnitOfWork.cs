@@ -38,38 +38,7 @@ namespace DynamicPlugins.Core.Repositories
 
         public void Commit()
         {
-            using (var sqlConnection = new SqlConnection(_connectionString))
-            {
-                sqlConnection.Open();
-
-                using (var scope = sqlConnection.BeginTransaction())
-                {
-                    try
-                    {
-                        foreach (var command in _commands)
-                        {
-                            var cmd = new SqlCommand(command.Sql, sqlConnection);
-
-                            if (command.Parameters.Count > 0)
-                            {
-                                foreach (var parameter in command.Parameters)
-                                {
-                                    cmd.Parameters.Add(parameter);
-                                }
-                            }
-
-                            cmd.ExecuteNonQuery();
-                        }
-
-                        scope.Commit();
-                        _commands.Clear();
-                    }
-                    catch
-                    {
-                        scope.Rollback();
-                    }
-                }
-            }
+            _dbHelper.ExecuteNonQuery(_commands);
         }
     }
 }

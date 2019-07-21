@@ -6,6 +6,7 @@ using DynamicPlugins.Core.ViewModels;
 using System.Linq;
 using System.Data;
 using DynamicPlugins.Core.DTOs;
+using System.Data.SqlClient;
 
 namespace DynamicPlugins.Core.Repositories
 {
@@ -24,6 +25,19 @@ namespace DynamicPlugins.Core.Repositories
         {
             var command = new Command();
             command.Sql = "INSERT INTO Plugin(PluginId, Name, UniqueKey, Version, DisplayName, DLLPath, ViewDLLPath) values(@pluginId, @name, @uniqueKey, @version, @displayName, @dllPath, @viewDllPath)";
+
+            command.Parameters.Add(new SqlParameter { ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
+            command.Parameters.Add(new SqlParameter { ParameterName = "@name", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
+
+            command.Parameters.Add(new SqlParameter { ParameterName = "@uniqueKey", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
+
+            command.Parameters.Add(new SqlParameter { ParameterName = "@version", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
+
+            command.Parameters.Add(new SqlParameter { ParameterName = "@displayName", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
+
+            command.Parameters.Add(new SqlParameter { ParameterName = "@dllPath", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
+
+            command.Parameters.Add(new SqlParameter { ParameterName = "@viewDllPath", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
 
             _commands.Add(command);
         }
