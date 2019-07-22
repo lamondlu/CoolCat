@@ -24,6 +24,11 @@ namespace DynamicPluginsDemoSite.Controllers
             return View(_pluginManager.GetAllPlugins());
         }
 
+        public IActionResult Add()
+        {
+            return View();
+        }
+
         [HttpPost()]
         public IActionResult Add(IFormFileCollection files)
         {
