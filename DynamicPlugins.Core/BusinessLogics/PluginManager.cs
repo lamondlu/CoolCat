@@ -1,4 +1,5 @@
 ﻿using DynamicPlugins.Core.Contracts;
+using DynamicPlugins.Core.DomainModel;
 using DynamicPlugins.Core.Repositories;
 using DynamicPlugins.Core.ViewModels;
 using System;
@@ -21,7 +22,7 @@ namespace DynamicPlugins.Core.BusinessLogics
             return _unitOfWork.PluginRepository.GetAllPlugins();
         }
 
-        public void AddPlugins()
+        public void AddPlugins(PluginPackage pluginPackage)
         {
 
         }

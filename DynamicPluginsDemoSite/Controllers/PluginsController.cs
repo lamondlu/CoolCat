@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DynamicPlugins.Core.Contracts;
+using DynamicPlugins.Core.DomainModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace DynamicPluginsDemoSite.Controllers
 {
@@ -22,6 +22,22 @@ namespace DynamicPluginsDemoSite.Controllers
         public IActionResult Index()
         {
             return View(_pluginManager.GetAllPlugins());
+        }
+
+        [HttpPost()]
+        public IActionResult Add(IFormFileCollection files)
+        {
+            if (!files.Any())
+            {
+                ModelState.AddModelError("", "The plugin package file is missing.");
+            }
+            else
+            {
+                var package = new PluginPackage(files.First().OpenReadStream());
+                _pluginManager.AddPlugins(package);
+            }
+
+            return View();
         }
     }
 }
