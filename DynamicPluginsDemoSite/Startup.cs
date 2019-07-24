@@ -7,11 +7,13 @@ using DynamicPlugins.Core.BusinessLogics;
 using DynamicPlugins.Core.Contracts;
 using DynamicPlugins.Core.Models;
 using DynamicPlugins.Core.Repositories;
+using DynamicPluginsDemoSite.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,25 +39,19 @@ namespace DynamicPluginsDemoSite
             });
 
             services.AddOptions();
+
+        
             services.Configure<ConnectionStringSetting>(Configuration.GetSection("ConnectionStringSetting"));
 
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            var assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "DemoPlugin1.dll");
-            var assembly1 = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "DemoPlugin1.Views.dll");
-            var viewAssemblyPart = new CompiledRazorAssemblyPart(assembly1);
-
-
-            var controllerAssemblyPart = new AssemblyPart(assembly);
+           
 
             var mvcBuilders = services.AddMvc();
 
-            mvcBuilders.ConfigureApplicationPartManager(apm =>
-            {
-                apm.ApplicationParts.Add(controllerAssemblyPart);
-                apm.ApplicationParts.Add(viewAssemblyPart);
-            });
+            services.AddSingleton<IActionDescriptorChangeProvider>(MyActionDescriptorChangeProvider.Instance);
+            services.AddSingleton(MyActionDescriptorChangeProvider.Instance);
 
             mvcBuilders.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
