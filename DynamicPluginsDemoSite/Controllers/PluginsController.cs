@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 
 namespace DynamicPluginsDemoSite.Controllers
@@ -57,8 +59,14 @@ namespace DynamicPluginsDemoSite.Controllers
 
             var controllerAssemblyPart = new AssemblyPart(assembly);
             _partManager.ApplicationParts.Add(controllerAssemblyPart);
-            _partManager.ApplicationParts.Add(viewAssemblyPart);
-            
+
+            ABC.ServiceCollection.Configure<RazorViewEngineOptions>(o =>
+            {
+                o.ViewLocationFormats.Add($"/DemoPlugin1/Views" + "/{1}/{0}" + RazorViewEngine.ViewExtension);
+            });
+
+            //_partManager.ApplicationParts.Add(viewAssemblyPart);
+
             MyActionDescriptorChangeProvider.Instance.HasChanged = true;
             MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
 

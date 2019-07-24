@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -40,15 +41,20 @@ namespace DynamicPluginsDemoSite
 
             services.AddOptions();
 
-        
+
             services.Configure<ConnectionStringSetting>(Configuration.GetSection("ConnectionStringSetting"));
 
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-           
+            ABC.ServiceCollection = services;
 
             var mvcBuilders = services.AddMvc();
+
+            services.Configure<RazorViewEngineOptions>(o =>
+            {
+                o.ViewLocationFormats.Add($"/DemoPlugin1/Views" + "/{1}/{0}" + RazorViewEngine.ViewExtension);
+            });
 
             services.AddSingleton<IActionDescriptorChangeProvider>(MyActionDescriptorChangeProvider.Instance);
             services.AddSingleton(MyActionDescriptorChangeProvider.Instance);
