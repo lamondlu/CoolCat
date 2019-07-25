@@ -47,14 +47,17 @@ namespace DynamicPluginsDemoSite
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            ABC.ServiceCollection = services;
-
             var mvcBuilders = services.AddMvc();
 
             services.Configure<RazorViewEngineOptions>(o =>
             {
-                o.ViewLocationFormats.Add($"/DemoPlugin1/Views" + "/{1}/{0}" + RazorViewEngine.ViewExtension);
+                o.AreaViewLocationFormats.Add("/Modules/{2}/{1}/Views/{0}" + RazorViewEngine.ViewExtension);
             });
+
+            //services.Configure<RazorViewEngineOptions>(o =>
+            //{
+            //    o.ViewLocationFormats.Add($"/DemoPlugin1/Views" + "/{1}/{0}" + RazorViewEngine.ViewExtension);
+            //});
 
             services.AddSingleton<IActionDescriptorChangeProvider>(MyActionDescriptorChangeProvider.Instance);
             services.AddSingleton(MyActionDescriptorChangeProvider.Instance);
@@ -82,6 +85,10 @@ namespace DynamicPluginsDemoSite
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "default",
+                    template: "Plugins/{area}/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

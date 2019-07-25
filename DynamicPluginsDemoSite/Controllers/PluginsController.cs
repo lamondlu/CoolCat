@@ -52,20 +52,21 @@ namespace DynamicPluginsDemoSite.Controllers
 
         public IActionResult Enable()
         {
-            var assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "DemoPlugin1\\DemoPlugin1.dll");
-            var assembly1 = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "DemoPlugin1\\DemoPlugin1.Views.dll");
-            var viewAssemblyPart = new CompiledRazorAssemblyPart(assembly1);
+            var assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "Areas\\DemoPlugin1\\DemoPlugin1.dll");
+            //var assembly1 = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "DemoPlugin1\\DemoPlugin1.Views.dll");
+            // var viewAssemblyPart = new CompiledRazorAssemblyPart(assembly1);
 
 
             var controllerAssemblyPart = new AssemblyPart(assembly);
             _partManager.ApplicationParts.Add(controllerAssemblyPart);
-
-            ABC.ServiceCollection.Configure<RazorViewEngineOptions>(o =>
-            {
-                o.ViewLocationFormats.Add($"/DemoPlugin1/Views" + "/{1}/{0}" + RazorViewEngine.ViewExtension);
-            });
-
             //_partManager.ApplicationParts.Add(viewAssemblyPart);
+
+            //ABC.ServiceCollection.Configure<RazorViewEngineOptions>(o =>
+            //{
+            //    o.ViewLocationFormats.Add($"/DemoPlugin1/Views" + "/{1}/{0}" + RazorViewEngine.ViewExtension);
+            //});
+
+            // _partManager.ApplicationParts.Add(viewAssemblyPart);
 
             MyActionDescriptorChangeProvider.Instance.HasChanged = true;
             MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
