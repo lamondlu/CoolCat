@@ -54,11 +54,6 @@ namespace DynamicPluginsDemoSite
                 o.AreaViewLocationFormats.Add("/Modules/{2}/{1}/Views/{0}" + RazorViewEngine.ViewExtension);
             });
 
-            //services.Configure<RazorViewEngineOptions>(o =>
-            //{
-            //    o.ViewLocationFormats.Add($"/DemoPlugin1/Views" + "/{1}/{0}" + RazorViewEngine.ViewExtension);
-            //});
-
             services.AddSingleton<IActionDescriptorChangeProvider>(MyActionDescriptorChangeProvider.Instance);
             services.AddSingleton(MyActionDescriptorChangeProvider.Instance);
 
@@ -88,7 +83,7 @@ namespace DynamicPluginsDemoSite
 
                 routes.MapRoute(
                     name: "default",
-                    template: "Plugins/{area}/{controller=Home}/{action=Index}/{id?}");
+                    template: "Modules/{area}/{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

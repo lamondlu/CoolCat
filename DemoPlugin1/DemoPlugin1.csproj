@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>C:\Users\Lamond Lu\source\repos\DynamicPlugins\DynamicPluginsDemoSite\bin\Debug\</OutputPath>
+    <OutputPath></OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +16,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DynamicPlugins.Core\DynamicPlugins.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Views\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
