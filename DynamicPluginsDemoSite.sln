@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TestPlugins\DemoPlugin1\plugin.json = TestPlugins\DemoPlugin1\plugin.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZipTester", "ZipTester\ZipTester.csproj", "{B79AE446-7FFA-4D6F-B74E-63E62D765480}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZipTester", "ZipTester\ZipTester.csproj", "{B79AE446-7FFA-4D6F-B74E-63E62D765480}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

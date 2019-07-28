@@ -52,7 +52,7 @@ namespace DynamicPluginsDemoSite.Controllers
 
         public IActionResult Enable()
         {
-            var assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "Areas\\DemoPlugin1\\DemoPlugin1.dll");
+            var assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "Modules\\DemoPlugin1\\DemoPlugin1.dll");
             //var assembly1 = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "DemoPlugin1\\DemoPlugin1.Views.dll");
             // var viewAssemblyPart = new CompiledRazorAssemblyPart(assembly1);
 

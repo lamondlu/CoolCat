@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -16,5 +16,8 @@
   <ItemGroup>
     <ProjectReference Include="..\DynamicPlugins.Core\DynamicPlugins.Core.csproj" />
   </ItemGroup>
+
+
+
 
 </Project>

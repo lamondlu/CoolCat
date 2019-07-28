@@ -51,7 +51,8 @@ namespace DynamicPluginsDemoSite
 
             services.Configure<RazorViewEngineOptions>(o =>
             {
-                o.AreaViewLocationFormats.Add("/Modules/{2}/{1}/Views/{0}" + RazorViewEngine.ViewExtension);
+                o.AreaViewLocationFormats.Add("/Modules/{2}/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
+                o.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
             });
 
             services.AddSingleton<IActionDescriptorChangeProvider>(MyActionDescriptorChangeProvider.Instance);
