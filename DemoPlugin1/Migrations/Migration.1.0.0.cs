@@ -7,9 +7,12 @@ namespace DemoPlugin1.Migrations
 {
     public class Migration_1_0_0 : IMigration
     {
-        public string Version
+        public Version Version
         {
-            get { return "1.0.0"; }
+            get
+            {
+                return new Version("1.0.0");
+            }
         }
 
         public void Down()
