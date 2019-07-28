@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DynamicPlugins.Core.Contracts;
 using DynamicPlugins.Core.DomainModel;
+using DynamicPluginsDemoSite.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -42,10 +43,8 @@ namespace DynamicPluginsDemoSite.Controllers
         [HttpPost]
         public IActionResult Upload()
         {
-
             var package = new PluginPackage(Request.Form.Files.First().OpenReadStream());
             _pluginManager.AddPlugins(package);
-
 
             return View("Add");
         }
@@ -53,40 +52,25 @@ namespace DynamicPluginsDemoSite.Controllers
         public IActionResult Enable()
         {
             var assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "Modules\\DemoPlugin1\\DemoPlugin1.dll");
-            //var assembly1 = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "DemoPlugin1\\DemoPlugin1.Views.dll");
-            // var viewAssemblyPart = new CompiledRazorAssemblyPart(assembly1);
-
 
             var controllerAssemblyPart = new AssemblyPart(assembly);
             _partManager.ApplicationParts.Add(controllerAssemblyPart);
-            //_partManager.ApplicationParts.Add(viewAssemblyPart);
-
-            //ABC.ServiceCollection.Configure<RazorViewEngineOptions>(o =>
-            //{
-            //    o.ViewLocationFormats.Add($"/DemoPlugin1/Views" + "/{1}/{0}" + RazorViewEngine.ViewExtension);
-            //});
-
-            // _partManager.ApplicationParts.Add(viewAssemblyPart);
 
             MyActionDescriptorChangeProvider.Instance.HasChanged = true;
             MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
 
             return Content("Enabled");
         }
-    }
 
-    public class MyActionDescriptorChangeProvider : IActionDescriptorChangeProvider
-    {
-        public static MyActionDescriptorChangeProvider Instance { get; } = new MyActionDescriptorChangeProvider();
-
-        public CancellationTokenSource TokenSource { get; private set; }
-
-        public bool HasChanged { get; set; }
-
-        public IChangeToken GetChangeToken()
+        public IActionResult Disable()
         {
-            TokenSource = new CancellationTokenSource();
-            return new CancellationChangeToken(TokenSource.Token);
+            var last = _partManager.ApplicationParts.Last();
+            _partManager.ApplicationParts.Remove(last);
+
+            MyActionDescriptorChangeProvider.Instance.HasChanged = true;
+            MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+
+            return Content("Enabled");
         }
     }
 }
