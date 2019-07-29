@@ -45,6 +45,7 @@ namespace DynamicPluginsDemoSite
 
             services.Configure<ConnectionStringSetting>(Configuration.GetSection("ConnectionStringSetting"));
 
+            services.AddScoped<IPluginRepository, PluginRepository>();
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

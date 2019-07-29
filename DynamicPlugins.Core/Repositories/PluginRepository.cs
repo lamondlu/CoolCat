@@ -24,6 +24,7 @@ namespace DynamicPlugins.Core.Repositories
         public void AddPlugin(AddPluginDTO dto)
         {
             var command = new Command();
+            command.Parameters = new List<SqlParameter>();
             command.Sql = "INSERT INTO Plugins(PluginId, Name, UniqueKey, Version, DisplayName) values(@pluginId, @name, @uniqueKey, @version, @displayName)";
 
             command.Parameters.Add(new SqlParameter { ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });

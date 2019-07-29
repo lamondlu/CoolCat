@@ -32,7 +32,7 @@ namespace DynamicPlugins.Core.DomainModel
 
         public List<IMigration> GetAllVersions()
         {
-            var assembly = Assembly.LoadFile($"{AppDomain.CurrentDomain.BaseDirectory}/Modules/{_pluginConfiguration.Name}/{_pluginConfiguration.Name}.dll");
+            var assembly = Assembly.LoadFile($"{_folderName}/{_pluginConfiguration.Name}.dll");
 
             var migrations = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration))).Select(p => (IMigration)assembly.CreateInstance(p.Name)).ToList();
 
@@ -58,7 +58,6 @@ namespace DynamicPlugins.Core.DomainModel
                 else
                 {
                     LoadConfiguration(configFiles.First().OpenRead());
-                    RenameFolder(folder);
                 }
             }
         }
@@ -78,12 +77,13 @@ namespace DynamicPlugins.Core.DomainModel
         }
 
 
-        private void RenameFolder(DirectoryInfo folder)
+        public void Save()
         {
             var pluginName = _pluginConfiguration.Name;
 
             if (!string.IsNullOrEmpty(pluginName))
             {
+                var folder = new DirectoryInfo(_folderName);
                 var newName = $"{AppDomain.CurrentDomain.BaseDirectory}/Modules/{pluginName}";
 
                 if (!Directory.Exists(newName))

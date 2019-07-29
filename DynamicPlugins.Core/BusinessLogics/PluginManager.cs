@@ -32,20 +32,24 @@ namespace DynamicPlugins.Core.BusinessLogics
                 {
                     version.Up();
                 }
+
+                _unitOfWork.PluginRepository.AddPlugin(new DTOs.AddPluginDTO
+                {
+                    Name = pluginPackage.Configuration.Name,
+                    DisplayName = pluginPackage.Configuration.DisplayName,
+                    PluginId = Guid.NewGuid(),
+                    UniqueKey = pluginPackage.Configuration.UniqueKey,
+                    Version = pluginPackage.Configuration.Version
+                });
             }
             catch
             {
 
             }
-
-            _unitOfWork.PluginRepository.AddPlugin(new DTOs.AddPluginDTO
+            finally
             {
-                Name = pluginPackage.Configuration.Name,
-                DisplayName = pluginPackage.Configuration.DisplayName,
-                PluginId = Guid.NewGuid(),
-                UniqueKey = pluginPackage.Configuration.UniqueKey,
-                Version = pluginPackage.Configuration.Version
-            });
+                pluginPackage.Save();
+            }
         }
     }
 }
