@@ -24,16 +24,16 @@ namespace DynamicPlugins.Core.Repositories
         public void AddPlugin(AddPluginDTO dto)
         {
             var command = new Command();
-            command.Sql = "INSERT INTO Plugin(PluginId, Name, UniqueKey, Version, DisplayName) values(@pluginId, @name, @uniqueKey, @version, @displayName)";
+            command.Sql = "INSERT INTO Plugins(PluginId, Name, UniqueKey, Version, DisplayName) values(@pluginId, @name, @uniqueKey, @version, @displayName)";
 
             command.Parameters.Add(new SqlParameter { ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
-            command.Parameters.Add(new SqlParameter { ParameterName = "@name", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
+            command.Parameters.Add(new SqlParameter { ParameterName = "@name", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.Name });
 
-            command.Parameters.Add(new SqlParameter { ParameterName = "@uniqueKey", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
+            command.Parameters.Add(new SqlParameter { ParameterName = "@uniqueKey", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.UniqueKey });
 
-            command.Parameters.Add(new SqlParameter { ParameterName = "@version", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
+            command.Parameters.Add(new SqlParameter { ParameterName = "@version", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.Version });
 
-            command.Parameters.Add(new SqlParameter { ParameterName = "@displayName", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
+            command.Parameters.Add(new SqlParameter { ParameterName = "@displayName", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.DisplayName });
 
             _commands.Add(command);
         }

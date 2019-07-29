@@ -62,7 +62,7 @@ namespace DynamicPluginsDemoSite.Controllers
             return Content("Enabled");
         }
 
-        public IActionResult Disable()
+        public IActionResult Disable()  
         {
             var last = _partManager.ApplicationParts.Last();
             _partManager.ApplicationParts.Remove(last);
