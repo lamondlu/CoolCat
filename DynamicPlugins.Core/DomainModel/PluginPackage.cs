@@ -6,12 +6,15 @@ using System.Text;
 using ZipTool = System.IO.Compression.ZipArchive;
 using System.Linq;
 using Newtonsoft.Json;
+using DynamicPlugins.Core.Contracts;
+using System.Reflection;
 
 namespace DynamicPlugins.Core.DomainModel
 {
     public class PluginPackage
     {
         private PluginConfiguration _pluginConfiguration = null;
+
         private string _folderName = $"{AppDomain.CurrentDomain.BaseDirectory}{Guid.NewGuid().ToString()}";
 
         public PluginConfiguration Configuration
@@ -22,11 +25,18 @@ namespace DynamicPlugins.Core.DomainModel
             }
         }
 
-
-
         public PluginPackage(Stream stream)
         {
             Initialize(stream);
+        }
+
+        public List<IMigration> GetAllVersions()
+        {
+            var assembly = Assembly.LoadFile($"{AppDomain.CurrentDomain.BaseDirectory}/Modules/{_pluginConfiguration.Name}/{_pluginConfiguration.Name}.dll");
+
+            var migrations = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration))).Select(p => (IMigration)assembly.CreateInstance(p.Name)).ToList();
+
+            return migrations;
         }
 
         public void Initialize(Stream stream)
@@ -74,7 +84,7 @@ namespace DynamicPlugins.Core.DomainModel
 
             if (!string.IsNullOrEmpty(pluginName))
             {
-                var newName = $"{AppDomain.CurrentDomain.BaseDirectory}{pluginName}";
+                var newName = $"{AppDomain.CurrentDomain.BaseDirectory}/Modules/{pluginName}";
 
                 if (!Directory.Exists(newName))
                 {

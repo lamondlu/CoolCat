@@ -24,7 +24,28 @@ namespace DynamicPlugins.Core.BusinessLogics
 
         public void AddPlugins(PluginPackage pluginPackage)
         {
+            try
+            {
+                var versions = pluginPackage.GetAllVersions();
 
+                foreach (var version in versions)
+                {
+                    version.Up();
+                }
+            }
+            catch
+            {
+
+            }
+
+            _unitOfWork.PluginRepository.AddPlugin(new DTOs.AddPluginDTO
+            {
+                Name = pluginPackage.Configuration.Name,
+                DisplayName = pluginPackage.Configuration.DisplayName,
+                PluginId = Guid.NewGuid(),
+                UniqueKey = pluginPackage.Configuration.UniqueKey,
+                Version = pluginPackage.Configuration.Version
+            });
         }
     }
 }

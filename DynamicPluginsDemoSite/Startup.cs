@@ -8,6 +8,7 @@ using DynamicPlugins.Core.Contracts;
 using DynamicPlugins.Core.Models;
 using DynamicPlugins.Core.Repositories;
 using DynamicPluginsDemoSite.Controllers;
+using DynamicPluginsDemoSite.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
