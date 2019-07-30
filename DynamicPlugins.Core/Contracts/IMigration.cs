@@ -6,7 +6,7 @@ namespace DynamicPlugins.Core.Contracts
 {
     public interface IMigration
     {
-        Version Version { get; }
+        DomainModel.Version Version { get; }
 
         void Up();
 

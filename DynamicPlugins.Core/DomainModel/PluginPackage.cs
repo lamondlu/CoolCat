@@ -8,6 +8,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using DynamicPlugins.Core.Contracts;
 using System.Reflection;
+using DynamicPlugins.Core.Helpers;
 
 namespace DynamicPlugins.Core.DomainModel
 {
@@ -30,11 +31,21 @@ namespace DynamicPlugins.Core.DomainModel
             Initialize(stream);
         }
 
-        public List<IMigration> GetAllVersions()
+        public List<IMigration> GetAllMigrations(string connectionString)
         {
             var assembly = Assembly.LoadFile($"{_folderName}/{_pluginConfiguration.Name}.dll");
 
-            var migrations = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration))).Select(p => (IMigration)assembly.CreateInstance(p.Name)).ToList();
+            var dbHelper = new DbHelper(connectionString);
+
+            var migrationTypes = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration)));
+
+            List<IMigration> migrations = new List<IMigration>();
+            foreach (var migrationType in migrationTypes)
+            {
+                var constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].GetType() == typeof(DbHelper));
+
+                migrations.Add((IMigration)constructor.Invoke(new object[] { dbHelper }));
+            }
 
             return migrations;
         }

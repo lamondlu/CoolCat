@@ -1,28 +1,41 @@
 ﻿using DynamicPlugins.Core.Contracts;
+using DynamicPlugins.Core.DomainModel;
+using DynamicPlugins.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DemoPlugin1.Migrations
 {
-    public class Migration_1_0_0 : IMigration
+    public class Migration_1_0_0 : BaseMigration
     {
-        public Version Version
+        private static DynamicPlugins.Core.DomainModel.Version _version = new DynamicPlugins.Core.DomainModel.Version("1.0.0");
+
+        public Migration_1_0_0(DbHelper dbHelper) : base(dbHelper, _version)
+        {
+
+        }
+
+        public DynamicPlugins.Core.DomainModel.Version Version
         {
             get
             {
-                return new Version("1.0.0");
+                return _version;
             }
         }
 
-        public void Down()
+        public override void Down()
         {
+            var scripts = @"";
 
+            SQL(scripts);
         }
 
-        public void Up()
+        public override void Up()
         {
+            var scripts = @"";
 
+            SQL(scripts);
         }
     }
 }

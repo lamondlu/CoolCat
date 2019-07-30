@@ -82,6 +82,11 @@ namespace DynamicPlugins.Core.Helpers
             }
         }
 
+        public void SQL(string sql)
+        {
+            ExecuteNonQuery(sql);
+        }
+
         public int ExecuteNonQuery(string safeSql)
         {
             using (SqlConnection Connection = new SqlConnection(connectionString))

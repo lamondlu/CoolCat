@@ -1,7 +1,9 @@
 ﻿using DynamicPlugins.Core.Contracts;
 using DynamicPlugins.Core.DomainModel;
+using DynamicPlugins.Core.Models;
 using DynamicPlugins.Core.Repositories;
 using DynamicPlugins.Core.ViewModels;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,10 +13,12 @@ namespace DynamicPlugins.Core.BusinessLogics
     public class PluginManager : IPluginManager
     {
         private IUnitOfWork _unitOfWork = null;
+        private string _connectionString = null;
 
-        public PluginManager(IUnitOfWork unitOfWork)
+        public PluginManager(IUnitOfWork unitOfWork, IOptions<ConnectionStringSetting> connectionStringSettingAccessor)
         {
             _unitOfWork = unitOfWork;
+            _connectionString = connectionStringSettingAccessor.Value.ConnectionString;
         }
 
         public List<PluginListItemViewModel> GetAllPlugins()
@@ -26,7 +30,7 @@ namespace DynamicPlugins.Core.BusinessLogics
         {
             try
             {
-                var versions = pluginPackage.GetAllVersions();
+                var versions = pluginPackage.GetAllMigrations(_connectionString);
 
                 foreach (var version in versions)
                 {
