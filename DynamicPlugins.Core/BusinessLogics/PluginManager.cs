@@ -33,7 +33,7 @@ namespace DynamicPlugins.Core.BusinessLogics
                 var versions = pluginPackage.GetAllMigrations(_connectionString);
 
                 foreach (var version in versions)
-                {
+                { 
                     version.Up();
                 }
 
@@ -45,6 +45,9 @@ namespace DynamicPlugins.Core.BusinessLogics
                     UniqueKey = pluginPackage.Configuration.UniqueKey,
                     Version = pluginPackage.Configuration.Version
                 });
+
+                _unitOfWork.Commit();
+                pluginPackage.Save();
             }
             catch
             {
@@ -52,7 +55,7 @@ namespace DynamicPlugins.Core.BusinessLogics
             }
             finally
             {
-                pluginPackage.Save();
+                
             }
         }
     }

@@ -42,7 +42,7 @@ namespace DynamicPlugins.Core.DomainModel
             List<IMigration> migrations = new List<IMigration>();
             foreach (var migrationType in migrationTypes)
             {
-                var constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].GetType() == typeof(DbHelper));
+                var constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(DbHelper));
 
                 migrations.Add((IMigration)constructor.Invoke(new object[] { dbHelper }));
             }
