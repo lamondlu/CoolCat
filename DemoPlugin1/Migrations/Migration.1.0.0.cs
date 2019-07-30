@@ -26,14 +26,20 @@ namespace DemoPlugin1.Migrations
 
         public override void Down()
         {
-            var scripts = @"";
+            var scripts = @"DROP TABLE [dbo].[Test]";
 
             SQL(scripts);
         }
 
         public override void Up()
         {
-            var scripts = @"";
+            var scripts = @"CREATE TABLE [dbo].[Test](
+	                    TestId [uniqueidentifier] NOT NULL,
+                    PRIMARY KEY CLUSTERED 
+                    (
+	                    TestId ASC
+                    )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+                    ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]";
 
             SQL(scripts);
         }
