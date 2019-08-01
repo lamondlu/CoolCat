@@ -15,8 +15,9 @@ namespace DynamicPlugins.Core.DomainModel
     public class PluginPackage
     {
         private PluginConfiguration _pluginConfiguration = null;
+        private Stream _zipStream = null;
 
-        private string _folderName = $"{AppDomain.CurrentDomain.BaseDirectory}{Guid.NewGuid().ToString()}";
+        private string _folderName = string.Empty;
 
         public PluginConfiguration Configuration
         {
@@ -28,6 +29,7 @@ namespace DynamicPlugins.Core.DomainModel
 
         public PluginPackage(Stream stream)
         {
+            _zipStream = stream;
             Initialize(stream);
         }
 
@@ -47,30 +49,47 @@ namespace DynamicPlugins.Core.DomainModel
                 migrations.Add((IMigration)constructor.Invoke(new object[] { dbHelper }));
             }
 
+            assembly = null;
+
             return migrations;
         }
 
         public void Initialize(Stream stream)
         {
-            using (ZipTool archive = new ZipTool(stream, ZipArchiveMode.Read))
+            var tempFolderName = $"{ AppDomain.CurrentDomain.BaseDirectory }{ Guid.NewGuid().ToString()}";
+            ZipTool archive = new ZipTool(stream, ZipArchiveMode.Read);
+
+            archive.ExtractToDirectory(tempFolderName);
+
+            var folder = new DirectoryInfo(tempFolderName);
+
+            var files = folder.GetFiles();
+
+            var configFiles = files.Where(p => p.Name == "plugin.json");
+
+            if (!configFiles.Any())
             {
-                archive.ExtractToDirectory(_folderName);
-
-                var folder = new DirectoryInfo(_folderName);
-
-                var files = folder.GetFiles();
-
-                var configFiles = files.Where(p => p.Name == "plugin.json");
-
-                if (!configFiles.Any())
+                throw new Exception("The plugin is missing the configuration file.");
+            }
+            else
+            {
+                using (var s = configFiles.First().OpenRead())
                 {
-                    throw new Exception("The plugin is missing the configuration file.");
-                }
-                else
-                {
-                    LoadConfiguration(configFiles.First().OpenRead());
+                    LoadConfiguration(s);
                 }
             }
+
+            folder.Delete(true);
+
+            _folderName = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{_pluginConfiguration.Name}";
+
+            if (Directory.Exists(_folderName))
+            {
+                throw new Exception("The plugin has been existed.");
+            }
+
+            stream.Position = 0;
+            archive.ExtractToDirectory(_folderName);
         }
 
         private void LoadConfiguration(Stream stream)
@@ -83,27 +102,6 @@ namespace DynamicPlugins.Core.DomainModel
                 if (_pluginConfiguration == null)
                 {
                     throw new Exception("The configuration file is wrong format.");
-                }
-            }
-        }
-
-
-        public void Save()
-        {
-            var pluginName = _pluginConfiguration.Name;
-
-            if (!string.IsNullOrEmpty(pluginName))
-            {
-                var folder = new DirectoryInfo(_folderName);
-                var newName = $"{AppDomain.CurrentDomain.BaseDirectory}/Modules/{pluginName}";
-
-                if (!Directory.Exists(newName))
-                {
-                    folder.MoveTo(newName);
-                }
-                else
-                {
-                    throw new Exception("The plugin has been existed.");
                 }
             }
         }
