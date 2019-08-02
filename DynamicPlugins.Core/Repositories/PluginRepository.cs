@@ -25,16 +25,18 @@ namespace DynamicPlugins.Core.Repositories
         {
             var command = new Command();
             command.Parameters = new List<SqlParameter>();
-            command.Sql = "INSERT INTO Plugins(PluginId, Name, UniqueKey, Version, DisplayName) values(@pluginId, @name, @uniqueKey, @version, @displayName)";
+            command.Sql = "INSERT INTO Plugins(PluginId, Name, UniqueKey, Version, DisplayName,Enable) values(@pluginId, @name, @uniqueKey, @version, @displayName, @enable)";
 
             command.Parameters.Add(new SqlParameter { ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
-            command.Parameters.Add(new SqlParameter { ParameterName = "@name", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.Name });
+            command.Parameters.Add(new SqlParameter { ParameterName = "@name", SqlDbType = SqlDbType.NVarChar, Value = dto.Name });
 
-            command.Parameters.Add(new SqlParameter { ParameterName = "@uniqueKey", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.UniqueKey });
+            command.Parameters.Add(new SqlParameter { ParameterName = "@uniqueKey", SqlDbType = SqlDbType.NVarChar, Value = dto.UniqueKey });
 
-            command.Parameters.Add(new SqlParameter { ParameterName = "@version", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.Version });
+            command.Parameters.Add(new SqlParameter { ParameterName = "@version", SqlDbType = SqlDbType.NVarChar, Value = dto.Version });
 
-            command.Parameters.Add(new SqlParameter { ParameterName = "@displayName", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.DisplayName });
+            command.Parameters.Add(new SqlParameter { ParameterName = "@displayName", SqlDbType = SqlDbType.NVarChar, Value = dto.DisplayName });
+
+            command.Parameters.Add(new SqlParameter { ParameterName = "@enable", SqlDbType = SqlDbType.Bit, Value = false });
 
             _commands.Add(command);
         }
@@ -54,11 +56,42 @@ namespace DynamicPlugins.Core.Repositories
                 plugin.UniqueKey = row["UniqueKey"].ToString();
                 plugin.Version = row["Version"].ToString();
                 plugin.DisplayName = row["DisplayName"].ToString();
+                plugin.IsEnable = Convert.ToBoolean(row["Enable"]);
 
                 plugins.Add(plugin);
             }
 
             return plugins;
+        }
+
+        public PluginViewModel GetPlugin(Guid pluginId)
+        {
+            var sql = "SELECT * from Plugins where PluginId = @pluginId";
+
+            var table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
+            {
+                ParameterName = "@pluginId",
+                Value = pluginId,
+                SqlDbType = SqlDbType.UniqueIdentifier
+            });
+
+            if (table.Rows.Cast<DataRow>().Count() == 0)
+            {
+                throw new Exception("The plugin is missing in the system.");
+            }
+
+            var row = table.Rows.Cast<DataRow>().First();
+
+            var plugin = new PluginViewModel();
+            plugin.PluginId = Guid.Parse(row["PluginId"].ToString());
+            plugin.Name = row["Name"].ToString();
+            plugin.UniqueKey = row["UniqueKey"].ToString();
+            plugin.Version = row["Version"].ToString();
+            plugin.DisplayName = row["DisplayName"].ToString();
+            plugin.IsEnable = Convert.ToBoolean(row["Enable"]);
+
+            return plugin;
+
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DynamicPlugins.Core.ViewModels
 {
-    public class PluginListItemViewModel
+    public class PluginViewModel
     {
         public Guid PluginId { get; set; }
 

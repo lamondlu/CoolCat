@@ -27,6 +27,11 @@ namespace DynamicPlugins.Core.BusinessLogics
             return _unitOfWork.PluginRepository.GetAllPlugins();
         }
 
+        public PluginViewModel GetPlugin(Guid pluginId)
+        {
+            return _unitOfWork.PluginRepository.GetPlugin(pluginId);
+        }
+
         public void AddPlugins(PluginPackage pluginPackage)
         {
             try

@@ -11,5 +11,7 @@ namespace DynamicPlugins.Core.Contracts
         List<PluginListItemViewModel> GetAllPlugins();
 
         void AddPlugins(PluginPackage pluginPackage);
+
+        PluginViewModel GetPlugin(Guid pluginId);
     }
 }

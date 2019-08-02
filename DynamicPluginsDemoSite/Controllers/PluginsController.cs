@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using DynamicPlugins.Core.Contracts;
+﻿using DynamicPlugins.Core.Contracts;
 using DynamicPlugins.Core.DomainModel;
 using DynamicPluginsDemoSite.Infrastructure;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
+using System;
+using System.Linq;
+using System.Reflection;
 
 namespace DynamicPluginsDemoSite.Controllers
 {
@@ -49,9 +41,12 @@ namespace DynamicPluginsDemoSite.Controllers
             return View("Add");
         }
 
-        public IActionResult Enable()
+        public IActionResult Enable(Guid id)
         {
-            var assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "Modules\\DemoPlugin1\\DemoPlugin1.dll");
+            var module = _pluginManager.GetPlugin(id);
+            var moduleName = module.Name;
+
+            var assembly = Assembly.LoadFile($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll");
 
             var controllerAssemblyPart = new AssemblyPart(assembly);
             _partManager.ApplicationParts.Add(controllerAssemblyPart);
@@ -62,9 +57,13 @@ namespace DynamicPluginsDemoSite.Controllers
             return Content("Enabled");
         }
 
-        public IActionResult Disable()  
+        public IActionResult Disable(Guid id)
         {
-            var last = _partManager.ApplicationParts.Last();
+            var module = _pluginManager.GetPlugin(id);
+            var moduleName = module.Name;
+            var moduleDLL = $"{ moduleName }.dll";
+
+            var last = _partManager.ApplicationParts.First(p => p.Name == moduleDLL);
             _partManager.ApplicationParts.Remove(last);
 
             MyActionDescriptorChangeProvider.Instance.HasChanged = true;
