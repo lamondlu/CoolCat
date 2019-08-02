@@ -64,6 +64,16 @@ namespace DynamicPlugins.Core.Repositories
             return plugins;
         }
 
+        public void SetPluginStatus(Guid pluginId, bool enable)
+        {
+            var sql = "UPDATE Plugins SET Enable=@enable WHERE PluginId = @pluginId";
+
+            _dbHelper.ExecuteNonQuery(sql, new List<SqlParameter> {
+                new SqlParameter{ParameterName = "@enable", SqlDbType = SqlDbType.Bit, Value= enable},
+                new SqlParameter{ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value= pluginId}
+             }.ToArray());
+        }
+
         public PluginViewModel GetPlugin(Guid pluginId)
         {
             var sql = "SELECT * from Plugins where PluginId = @pluginId";

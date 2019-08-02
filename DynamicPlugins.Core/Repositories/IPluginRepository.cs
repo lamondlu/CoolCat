@@ -14,5 +14,7 @@ namespace DynamicPlugins.Core.Repositories
         void AddPlugin(AddPluginDTO dto);
 
         PluginViewModel GetPlugin(Guid pluginId);
+
+        void SetPluginStatus(Guid pluginId, bool enable);
     }
 }

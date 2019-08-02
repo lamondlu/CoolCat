@@ -44,6 +44,7 @@ namespace DynamicPluginsDemoSite.Controllers
         public IActionResult Enable(Guid id)
         {
             var module = _pluginManager.GetPlugin(id);
+            _pluginManager.EnablePlugin(id);
             var moduleName = module.Name;
 
             var assembly = Assembly.LoadFile($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll");
@@ -60,6 +61,7 @@ namespace DynamicPluginsDemoSite.Controllers
         public IActionResult Disable(Guid id)
         {
             var module = _pluginManager.GetPlugin(id);
+            _pluginManager.DisablePlugin(id);
             var moduleName = module.Name;
             var moduleDLL = $"{ moduleName }.dll";
 
