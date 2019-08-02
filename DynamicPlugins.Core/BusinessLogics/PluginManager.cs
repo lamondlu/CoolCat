@@ -6,6 +6,7 @@ using DynamicPlugins.Core.ViewModels;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Loader;
 using System.Text;
 
 namespace DynamicPlugins.Core.BusinessLogics
