@@ -4,5 +4,6 @@
     [UniqueKey] NVARCHAR(50) NOT NULL, 
     [Name] NVARCHAR(50) NOT NULL, 
     [DisplayName] NVARCHAR(MAX) NULL, 
-    [Version] NVARCHAR(50) NOT NULL 
+    [Version] NVARCHAR(50) NOT NULL, 
+    [Enable] BIT NOT NULL 
 )
