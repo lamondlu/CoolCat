@@ -7,4 +7,25 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ModuleId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="ae30a12a-d875-4fa0-9907-6d7272806e4a" ChangeDateTime="08/03/2019 06:58:01">
+    <Property Name="ElementName" Value="[dbo].[PluginMigrations].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PluginMigrations]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PluginId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f7c46292-a7e7-463d-bba3-4e46959c0e24" ChangeDateTime="08/03/2019 07:01:46">
+    <Property Name="ElementName" Value="[dbo].[PluginMigrations]" />
+    <Property Name="ElementType" Value="SqlTable" />
+    <Property Name="ParentElementName" Value="" />
+    <Property Name="ParentElementType" Value="" />
+    <Property Name="NewName" Value="[3333]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="b34c1029-0b01-4981-abf1-51ccae38b26b" ChangeDateTime="08/03/2019 07:02:04">
+    <Property Name="ElementName" Value="[dbo].[3333]" />
+    <Property Name="ElementType" Value="SqlTable" />
+    <Property Name="ParentElementName" Value="[dbo]" />
+    <Property Name="ParentElementType" Value="SqlSchema" />
+    <Property Name="NewName" Value="[PluginMigrations]" />
+  </Operation>
 </Operations>

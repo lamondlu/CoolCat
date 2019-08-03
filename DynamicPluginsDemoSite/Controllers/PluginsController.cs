@@ -63,9 +63,8 @@ namespace DynamicPluginsDemoSite.Controllers
             var module = _pluginManager.GetPlugin(id);
             _pluginManager.DisablePlugin(id);
             var moduleName = module.Name;
-            var moduleDLL = $"{ moduleName }.dll";
 
-            var last = _partManager.ApplicationParts.First(p => p.Name == moduleDLL);
+            var last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
             _partManager.ApplicationParts.Remove(last);
 
             MyActionDescriptorChangeProvider.Instance.HasChanged = true;

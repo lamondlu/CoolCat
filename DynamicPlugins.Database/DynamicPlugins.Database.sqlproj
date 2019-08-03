@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="Plugins.sql" />
+    <Build Include="PluginMigrations.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="DynamicPlugins.Database.refactorlog" />
