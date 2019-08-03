@@ -11,6 +11,8 @@ namespace DynamicPlugins.Core.Repositories
     {
         List<PluginListItemViewModel> GetAllPlugins();
 
+        List<PluginListItemViewModel> GetAllEnabledPlugins();
+
         void AddPlugin(AddPluginDTO dto);
 
         PluginViewModel GetPlugin(Guid pluginId);

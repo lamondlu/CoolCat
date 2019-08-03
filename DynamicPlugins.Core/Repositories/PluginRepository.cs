@@ -64,6 +64,11 @@ namespace DynamicPlugins.Core.Repositories
             return plugins;
         }
 
+        public List<PluginListItemViewModel> GetAllEnabledPlugins()
+        {
+            return GetAllPlugins().Where(p => p.IsEnable).ToList();
+        }
+
         public void SetPluginStatus(Guid pluginId, bool enable)
         {
             var sql = "UPDATE Plugins SET Enable=@enable WHERE PluginId = @pluginId";

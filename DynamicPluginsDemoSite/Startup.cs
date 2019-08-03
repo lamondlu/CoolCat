@@ -61,6 +61,22 @@ namespace DynamicPluginsDemoSite
             services.AddSingleton(MyActionDescriptorChangeProvider.Instance);
 
             mvcBuilders.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            var provider = services.BuildServiceProvider();
+            using (var scope = provider.CreateScope())
+            {
+                var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+                var allEnabledPlugins = unitOfWork.PluginRepository.GetAllEnabledPlugins();
+
+                foreach (var plugin in allEnabledPlugins)
+                {
+                    var moduleName = plugin.Name;
+                    var assembly = Assembly.LoadFile($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll");
+
+                    var controllerAssemblyPart = new AssemblyPart(assembly);
+                    mvcBuilders.PartManager.ApplicationParts.Add(controllerAssemblyPart);
+                }
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -55,7 +55,7 @@ namespace DynamicPluginsDemoSite.Controllers
             MyActionDescriptorChangeProvider.Instance.HasChanged = true;
             MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
 
-            return Content("Enabled");
+            return RedirectToAction("Index");
         }
 
         public IActionResult Disable(Guid id)
@@ -71,7 +71,7 @@ namespace DynamicPluginsDemoSite.Controllers
             MyActionDescriptorChangeProvider.Instance.HasChanged = true;
             MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
 
-            return Content("Enabled");
+            return RedirectToAction("Index");
         }
     }
 }
