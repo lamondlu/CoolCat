@@ -20,6 +20,6 @@ namespace DynamicPlugins.Core.Repositories
 
         public string Sql { get; set; }
 
-        public List<SqlParameter> Parameters { get; set; }
+        public List<SqlParameter> Parameters { get; set; } = new List<SqlParameter>();
     }
 }

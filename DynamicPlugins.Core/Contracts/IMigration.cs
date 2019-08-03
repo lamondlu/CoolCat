@@ -8,8 +8,8 @@ namespace DynamicPlugins.Core.Contracts
     {
         DomainModel.Version Version { get; }
 
-        void Up();
+        void MigrationUp(Guid pluginId);
 
-        void Down();
+        void MigrationDown(Guid pluginId);
     }
 }

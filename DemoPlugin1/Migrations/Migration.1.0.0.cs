@@ -10,6 +10,10 @@ namespace DemoPlugin1.Migrations
     public class Migration_1_0_0 : BaseMigration
     {
         private static DynamicPlugins.Core.DomainModel.Version _version = new DynamicPlugins.Core.DomainModel.Version("1.0.0");
+        private static string _upScripts = @"CREATE TABLE [dbo].[Test](
+                        TestId[uniqueidentifier] NOT NULL,
+                    );";
+        private static string _downScripts = @"DROP TABLE[dbo].[Test]";
 
         public Migration_1_0_0(DbHelper dbHelper) : base(dbHelper, _version)
         {
@@ -24,20 +28,18 @@ namespace DemoPlugin1.Migrations
             }
         }
 
-        public override void Down()
+        public override void MigrationDown(Guid pluginId)
         {
-            var scripts = @"DROP TABLE [dbo].[Test]";
+            SQL(_downScripts);
 
-            SQL(scripts);
+            base.Down(pluginId);
         }
 
-        public override void Up()
+        public override void MigrationUp(Guid pluginId)
         {
-            var scripts = @"CREATE TABLE [dbo].[Test](
-	                    TestId [uniqueidentifier] NOT NULL,
-                    );";
+            SQL(_upScripts);
 
-            SQL(scripts);
+            base.Up(pluginId, _upScripts, _downScripts);
         }
     }
 }

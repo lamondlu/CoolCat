@@ -51,23 +51,24 @@ namespace DynamicPlugins.Core.BusinessLogics
         {
             try
             {
-                var versions = pluginPackage.GetAllMigrations(_connectionString);
-
-                foreach (var version in versions)
-                {
-                    version.Up();
-                }
-
-                _unitOfWork.PluginRepository.AddPlugin(new DTOs.AddPluginDTO
+                var plugin = new DTOs.AddPluginDTO
                 {
                     Name = pluginPackage.Configuration.Name,
                     DisplayName = pluginPackage.Configuration.DisplayName,
                     PluginId = Guid.NewGuid(),
                     UniqueKey = pluginPackage.Configuration.UniqueKey,
                     Version = pluginPackage.Configuration.Version
-                });
+                };
 
+                _unitOfWork.PluginRepository.AddPlugin(plugin);
                 _unitOfWork.Commit();
+
+                var versions = pluginPackage.GetAllMigrations(_connectionString);
+
+                foreach (var version in versions)
+                {
+                    version.MigrationUp(plugin.PluginId);
+                }
             }
             catch
             {
