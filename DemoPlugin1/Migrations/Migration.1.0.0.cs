@@ -32,14 +32,14 @@ namespace DemoPlugin1.Migrations
         {
             SQL(_downScripts);
 
-            base.Down(pluginId);
+            base.WriteDownScripts(pluginId);
         }
 
         public override void MigrationUp(Guid pluginId)
         {
             SQL(_upScripts);
 
-            base.Up(pluginId, _upScripts, _downScripts);
+            base.WriteUpScripts(pluginId, _upScripts, _downScripts);
         }
     }
 }
