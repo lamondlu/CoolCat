@@ -49,34 +49,23 @@ namespace DynamicPlugins.Core.BusinessLogics
 
         public void AddPlugins(PluginPackage pluginPackage)
         {
-            try
+            var plugin = new DTOs.AddPluginDTO
             {
-                var plugin = new DTOs.AddPluginDTO
-                {
-                    Name = pluginPackage.Configuration.Name,
-                    DisplayName = pluginPackage.Configuration.DisplayName,
-                    PluginId = Guid.NewGuid(),
-                    UniqueKey = pluginPackage.Configuration.UniqueKey,
-                    Version = pluginPackage.Configuration.Version
-                };
+                Name = pluginPackage.Configuration.Name,
+                DisplayName = pluginPackage.Configuration.DisplayName,
+                PluginId = Guid.NewGuid(),
+                UniqueKey = pluginPackage.Configuration.UniqueKey,
+                Version = pluginPackage.Configuration.Version
+            };
 
-                _unitOfWork.PluginRepository.AddPlugin(plugin);
-                _unitOfWork.Commit();
+            _unitOfWork.PluginRepository.AddPlugin(plugin);
+            _unitOfWork.Commit();
 
-                var versions = pluginPackage.GetAllMigrations(_connectionString);
+            var versions = pluginPackage.GetAllMigrations(_connectionString);
 
-                foreach (var version in versions)
-                {
-                    version.MigrationUp(plugin.PluginId);
-                }
-            }
-            catch
+            foreach (var version in versions)
             {
-
-            }
-            finally
-            {
-
+                version.MigrationUp(plugin.PluginId);
             }
         }
     }
