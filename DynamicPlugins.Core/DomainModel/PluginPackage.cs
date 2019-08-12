@@ -51,7 +51,7 @@ namespace DynamicPlugins.Core.DomainModel
 
             assembly = null;
 
-            return migrations;
+            return migrations.OrderBy(p => p.Version).ToList();
         }
 
         public void Initialize(Stream stream)
