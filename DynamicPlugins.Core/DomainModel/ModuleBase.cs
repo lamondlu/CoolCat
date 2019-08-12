@@ -36,9 +36,5 @@ namespace DynamicPlugins.Core.DomainModel
             get;
             private set;
         }
-
-        public string DllPath { get; set; }
-
-        public string ViewDllPath { get; set; }
     }
 }

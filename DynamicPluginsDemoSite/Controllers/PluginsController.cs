@@ -4,6 +4,7 @@ using DynamicPluginsDemoSite.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
