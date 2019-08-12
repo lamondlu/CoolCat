@@ -36,7 +36,7 @@ namespace DynamicPlugins.Core.DomainModel
 
         public abstract void MigrationUp(Guid pluginId);
 
-        protected void WriteDownScripts(Guid pluginId)
+        protected void RemoveMigrationScripts(Guid pluginId)
         {
             var sql = "DELETE PluginMigrations WHERE PluginId = @pluginId AND Version = @version";
 
@@ -47,7 +47,7 @@ namespace DynamicPlugins.Core.DomainModel
             }.ToArray());
         }
 
-        protected void WriteUpScripts(Guid pluginId, string up, string down)
+        protected void WriteMigrationScripts(Guid pluginId, string up, string down)
         {
             var sql = "INSERT INTO PluginMigrations(PluginMigrationId, PluginId, Version, Up, Down) VALUES(@pluginMigrationId, @pluginId, @version, @up, @down)";
 
