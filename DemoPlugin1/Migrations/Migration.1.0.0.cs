@@ -13,7 +13,7 @@ namespace DemoPlugin1.Migrations
         private static string _upScripts = @"CREATE TABLE [dbo].[Test](
                         TestId[uniqueidentifier] NOT NULL,
                     );";
-        private static string _downScripts = @"DROP TABLE[dbo].[Test]";
+        private static string _downScripts = @"DROP TABLE [dbo].[Test]";
 
         public Migration_1_0_0(DbHelper dbHelper) : base(dbHelper, _version)
         {
