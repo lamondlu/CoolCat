@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using DynamicPlugins.Core;
 using DynamicPlugins.Core.BusinessLogics;
 using DynamicPlugins.Core.Contracts;
 using DynamicPlugins.Core.Models;
 using DynamicPlugins.Core.Repositories;
-using DynamicPluginsDemoSite.Controllers;
 using DynamicPluginsDemoSite.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace DynamicPluginsDemoSite
 {
@@ -45,11 +43,11 @@ namespace DynamicPluginsDemoSite
 
             services.Configure<ConnectionStringSetting>(Configuration.GetSection("ConnectionStringSetting"));
 
-            services.AddScoped<IPluginRepository, PluginRepository>();
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             var mvcBuilders = services.AddMvc();
+            mvcBuilders.AddMvcOptions(o => o.EnableEndpointRouting = false);
 
             services.Configure<RazorViewEngineOptions>(o =>
             {
@@ -60,7 +58,7 @@ namespace DynamicPluginsDemoSite
             services.AddSingleton<IActionDescriptorChangeProvider>(MyActionDescriptorChangeProvider.Instance);
             services.AddSingleton(MyActionDescriptorChangeProvider.Instance);
 
-            mvcBuilders.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
 
             var provider = services.BuildServiceProvider();
             using (var scope = provider.CreateScope())
@@ -70,17 +68,22 @@ namespace DynamicPluginsDemoSite
 
                 foreach (var plugin in allEnabledPlugins)
                 {
+                    var context = new CollectibleAssemblyLoadContext();
                     var moduleName = plugin.Name;
-                    var assembly = Assembly.LoadFile($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll");
+                    using (var fs = new FileStream($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll", FileMode.Open))
+                    {
+                        var assembly = context.LoadFromStream(fs);
+                        var controllerAssemblyPart = new AssemblyPart(assembly);
+                        mvcBuilders.PartManager.ApplicationParts.Add(controllerAssemblyPart);
+                    }
 
-                    var controllerAssemblyPart = new AssemblyPart(assembly);
-                    mvcBuilders.PartManager.ApplicationParts.Add(controllerAssemblyPart);
+                    PluginsLoadContexts.AddPluginContext(plugin.Name, context);
                 }
             }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -101,7 +104,7 @@ namespace DynamicPluginsDemoSite
                     template: "{controller=Home}/{action=Index}/{id?}");
 
                 routes.MapRoute(
-                    name: "default",
+                    name: "default1",
                     template: "Modules/{area}/{controller=Home}/{action=Index}/{id?}");
             });
         }

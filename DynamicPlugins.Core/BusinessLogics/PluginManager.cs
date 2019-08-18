@@ -6,6 +6,7 @@ using DynamicPlugins.Core.ViewModels;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Loader;
 using System.Text;
 
@@ -40,6 +41,17 @@ namespace DynamicPlugins.Core.BusinessLogics
         public void EnablePlugin(Guid pluginId)
         {
             _unitOfWork.PluginRepository.SetPluginStatus(pluginId, true);
+        }
+
+        public void DeletePlugin(Guid pluginId)
+        {
+            var plugin = _unitOfWork.PluginRepository.GetPlugin(pluginId);
+            _unitOfWork.PluginRepository.RunDownMigrations(pluginId);
+            _unitOfWork.PluginRepository.DeletePlugin(pluginId);
+
+           
+
+            _unitOfWork.Commit();
         }
 
         public void DisablePlugin(Guid pluginId)

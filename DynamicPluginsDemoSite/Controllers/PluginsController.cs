@@ -1,4 +1,5 @@
-﻿using DynamicPlugins.Core.Contracts;
+﻿using DynamicPlugins.Core;
+using DynamicPlugins.Core.Contracts;
 using DynamicPlugins.Core.DomainModel;
 using DynamicPluginsDemoSite.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -39,22 +40,41 @@ namespace DynamicPluginsDemoSite.Controllers
             var package = new PluginPackage(Request.Form.Files.First().OpenReadStream());
             _pluginManager.AddPlugins(package);
 
-            return View("Add");
+            return RedirectToAction("Index");
         }
 
         public IActionResult Enable(Guid id)
         {
             var module = _pluginManager.GetPlugin(id);
-            _pluginManager.EnablePlugin(id);
-            var moduleName = module.Name;
+            if (!PluginsLoadContexts.Any(module.Name))
+            {
+                var context = new CollectibleAssemblyLoadContext();
 
-            var assembly = Assembly.LoadFile($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll");
+                _pluginManager.EnablePlugin(id);
+                var moduleName = module.Name;
 
-            var controllerAssemblyPart = new AssemblyPart(assembly);
-            _partManager.ApplicationParts.Add(controllerAssemblyPart);
+                using (var fs = new FileStream($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll", FileMode.Open))
+                {
+                    var assembly = context.LoadFromStream(fs);
 
-            MyActionDescriptorChangeProvider.Instance.HasChanged = true;
-            MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+                    var controllerAssemblyPart = new AssemblyPart(assembly);
+                    _partManager.ApplicationParts.Add(controllerAssemblyPart);
+
+                    MyActionDescriptorChangeProvider.Instance.HasChanged = true;
+                    MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+                }
+
+                PluginsLoadContexts.AddPluginContext(module.Name, context);
+            }
+            else
+            {
+                var context = PluginsLoadContexts.GetContext(module.Name);
+                var controllerAssemblyPart = new AssemblyPart(context.Assemblies.First());
+                _partManager.ApplicationParts.Add(controllerAssemblyPart);
+
+                MyActionDescriptorChangeProvider.Instance.HasChanged = true;
+                MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+            }
 
             return RedirectToAction("Index");
         }
@@ -67,6 +87,26 @@ namespace DynamicPluginsDemoSite.Controllers
 
             var last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
             _partManager.ApplicationParts.Remove(last);
+
+            MyActionDescriptorChangeProvider.Instance.HasChanged = true;
+            MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete(Guid id)
+        {
+            var module = _pluginManager.GetPlugin(id);
+            _pluginManager.DisablePlugin(id);
+            _pluginManager.DeletePlugin(id);
+
+            PluginsLoadContexts.RemovePluginContext(module.Name);
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            var directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules/{module.Name}");
+            directory.Delete(true);
 
             MyActionDescriptorChangeProvider.Instance.HasChanged = true;
             MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();

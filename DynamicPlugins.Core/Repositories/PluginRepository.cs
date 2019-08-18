@@ -108,5 +108,45 @@ namespace DynamicPlugins.Core.Repositories
             return plugin;
 
         }
+
+        public void DeletePlugin(Guid pluginId)
+        {
+            var sqlPluginMigrations = "DELETE PluginMigrations where PluginId = @pluginId";
+
+            _dbHelper.ExecuteNonQuery(sqlPluginMigrations, new List<SqlParameter>{new SqlParameter
+            {
+                ParameterName = "@pluginId",
+                Value = pluginId,
+                SqlDbType = SqlDbType.UniqueIdentifier
+            } }.ToArray());
+
+            var sqlPlugins = "DELETE Plugins where PluginId = @pluginId";
+
+            _dbHelper.ExecuteNonQuery(sqlPlugins, new List<SqlParameter>{new SqlParameter
+            {
+                ParameterName = "@pluginId",
+                Value = pluginId,
+                SqlDbType = SqlDbType.UniqueIdentifier
+            } }.ToArray());
+        }
+
+        public void RunDownMigrations(Guid pluginId)
+        {
+            var sql = "SELECT Down from PluginMigrations WHERE PluginId = @pluginId ORDER BY [Version] DESC";
+
+            var table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
+            {
+                ParameterName = "@pluginId",
+                Value = pluginId,
+                SqlDbType = SqlDbType.UniqueIdentifier
+            });
+
+            foreach (var item in table.Rows.Cast<DataRow>())
+            {
+                var script = item[0].ToString();
+
+                _dbHelper.ExecuteNonQuery(script);
+            }
+        }
     }
 }

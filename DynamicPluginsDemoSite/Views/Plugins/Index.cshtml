@@ -38,6 +38,8 @@
                         {
                             <button type="button" class="btn-primary" onclick="window.location = '@Url.Action("Enable","Plugins", new { id = row.PluginId })';">Enable</button>
                         }
+
+                        <button type="button" class="btn-danger" onclick="window.location = '@Url.Action("Delete","Plugins", new { id = row.PluginId })';">Delete</button>
                     </td>
                 </tr>
             }

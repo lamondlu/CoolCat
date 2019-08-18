@@ -14,6 +14,8 @@ namespace DynamicPlugins.Core.Contracts
 
         PluginViewModel GetPlugin(Guid pluginId);
 
+        void DeletePlugin(Guid pluginId);
+
         void EnablePlugin(Guid pluginId);
 
         void DisablePlugin(Guid pluginId);

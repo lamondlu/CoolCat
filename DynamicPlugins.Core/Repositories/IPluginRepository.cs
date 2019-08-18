@@ -18,5 +18,9 @@ namespace DynamicPlugins.Core.Repositories
         PluginViewModel GetPlugin(Guid pluginId);
 
         void SetPluginStatus(Guid pluginId, bool enable);
+
+        void DeletePlugin(Guid pluginId);
+
+        void RunDownMigrations(Guid pluginId);
     }
 }

@@ -35,23 +35,30 @@ namespace DynamicPlugins.Core.DomainModel
 
         public List<IMigration> GetAllMigrations(string connectionString)
         {
-            var assembly = Assembly.LoadFile($"{_folderName}/{_pluginConfiguration.Name}.dll");
+            var context = new CollectibleAssemblyLoadContext();
+            var assemblyPath = $"{_folderName}/{_pluginConfiguration.Name}.dll";
 
-            var dbHelper = new DbHelper(connectionString);
-
-            var migrationTypes = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration)));
-
-            List<IMigration> migrations = new List<IMigration>();
-            foreach (var migrationType in migrationTypes)
+            using (var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read))
             {
-                var constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(DbHelper));
+                var dbHelper = new DbHelper(connectionString);
+                var assembly = context.LoadFromStream(fs);
+                var migrationTypes = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration)));
 
-                migrations.Add((IMigration)constructor.Invoke(new object[] { dbHelper }));
+                List<IMigration> migrations = new List<IMigration>();
+                foreach (var migrationType in migrationTypes)
+                {
+                    var constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(DbHelper));
+
+                    migrations.Add((IMigration)constructor.Invoke(new object[] { dbHelper }));
+                }
+
+                context.Unload();
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
+                return migrations.OrderBy(p => p.Version).ToList();
             }
-
-            assembly = null;
-
-            return migrations.OrderBy(p => p.Version).ToList();
         }
 
         public void Initialize(Stream stream)
