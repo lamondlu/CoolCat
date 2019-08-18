@@ -58,8 +58,6 @@ namespace DynamicPluginsDemoSite
             services.AddSingleton<IActionDescriptorChangeProvider>(MyActionDescriptorChangeProvider.Instance);
             services.AddSingleton(MyActionDescriptorChangeProvider.Instance);
 
-
-
             var provider = services.BuildServiceProvider();
             using (var scope = provider.CreateScope())
             {
