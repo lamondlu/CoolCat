@@ -74,6 +74,7 @@ namespace DynamicPluginsDemoSite.Controllers
                 var context = PluginsLoadContexts.GetContext(module.Name);
                 var controllerAssemblyPart = new AssemblyPart(context.Assemblies.First());
                 _partManager.ApplicationParts.Add(controllerAssemblyPart);
+                _pluginManager.EnablePlugin(id);
 
                 MyActionDescriptorChangeProvider.Instance.HasChanged = true;
                 MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
