@@ -39,11 +39,15 @@ namespace DynamicPlugins.Core.DomainModel
 
         public int Compare(Version x, Version y)
         {
-            if (x.PrimaryVersion > y.PrimaryVersion || (x.PrimaryVersion == y.PrimaryVersion && x.SecondaryVersion > y.SecondaryVersion) || (x.PrimaryVersion == y.PrimaryVersion && x.SecondaryVersion == y.SecondaryVersion && x.MinorVersion > y.MinorVersion))
+            if (x.PrimaryVersion > y.PrimaryVersion
+                || (x.PrimaryVersion == y.PrimaryVersion && x.SecondaryVersion > y.SecondaryVersion)
+                || (x.PrimaryVersion == y.PrimaryVersion && x.SecondaryVersion == y.SecondaryVersion && x.MinorVersion > y.MinorVersion))
             {
                 return 1;
             }
-            else if (x.PrimaryVersion == y.PrimaryVersion && x.SecondaryVersion == y.SecondaryVersion && x.MinorVersion == y.MinorVersion)
+            else if (x.PrimaryVersion == y.PrimaryVersion
+                && x.SecondaryVersion == y.SecondaryVersion
+                && x.MinorVersion == y.MinorVersion)
             {
                 return 0;
             }
@@ -71,6 +75,20 @@ namespace DynamicPlugins.Core.DomainModel
         public static implicit operator Version(string versionNumber)
         {
             return new Version(versionNumber);
+        }
+
+        public static bool operator >(Version x, Version y)
+        {
+            return x.PrimaryVersion > y.PrimaryVersion ||
+                (x.PrimaryVersion == y.PrimaryVersion && x.SecondaryVersion > y.SecondaryVersion)
+                || (x.PrimaryVersion == y.PrimaryVersion && x.SecondaryVersion == y.SecondaryVersion && x.MinorVersion > y.MinorVersion);
+        }
+
+        public static bool operator <(Version x, Version y)
+        {
+            return x.PrimaryVersion < y.PrimaryVersion ||
+               (x.PrimaryVersion == y.PrimaryVersion && x.SecondaryVersion < y.SecondaryVersion)
+               || (x.PrimaryVersion == y.PrimaryVersion && x.SecondaryVersion == y.SecondaryVersion && x.MinorVersion < y.MinorVersion);
         }
     }
 }

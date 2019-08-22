@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Loader;
 using System.Text;
+using System.Linq;
 
 namespace DynamicPlugins.Core.BusinessLogics
 {
@@ -49,7 +50,7 @@ namespace DynamicPlugins.Core.BusinessLogics
             _unitOfWork.PluginRepository.RunDownMigrations(pluginId);
             _unitOfWork.PluginRepository.DeletePlugin(pluginId);
 
-           
+
 
             _unitOfWork.Commit();
         }
@@ -60,6 +61,24 @@ namespace DynamicPlugins.Core.BusinessLogics
         }
 
         public void AddPlugins(PluginPackage pluginPackage)
+        {
+            var existedPlugin = _unitOfWork.PluginRepository.GetPlugin(pluginPackage.Configuration.Name);
+
+            if (existedPlugin == null)
+            {
+                InitializePlugin(pluginPackage);
+            }
+            else if (new DomainModel.Version(pluginPackage.Configuration.Version) > new DomainModel.Version(existedPlugin.Version))
+            {
+                UpgradePlugin(pluginPackage, existedPlugin);
+            }
+            else
+            {
+                DegradePlugin(pluginPackage);
+            }
+        }
+
+        private void InitializePlugin(PluginPackage pluginPackage)
         {
             var plugin = new DTOs.AddPluginDTO
             {
@@ -79,6 +98,30 @@ namespace DynamicPlugins.Core.BusinessLogics
             {
                 version.MigrationUp(plugin.PluginId);
             }
+
+            pluginPackage.SetupFolder();
+        }
+
+        public void UpgradePlugin(PluginPackage pluginPackage, PluginViewModel oldPlugin)
+        {
+            _unitOfWork.PluginRepository.UpdatePluginVersion(oldPlugin.PluginId, pluginPackage.Configuration.Version);
+            _unitOfWork.Commit();
+
+            var migrations = pluginPackage.GetAllMigrations(_connectionString);
+
+            var pendingMigrations = migrations.Where(p => p.Version > oldPlugin.Version);
+
+            foreach (var migration in pendingMigrations)
+            {
+                migration.MigrationUp(oldPlugin.PluginId);
+            }
+
+            pluginPackage.SetupFolder();
+        }
+
+        public void DegradePlugin(PluginPackage pluginPackage)
+        {
+            throw new NotImplementedException();
         }
     }
 }

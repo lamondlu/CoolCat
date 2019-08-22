@@ -63,8 +63,9 @@ namespace DynamicPlugins.Core.DomainModel
 
         public void Initialize(Stream stream)
         {
+            _zipStream = stream;
             var tempFolderName = $"{ AppDomain.CurrentDomain.BaseDirectory }{ Guid.NewGuid().ToString()}";
-            ZipTool archive = new ZipTool(stream, ZipArchiveMode.Read);
+            ZipTool archive = new ZipTool(_zipStream, ZipArchiveMode.Read);
 
             archive.ExtractToDirectory(tempFolderName);
 
@@ -87,15 +88,14 @@ namespace DynamicPlugins.Core.DomainModel
             }
 
             folder.Delete(true);
+        }
 
+        public void SetupFolder()
+        {
+            ZipTool archive = new ZipTool(_zipStream, ZipArchiveMode.Read);
+            _zipStream.Position = 0;
             _folderName = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{_pluginConfiguration.Name}";
 
-            if (Directory.Exists(_folderName))
-            {
-                throw new Exception("The plugin has been existed.");
-            }
-
-            stream.Position = 0;
             archive.ExtractToDirectory(_folderName);
         }
 

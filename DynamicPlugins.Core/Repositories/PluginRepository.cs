@@ -41,6 +41,19 @@ namespace DynamicPlugins.Core.Repositories
             _commands.Add(command);
         }
 
+        public void UpdatePluginVersion(Guid pluginId, string version)
+        {
+            var command = new Command();
+            command.Parameters = new List<SqlParameter>();
+            command.Sql = "UPDATE Plugins SET Version = @version WHERE PluginId = @pluginId";
+
+
+            command.Parameters.Add(new SqlParameter { ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = pluginId });
+            command.Parameters.Add(new SqlParameter { ParameterName = "@version", SqlDbType = SqlDbType.NVarChar, Value = version });
+
+            _commands.Add(command);
+        }
+
         public List<PluginListItemViewModel> GetAllPlugins()
         {
             var plugins = new List<PluginListItemViewModel>();
@@ -77,6 +90,35 @@ namespace DynamicPlugins.Core.Repositories
                 new SqlParameter{ParameterName = "@enable", SqlDbType = SqlDbType.Bit, Value= enable},
                 new SqlParameter{ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value= pluginId}
              }.ToArray());
+        }
+
+        public PluginViewModel GetPlugin(string pluginName)
+        {
+            var sql = "SELECT * from Plugins where Name = @pluginName";
+
+            var table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
+            {
+                ParameterName = "@pluginName",
+                Value = pluginName,
+                SqlDbType = SqlDbType.NVarChar
+            });
+
+            if (table.Rows.Cast<DataRow>().Count() == 0)
+            {
+                return null;
+            }
+
+            var row = table.Rows.Cast<DataRow>().First();
+
+            var plugin = new PluginViewModel();
+            plugin.PluginId = Guid.Parse(row["PluginId"].ToString());
+            plugin.Name = row["Name"].ToString();
+            plugin.UniqueKey = row["UniqueKey"].ToString();
+            plugin.Version = row["Version"].ToString();
+            plugin.DisplayName = row["DisplayName"].ToString();
+            plugin.IsEnable = Convert.ToBoolean(row["Enable"]);
+
+            return plugin;
         }
 
         public PluginViewModel GetPlugin(Guid pluginId)
