@@ -32,13 +32,10 @@ namespace DynamicPluginsDemoSite
         public IEnumerable<string> GetReferencePaths() => Array.Empty<string>();
     }
 
-    public static class PresetHolder
+    public static class AdditionalReferencePathHolder
     {
-        public static IList<string> Holders = new List<string>();
-
-
+        public static IList<string> AdditionalReferencePaths = new List<string>();
     }
-
 
     public class Startup
     {
@@ -54,11 +51,7 @@ namespace DynamicPluginsDemoSite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             services.AddOptions();
-
-
 
             services.Configure<ConnectionStringSetting>(Configuration.GetSection("ConnectionStringSetting"));
 
@@ -73,10 +66,8 @@ namespace DynamicPluginsDemoSite
                         o.AdditionalReferencePaths.Add(item);
                     }
 
-                    PresetHolder.Holders = o.AdditionalReferencePaths;
+                    AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
                 });
-
-
 
             services.Configure<RazorViewEngineOptions>(o =>
             {
@@ -86,8 +77,6 @@ namespace DynamicPluginsDemoSite
 
             services.AddSingleton<IActionDescriptorChangeProvider>(MyActionDescriptorChangeProvider.Instance);
             services.AddSingleton(MyActionDescriptorChangeProvider.Instance);
-
-
 
             var provider = services.BuildServiceProvider();
             using (var scope = provider.CreateScope())
@@ -102,9 +91,10 @@ namespace DynamicPluginsDemoSite
                 {
                     var context = new CollectibleAssemblyLoadContext();
                     var moduleName = plugin.Name;
+                    var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
 
-                    _presets.Add($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll");
-                    using (var fs = new FileStream($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll", FileMode.Open))
+                    _presets.Add(filePath);
+                    using (var fs = new FileStream(filePath, FileMode.Open))
                     {
 
                         var assembly = context.LoadFromStream(fs);
@@ -118,7 +108,6 @@ namespace DynamicPluginsDemoSite
             }
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

@@ -53,22 +53,21 @@ namespace DynamicPluginsDemoSite.Controllers
                 _pluginManager.EnablePlugin(id);
                 var moduleName = module.Name;
 
-                using (var fs = new FileStream($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll", FileMode.Open))
+                var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
+                using (var fs = new FileStream(filePath, FileMode.Open))
                 {
                     var assembly = context.LoadFromStream(fs);
 
                     var controllerAssemblyPart = new MyAssemblyPart(assembly);
 
-                    PresetHolder.Holders.Add($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll");
+                    AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
                     _partManager.ApplicationParts.Add(controllerAssemblyPart);
                 }
 
                 MyActionDescriptorChangeProvider.Instance.HasChanged = true;
                 MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
 
-
                 PluginsLoadContexts.AddPluginContext(module.Name, context);
-
             }
             else
             {
@@ -105,26 +104,17 @@ namespace DynamicPluginsDemoSite.Controllers
             _pluginManager.DeletePlugin(id);
             var moduleName = module.Name;
 
-          
             var last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
             _partManager.ApplicationParts.Remove(last);
             last = null;
-
 
             MyActionDescriptorChangeProvider.Instance.HasChanged = true;
             MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
 
             PluginsLoadContexts.RemovePluginContext(module.Name);
 
-
-
-            //GC.Collect();
-            //GC.WaitForPendingFinalizers();
-
             var directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules/{module.Name}");
             directory.Delete(true);
-
-
 
             return RedirectToAction("Index");
         }
