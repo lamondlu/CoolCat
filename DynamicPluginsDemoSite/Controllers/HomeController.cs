@@ -13,6 +13,8 @@ namespace DynamicPluginsDemoSite.Controllers
         public IActionResult Index()
         {
             return View();
+
+
         }
 
         public IActionResult Privacy()

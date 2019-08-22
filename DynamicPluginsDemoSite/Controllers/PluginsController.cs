@@ -57,14 +57,18 @@ namespace DynamicPluginsDemoSite.Controllers
                 {
                     var assembly = context.LoadFromStream(fs);
 
-                    var controllerAssemblyPart = new AssemblyPart(assembly);
-                    _partManager.ApplicationParts.Add(controllerAssemblyPart);
+                    var controllerAssemblyPart = new MyAssemblyPart(assembly);
 
-                    MyActionDescriptorChangeProvider.Instance.HasChanged = true;
-                    MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+                    PresetHolder.Holders.Add($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll");
+                    _partManager.ApplicationParts.Add(controllerAssemblyPart);
                 }
 
+                MyActionDescriptorChangeProvider.Instance.HasChanged = true;
+                MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+
+
                 PluginsLoadContexts.AddPluginContext(module.Name, context);
+
             }
             else
             {
@@ -99,17 +103,28 @@ namespace DynamicPluginsDemoSite.Controllers
             var module = _pluginManager.GetPlugin(id);
             _pluginManager.DisablePlugin(id);
             _pluginManager.DeletePlugin(id);
+            var moduleName = module.Name;
+
+          
+            var last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
+            _partManager.ApplicationParts.Remove(last);
+            last = null;
+
+
+            MyActionDescriptorChangeProvider.Instance.HasChanged = true;
+            MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
 
             PluginsLoadContexts.RemovePluginContext(module.Name);
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+
+
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
 
             var directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules/{module.Name}");
             directory.Delete(true);
 
-            MyActionDescriptorChangeProvider.Instance.HasChanged = true;
-            MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+
 
             return RedirectToAction("Index");
         }

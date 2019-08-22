@@ -10,17 +10,40 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Primitives;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace DynamicPluginsDemoSite
 {
+    public class MyAssemblyPart : AssemblyPart, ICompilationReferencesProvider
+    {
+        public MyAssemblyPart(Assembly assembly) : base(assembly) { }
+
+        public IEnumerable<string> GetReferencePaths() => Array.Empty<string>();
+    }
+
+    public static class PresetHolder
+    {
+        public static IList<string> Holders = new List<string>();
+
+
+    }
+
+
     public class Startup
     {
+        public IList<string> _presets = new List<string>();
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,14 +54,10 @@ namespace DynamicPluginsDemoSite
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
+
 
             services.AddOptions();
+
 
 
             services.Configure<ConnectionStringSetting>(Configuration.GetSection("ConnectionStringSetting"));
@@ -46,8 +65,18 @@ namespace DynamicPluginsDemoSite
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            var mvcBuilders = services.AddMvc();
-            mvcBuilders.AddMvcOptions(o => o.EnableEndpointRouting = false);
+            var mvcBuilders = services.AddMvc()
+                .AddRazorRuntimeCompilation(o =>
+                {
+                    foreach (var item in _presets)
+                    {
+                        o.AdditionalReferencePaths.Add(item);
+                    }
+
+                    PresetHolder.Holders = o.AdditionalReferencePaths;
+                });
+
+
 
             services.Configure<RazorViewEngineOptions>(o =>
             {
@@ -58,9 +87,14 @@ namespace DynamicPluginsDemoSite
             services.AddSingleton<IActionDescriptorChangeProvider>(MyActionDescriptorChangeProvider.Instance);
             services.AddSingleton(MyActionDescriptorChangeProvider.Instance);
 
+
+
             var provider = services.BuildServiceProvider();
             using (var scope = provider.CreateScope())
             {
+                var option = scope.ServiceProvider.GetService<MvcRazorRuntimeCompilationOptions>();
+
+
                 var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
                 var allEnabledPlugins = unitOfWork.PluginRepository.GetAllEnabledPlugins();
 
@@ -68,14 +102,18 @@ namespace DynamicPluginsDemoSite
                 {
                     var context = new CollectibleAssemblyLoadContext();
                     var moduleName = plugin.Name;
+
+                    _presets.Add($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll");
                     using (var fs = new FileStream($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll", FileMode.Open))
                     {
-                        var assembly = context.LoadFromStream(fs);
-                        var controllerAssemblyPart = new AssemblyPart(assembly);
-                        mvcBuilders.PartManager.ApplicationParts.Add(controllerAssemblyPart);
-                    }
 
-                    PluginsLoadContexts.AddPluginContext(plugin.Name, context);
+                        var assembly = context.LoadFromStream(fs);
+
+                        var controllerAssemblyPart = new MyAssemblyPart(assembly);
+
+                        mvcBuilders.PartManager.ApplicationParts.Add(controllerAssemblyPart);
+                        PluginsLoadContexts.AddPluginContext(plugin.Name, context);
+                    }
                 }
             }
         }
@@ -93,18 +131,19 @@ namespace DynamicPluginsDemoSite
             }
 
             app.UseStaticFiles();
-            app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseEndpoints(routes =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapControllerRoute(
+                    name: "Customer",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-                routes.MapRoute(
-                    name: "default1",
-                    template: "Modules/{area}/{controller=Home}/{action=Index}/{id?}");
+                routes.MapControllerRoute(
+                    name: "Customer",
+                    pattern: "Modules/{area}/{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }
