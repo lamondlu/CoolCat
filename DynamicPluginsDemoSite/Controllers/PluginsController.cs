@@ -104,9 +104,13 @@ namespace DynamicPluginsDemoSite.Controllers
             _pluginManager.DeletePlugin(id);
             var moduleName = module.Name;
 
-            var last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
-            _partManager.ApplicationParts.Remove(last);
-            last = null;
+            var matchedItem = _partManager.ApplicationParts.FirstOrDefault(p => p.Name == moduleName);
+
+            if (matchedItem != null)
+            {
+                _partManager.ApplicationParts.Remove(matchedItem);
+                matchedItem = null;
+            }
 
             MyActionDescriptorChangeProvider.Instance.HasChanged = true;
             MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();

@@ -16,7 +16,7 @@ namespace DynamicPlugins.Core.DomainModel
     {
         private PluginConfiguration _pluginConfiguration = null;
         private Stream _zipStream = null;
-
+        private string _tempFolderName = string.Empty;
         private string _folderName = string.Empty;
 
         public PluginConfiguration Configuration
@@ -36,7 +36,7 @@ namespace DynamicPlugins.Core.DomainModel
         public List<IMigration> GetAllMigrations(string connectionString)
         {
             var context = new CollectibleAssemblyLoadContext();
-            var assemblyPath = $"{_folderName}/{_pluginConfiguration.Name}.dll";
+            var assemblyPath = $"{_tempFolderName}/{_pluginConfiguration.Name}.dll";
 
             using (var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read))
             {
@@ -64,12 +64,12 @@ namespace DynamicPlugins.Core.DomainModel
         public void Initialize(Stream stream)
         {
             _zipStream = stream;
-            var tempFolderName = $"{ AppDomain.CurrentDomain.BaseDirectory }{ Guid.NewGuid().ToString()}";
+            _tempFolderName = $"{ AppDomain.CurrentDomain.BaseDirectory }{ Guid.NewGuid().ToString()}";
             ZipTool archive = new ZipTool(_zipStream, ZipArchiveMode.Read);
 
-            archive.ExtractToDirectory(tempFolderName);
+            archive.ExtractToDirectory(_tempFolderName);
 
-            var folder = new DirectoryInfo(tempFolderName);
+            var folder = new DirectoryInfo(_tempFolderName);
 
             var files = folder.GetFiles();
 
@@ -86,8 +86,6 @@ namespace DynamicPlugins.Core.DomainModel
                     LoadConfiguration(s);
                 }
             }
-
-            folder.Delete(true);
         }
 
         public void SetupFolder()
@@ -96,7 +94,10 @@ namespace DynamicPlugins.Core.DomainModel
             _zipStream.Position = 0;
             _folderName = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{_pluginConfiguration.Name}";
 
-            archive.ExtractToDirectory(_folderName);
+            archive.ExtractToDirectory(_folderName, true);
+
+            var folder = new DirectoryInfo(_tempFolderName);
+            folder.Delete(true);
         }
 
         private void LoadConfiguration(Stream stream)

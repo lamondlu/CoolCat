@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace DynamicPlugins.Core.DomainModel
 {
-    public class Version : IComparer<Version>
+    public class Version : IComparable<Version>
     {
         public Version(string versionNumber)
         {
@@ -37,17 +38,17 @@ namespace DynamicPlugins.Core.DomainModel
 
         public string VersionNumber { get; set; }
 
-        public int Compare(Version x, Version y)
+        public int CompareTo([AllowNull] Version other)
         {
-            if (x.PrimaryVersion > y.PrimaryVersion
-                || (x.PrimaryVersion == y.PrimaryVersion && x.SecondaryVersion > y.SecondaryVersion)
-                || (x.PrimaryVersion == y.PrimaryVersion && x.SecondaryVersion == y.SecondaryVersion && x.MinorVersion > y.MinorVersion))
+            if (PrimaryVersion > other.PrimaryVersion
+                || (PrimaryVersion == other.PrimaryVersion && SecondaryVersion > other.SecondaryVersion)
+                || (PrimaryVersion == other.PrimaryVersion && SecondaryVersion == other.SecondaryVersion && MinorVersion > other.MinorVersion))
             {
                 return 1;
             }
-            else if (x.PrimaryVersion == y.PrimaryVersion
-                && x.SecondaryVersion == y.SecondaryVersion
-                && x.MinorVersion == y.MinorVersion)
+            else if (PrimaryVersion == other.PrimaryVersion
+                && SecondaryVersion == other.SecondaryVersion
+                && MinorVersion == other.MinorVersion)
             {
                 return 0;
             }
