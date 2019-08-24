@@ -50,8 +50,6 @@ namespace Mystique.Core.BusinessLogics
             _unitOfWork.PluginRepository.RunDownMigrations(pluginId);
             _unitOfWork.PluginRepository.DeletePlugin(pluginId);
 
-
-
             _unitOfWork.Commit();
         }
 
@@ -71,6 +69,10 @@ namespace Mystique.Core.BusinessLogics
             else if (new DomainModel.Version(pluginPackage.Configuration.Version) > new DomainModel.Version(existedPlugin.Version))
             {
                 UpgradePlugin(pluginPackage, existedPlugin);
+            }
+            else if (new DomainModel.Version(pluginPackage.Configuration.Version) == new DomainModel.Version(existedPlugin.Version))
+            {
+                throw new Exception("The package version is same as the current plugin version.");
             }
             else
             {
