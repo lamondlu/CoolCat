@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace DynamicPluginsDemoSite.Controllers
 {
@@ -20,6 +19,12 @@ namespace DynamicPluginsDemoSite.Controllers
         {
             _pluginManager = pluginManager;
             _partManager = partManager;
+        }
+
+        private void RefreshControllerAction()
+        {
+            MyActionDescriptorChangeProvider.Instance.HasChanged = true;
+            MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
         }
 
         // GET: /<controller>/
@@ -64,20 +69,18 @@ namespace DynamicPluginsDemoSite.Controllers
                     _partManager.ApplicationParts.Add(controllerAssemblyPart);
                 }
 
-                MyActionDescriptorChangeProvider.Instance.HasChanged = true;
-                MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+                RefreshControllerAction();
 
                 PluginsLoadContexts.AddPluginContext(module.Name, context);
             }
             else
             {
                 var context = PluginsLoadContexts.GetContext(module.Name);
-                var controllerAssemblyPart = new AssemblyPart(context.Assemblies.First());
+                var controllerAssemblyPart = new MyAssemblyPart(context.Assemblies.First());
                 _partManager.ApplicationParts.Add(controllerAssemblyPart);
                 _pluginManager.EnablePlugin(id);
 
-                MyActionDescriptorChangeProvider.Instance.HasChanged = true;
-                MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+                RefreshControllerAction();
             }
 
             return RedirectToAction("Index");
@@ -92,8 +95,7 @@ namespace DynamicPluginsDemoSite.Controllers
             var last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
             _partManager.ApplicationParts.Remove(last);
 
-            MyActionDescriptorChangeProvider.Instance.HasChanged = true;
-            MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+            RefreshControllerAction();
 
             return RedirectToAction("Index");
         }
@@ -113,8 +115,7 @@ namespace DynamicPluginsDemoSite.Controllers
                 matchedItem = null;
             }
 
-            MyActionDescriptorChangeProvider.Instance.HasChanged = true;
-            MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+            RefreshControllerAction();
 
             PluginsLoadContexts.RemovePluginContext(module.Name);
 
