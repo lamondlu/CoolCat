@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Mystique
+namespace Mystique.Core
 {
-
     public static class PluginsLoadContexts
     {
         private static Dictionary<string, CollectibleAssemblyLoadContext> _pluginContexts = null;

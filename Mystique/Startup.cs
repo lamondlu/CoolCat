@@ -1,28 +1,16 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Mystique.Core;
-using Mystique.Core.BusinessLogics;
-using Mystique.Core.Contracts;
 using Mystique.Core.Models;
 using Mystique.Core.Mvc.Infrastructure;
-using Mystique.Core.Repositories;
-using Mystique.Mvc.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace Mystique
 {
     public class Startup
     {
-        public IList<string> _presets = new List<string>();
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -37,19 +25,7 @@ namespace Mystique
 
             services.Configure<ConnectionStringSetting>(Configuration.GetSection("ConnectionStringSetting"));
 
-            services.AddScoped<IPluginManager, PluginManager>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            var mvcBuilders = services.AddMvc()
-                .AddRazorRuntimeCompilation(o =>
-                {
-                    foreach (var item in _presets)
-                    {
-                        o.AdditionalReferencePaths.Add(item);
-                    }
-
-                    AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
-                });
+            var mvcBuilders = services.AddMvc();
 
             services.Configure<RazorViewEngineOptions>(o =>
             {
@@ -57,37 +33,7 @@ namespace Mystique
                 o.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
             });
 
-            services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
-            services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
-
-            var provider = services.BuildServiceProvider();
-            using (var scope = provider.CreateScope())
-            {
-                var option = scope.ServiceProvider.GetService<MvcRazorRuntimeCompilationOptions>();
-
-
-                var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
-                var allEnabledPlugins = unitOfWork.PluginRepository.GetAllEnabledPlugins();
-
-                foreach (var plugin in allEnabledPlugins)
-                {
-                    var context = new CollectibleAssemblyLoadContext();
-                    var moduleName = plugin.Name;
-                    var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
-
-                    _presets.Add(filePath);
-                    using (var fs = new FileStream(filePath, FileMode.Open))
-                    {
-
-                        var assembly = context.LoadFromStream(fs);
-
-                        var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
-
-                        mvcBuilders.PartManager.ApplicationParts.Add(controllerAssemblyPart);
-                        PluginsLoadContexts.AddPluginContext(plugin.Name, context);
-                    }
-                }
-            }
+            services.MystiqueSetup(mvcBuilders);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
