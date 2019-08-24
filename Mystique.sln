@@ -19,6 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core.Mvc", "Mystique.Core.Mvc\Mystique.Core.Mvc.csproj", "{A4377E85-5F8B-4A2E-AE94-19616C646BA4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{57DD977D-2DD6-4E55-A534-761CEAE9E723}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mystique.Core.Test", "Mystique.Core.Test\Mystique.Core.Test.csproj", "{EE6B3EED-B413-4632-A68D-94C4045EC213}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,9 +99,24 @@ Global
 		{A4377E85-5F8B-4A2E-AE94-19616C646BA4}.Release|x64.Build.0 = Release|Any CPU
 		{A4377E85-5F8B-4A2E-AE94-19616C646BA4}.Release|x86.ActiveCfg = Release|Any CPU
 		{A4377E85-5F8B-4A2E-AE94-19616C646BA4}.Release|x86.Build.0 = Release|Any CPU
+		{EE6B3EED-B413-4632-A68D-94C4045EC213}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE6B3EED-B413-4632-A68D-94C4045EC213}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE6B3EED-B413-4632-A68D-94C4045EC213}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EE6B3EED-B413-4632-A68D-94C4045EC213}.Debug|x64.Build.0 = Debug|Any CPU
+		{EE6B3EED-B413-4632-A68D-94C4045EC213}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EE6B3EED-B413-4632-A68D-94C4045EC213}.Debug|x86.Build.0 = Debug|Any CPU
+		{EE6B3EED-B413-4632-A68D-94C4045EC213}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE6B3EED-B413-4632-A68D-94C4045EC213}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE6B3EED-B413-4632-A68D-94C4045EC213}.Release|x64.ActiveCfg = Release|Any CPU
+		{EE6B3EED-B413-4632-A68D-94C4045EC213}.Release|x64.Build.0 = Release|Any CPU
+		{EE6B3EED-B413-4632-A68D-94C4045EC213}.Release|x86.ActiveCfg = Release|Any CPU
+		{EE6B3EED-B413-4632-A68D-94C4045EC213}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EE6B3EED-B413-4632-A68D-94C4045EC213} = {57DD977D-2DD6-4E55-A534-761CEAE9E723}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {01E2A57E-2BFE-40F9-9501-D2AA53FC1170}

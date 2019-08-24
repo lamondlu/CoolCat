@@ -13,13 +13,13 @@ namespace Mystique.Core.DomainModel
 
         public Version(string versionNumber)
         {
-            if (IsValid(versionNumber))
+            if (Validate(versionNumber))
             {
                 this.VersionNumber = versionNumber;
             }
             else
             {
-                throw new InvalidCastException("The version number is invalid.");
+                throw new ArgumentException("The version number is invalid.");
             }
 
         }
@@ -48,7 +48,7 @@ namespace Mystique.Core.DomainModel
             }
         }
 
-        private bool IsValid(string versionNumber)
+        private bool Validate(string versionNumber)
         {
             if (!string.IsNullOrEmpty(versionNumber) && versionNumber.Split(".").Length == 3)
             {
