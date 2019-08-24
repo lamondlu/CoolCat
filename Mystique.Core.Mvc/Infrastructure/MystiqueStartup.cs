@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mystique.Core.BusinessLogics;
 using Mystique.Core.Contracts;
+using Mystique.Core.Models;
 using Mystique.Core.Repositories;
 using Mystique.Mvc.Infrastructure;
 using System;
@@ -16,8 +19,11 @@ namespace Mystique.Core.Mvc.Infrastructure
     {
         private static IList<string> _presets = new List<string>();
 
-        public static void MystiqueSetup(this IServiceCollection services, IMvcBuilder mvcBuilder)
+        public static void MystiqueSetup(this IServiceCollection services, IConfiguration configuration, IMvcBuilder mvcBuilder)
         {
+            services.AddOptions();
+            services.Configure<ConnectionStringSetting>(configuration.GetSection("ConnectionStringSetting"));
+
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
@@ -48,6 +54,12 @@ namespace Mystique.Core.Mvc.Infrastructure
                     }
                 }
             }
+
+            services.Configure<RazorViewEngineOptions>(o =>
+            {
+                o.AreaViewLocationFormats.Add("/Modules/{2}/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
+                o.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
+            });
 
             mvcBuilder.AddRazorRuntimeCompilation(o =>
             {

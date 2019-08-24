@@ -20,14 +20,6 @@ namespace DemoPlugin1.Migrations
 
         }
 
-        public Mystique.Core.DomainModel.Version Version
-        {
-            get
-            {
-                return _version;
-            }
-        }
-
         public override void MigrationDown(Guid pluginId)
         {
             SQL(_downScripts);
