@@ -19,11 +19,6 @@ using System.IO;
 
 namespace Mystique
 {
-    public static class AdditionalReferencePathHolder
-    {
-        public static IList<string> AdditionalReferencePaths = new List<string>();
-    }
-
     public class Startup
     {
         public IList<string> _presets = new List<string>();
@@ -62,8 +57,8 @@ namespace Mystique
                 o.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
             });
 
-            services.AddSingleton<IActionDescriptorChangeProvider>(MyActionDescriptorChangeProvider.Instance);
-            services.AddSingleton(MyActionDescriptorChangeProvider.Instance);
+            services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
+            services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
 
             var provider = services.BuildServiceProvider();
             using (var scope = provider.CreateScope())

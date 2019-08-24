@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Mystique.Mvc.Infrastructure
 {
-    public class MyActionDescriptorChangeProvider : IActionDescriptorChangeProvider
+    public class MystiqueActionDescriptorChangeProvider : IActionDescriptorChangeProvider
     {
-        public static MyActionDescriptorChangeProvider Instance { get; } = new MyActionDescriptorChangeProvider();
+        public static MystiqueActionDescriptorChangeProvider Instance { get; } = new MystiqueActionDescriptorChangeProvider();
 
         public CancellationTokenSource TokenSource { get; private set; }
 

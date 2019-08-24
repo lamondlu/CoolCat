@@ -41,6 +41,8 @@ namespace Mystique.Core.BusinessLogics
 
         public void EnablePlugin(Guid pluginId)
         {
+
+
             _unitOfWork.PluginRepository.SetPluginStatus(pluginId, true);
         }
 

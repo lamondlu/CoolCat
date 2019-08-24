@@ -25,8 +25,8 @@ namespace Mystique.Controllers
 
         private void RefreshControllerAction()
         {
-            MyActionDescriptorChangeProvider.Instance.HasChanged = true;
-            MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+            MystiqueActionDescriptorChangeProvider.Instance.HasChanged = true;
+            MystiqueActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
         }
 
         // GET: /<controller>/
