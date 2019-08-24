@@ -17,8 +17,5 @@ namespace Mystique.Core
         {
             return null;
         }
-
-      
-
     }
 }

@@ -2,14 +2,26 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Mystique.Core.DomainModel
 {
     public class Version : IComparable<Version>
     {
+        private const string _pattern = "^[0-9]*$";
+        private static Regex _regex = new Regex(_pattern);
+
         public Version(string versionNumber)
         {
-            this.VersionNumber = versionNumber;
+            if (IsValid(versionNumber))
+            {
+                this.VersionNumber = versionNumber;
+            }
+            else
+            {
+                throw new InvalidCastException("The version number is invalid.");
+            }
+
         }
 
         public int PrimaryVersion
@@ -33,6 +45,22 @@ namespace Mystique.Core.DomainModel
             get
             {
                 return Convert.ToInt32(this.VersionNumber.Split('.')[2]);
+            }
+        }
+
+        private bool IsValid(string versionNumber)
+        {
+            if (!string.IsNullOrEmpty(versionNumber) && versionNumber.Split(".").Length == 3)
+            {
+                var primary = versionNumber.Split('.')[0];
+                var secondray = versionNumber.Split('.')[1];
+                var minor = versionNumber.Split('.')[2];
+
+                return _regex.IsMatch(primary) && _regex.IsMatch(secondray) && _regex.IsMatch(minor);
+            }
+            else
+            {
+                return false;
             }
         }
 
