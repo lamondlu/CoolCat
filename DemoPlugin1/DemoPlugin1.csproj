@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DynamicPlugins.Core\DynamicPlugins.Core.csproj" />
+    <ProjectReference Include="..\Mystique.Core\Mystique.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
