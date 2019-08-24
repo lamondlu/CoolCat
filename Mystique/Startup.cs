@@ -1,37 +1,24 @@
-﻿using Mystique.Core;
-using Mystique.Core.BusinessLogics;
-using Mystique.Core.Contracts;
-using Mystique.Core.Models;
-using Mystique.Core.Repositories;
-using Mystique.Infrastructure;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Primitives;
+using Mystique.Core;
+using Mystique.Core.BusinessLogics;
+using Mystique.Core.Contracts;
+using Mystique.Core.Models;
+using Mystique.Core.Mvc.Infrastructure;
+using Mystique.Core.Repositories;
+using Mystique.Mvc.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Mystique
 {
-    public class MyAssemblyPart : AssemblyPart, ICompilationReferencesProvider
-    {
-        public MyAssemblyPart(Assembly assembly) : base(assembly) { }
-
-        public IEnumerable<string> GetReferencePaths() => Array.Empty<string>();
-    }
-
     public static class AdditionalReferencePathHolder
     {
         public static IList<string> AdditionalReferencePaths = new List<string>();
@@ -99,7 +86,7 @@ namespace Mystique
 
                         var assembly = context.LoadFromStream(fs);
 
-                        var controllerAssemblyPart = new MyAssemblyPart(assembly);
+                        var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
 
                         mvcBuilders.PartManager.ApplicationParts.Add(controllerAssemblyPart);
                         PluginsLoadContexts.AddPluginContext(plugin.Name, context);

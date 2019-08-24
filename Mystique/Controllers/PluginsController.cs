@@ -1,13 +1,14 @@
 ﻿using Mystique.Core;
 using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
-using Mystique.Extensions;
-using Mystique.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using System;
 using System.IO;
 using System.Linq;
+using Mystique.Mvc.Infrastructure;
+using Mystique.Core.Mvc.Infrastructure;
+using Mystique.Core.Mvc.Extensions;
 
 namespace Mystique.Controllers
 {
@@ -64,7 +65,7 @@ namespace Mystique.Controllers
                 {
                     var assembly = context.LoadFromStream(fs);
 
-                    var controllerAssemblyPart = new MyAssemblyPart(assembly);
+                    var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
 
                     AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
                     _partManager.ApplicationParts.Add(controllerAssemblyPart);
@@ -77,7 +78,7 @@ namespace Mystique.Controllers
             else
             {
                 var context = PluginsLoadContexts.GetContext(module.Name);
-                var controllerAssemblyPart = new MyAssemblyPart(context.Assemblies.First());
+                var controllerAssemblyPart = new MystiqueAssemblyPart(context.Assemblies.First());
                 _partManager.ApplicationParts.Add(controllerAssemblyPart);
                 _pluginManager.EnablePlugin(id);
 

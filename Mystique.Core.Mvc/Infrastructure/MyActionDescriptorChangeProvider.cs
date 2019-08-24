@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Mystique.Infrastructure
+namespace Mystique.Mvc.Infrastructure
 {
     public class MyActionDescriptorChangeProvider : IActionDescriptorChangeProvider
     {

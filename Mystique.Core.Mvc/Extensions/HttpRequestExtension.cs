@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Mystique.Extensions
+namespace Mystique.Core.Mvc.Extensions
 {
     public static class HttpRequestExtension
     {
