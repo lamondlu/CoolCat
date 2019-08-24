@@ -17,8 +17,9 @@ namespace Mystique.Core.BusinessLogics
     {
         private IUnitOfWork _unitOfWork = null;
         private string _connectionString = null;
+        private IMvcModuleSetup _mvcModuleSetup = null;
 
-        public PluginManager(IUnitOfWork unitOfWork, IOptions<ConnectionStringSetting> connectionStringSettingAccessor)
+        public PluginManager(IUnitOfWork unitOfWork, IOptions<ConnectionStringSetting> connectionStringSettingAccessor, IMvcModuleSetup mvcModuleSetup)
         {
             _unitOfWork = unitOfWork;
             _connectionString = connectionStringSettingAccessor.Value.ConnectionString;
@@ -41,9 +42,10 @@ namespace Mystique.Core.BusinessLogics
 
         public void EnablePlugin(Guid pluginId)
         {
-
-
+            var module = _unitOfWork.PluginRepository.GetPlugin(pluginId);
             _unitOfWork.PluginRepository.SetPluginStatus(pluginId, true);
+
+            _mvcModuleSetup.EnableModule(module.Name);
         }
 
         public void DeletePlugin(Guid pluginId)

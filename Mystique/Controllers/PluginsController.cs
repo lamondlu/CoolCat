@@ -1,14 +1,13 @@
-﻿using Mystique.Core;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Mystique.Core;
 using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Mystique.Core.Mvc.Extensions;
+using Mystique.Mvc.Infrastructure;
 using System;
 using System.IO;
 using System.Linq;
-using Mystique.Mvc.Infrastructure;
-using Mystique.Core.Mvc.Infrastructure;
-using Mystique.Core.Mvc.Extensions;
 
 namespace Mystique.Controllers
 {
@@ -52,38 +51,7 @@ namespace Mystique.Controllers
 
         public IActionResult Enable(Guid id)
         {
-            var module = _pluginManager.GetPlugin(id);
-            if (!PluginsLoadContexts.Any(module.Name))
-            {
-                var context = new CollectibleAssemblyLoadContext();
-
-                _pluginManager.EnablePlugin(id);
-                var moduleName = module.Name;
-
-                var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
-                using (var fs = new FileStream(filePath, FileMode.Open))
-                {
-                    var assembly = context.LoadFromStream(fs);
-
-                    var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
-
-                    AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
-                    _partManager.ApplicationParts.Add(controllerAssemblyPart);
-                }
-
-                RefreshControllerAction();
-
-                PluginsLoadContexts.AddPluginContext(module.Name, context);
-            }
-            else
-            {
-                var context = PluginsLoadContexts.GetContext(module.Name);
-                var controllerAssemblyPart = new MystiqueAssemblyPart(context.Assemblies.First());
-                _partManager.ApplicationParts.Add(controllerAssemblyPart);
-                _pluginManager.EnablePlugin(id);
-
-                RefreshControllerAction();
-            }
+            _pluginManager.EnablePlugin(id);
 
             return RedirectToAction("Index");
         }
