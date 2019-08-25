@@ -40,6 +40,8 @@ namespace Mystique.Core.BusinessLogics
             return _unitOfWork.PluginRepository.GetPlugin(pluginId);
         }
 
+
+
         public void EnablePlugin(Guid pluginId)
         {
             var module = _unitOfWork.PluginRepository.GetPlugin(pluginId);
@@ -59,7 +61,9 @@ namespace Mystique.Core.BusinessLogics
 
         public void DisablePlugin(Guid pluginId)
         {
+            var module = _unitOfWork.PluginRepository.GetPlugin(pluginId);
             _unitOfWork.PluginRepository.SetPluginStatus(pluginId, false);
+            _mvcModuleSetup.DisableModule(module.Name);
         }
 
         public void AddPlugins(PluginPackage pluginPackage)

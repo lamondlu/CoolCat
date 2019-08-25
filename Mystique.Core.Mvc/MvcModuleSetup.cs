@@ -47,6 +47,14 @@ namespace Mystique.Core.Mvc
             ResetControllActions();
         }
 
+        public void DisableModule(string moduleName)
+        {
+            var last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
+            _partManager.ApplicationParts.Remove(last);
+
+            ResetControllActions();
+        }
+
         private void ResetControllActions()
         {
             MystiqueActionDescriptorChangeProvider.Instance.HasChanged = true;

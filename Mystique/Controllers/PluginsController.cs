@@ -45,28 +45,18 @@ namespace Mystique.Controllers
         {
             var package = new PluginPackage(Request.GetPluginStream());
             _pluginManager.AddPlugins(package);
-
             return RedirectToAction("Index");
         }
 
         public IActionResult Enable(Guid id)
         {
             _pluginManager.EnablePlugin(id);
-
             return RedirectToAction("Index");
         }
 
         public IActionResult Disable(Guid id)
         {
-            var module = _pluginManager.GetPlugin(id);
             _pluginManager.DisablePlugin(id);
-            var moduleName = module.Name;
-
-            var last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
-            _partManager.ApplicationParts.Remove(last);
-
-            RefreshControllerAction();
-
             return RedirectToAction("Index");
         }
 
