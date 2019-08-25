@@ -55,6 +55,14 @@ namespace Mystique.Core.Mvc
             ResetControllActions();
         }
 
+        public void DeleteModule(string moduleName)
+        {
+            PluginsLoadContexts.RemovePluginContext(moduleName);
+
+            var directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}");
+            directory.Delete(true);
+        }
+
         private void ResetControllActions()
         {
             MystiqueActionDescriptorChangeProvider.Instance.HasChanged = true;

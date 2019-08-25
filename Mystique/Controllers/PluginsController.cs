@@ -62,25 +62,7 @@ namespace Mystique.Controllers
 
         public IActionResult Delete(Guid id)
         {
-            var module = _pluginManager.GetPlugin(id);
-            _pluginManager.DisablePlugin(id);
             _pluginManager.DeletePlugin(id);
-            var moduleName = module.Name;
-
-            var matchedItem = _partManager.ApplicationParts.FirstOrDefault(p => p.Name == moduleName);
-
-            if (matchedItem != null)
-            {
-                _partManager.ApplicationParts.Remove(matchedItem);
-                matchedItem = null;
-            }
-
-            RefreshControllerAction();
-
-            PluginsLoadContexts.RemovePluginContext(module.Name);
-
-            var directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules/{module.Name}");
-            directory.Delete(true);
 
             return RedirectToAction("Index");
         }

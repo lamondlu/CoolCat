@@ -15,7 +15,7 @@ namespace Mystique.Core.BusinessLogics
 {
     public class PluginManager : IPluginManager
     {
-        private IUnitOfWork _unitOfWork = null;
+        private readonly IUnitOfWork _unitOfWork = null;
         private string _connectionString = null;
         private IMvcModuleSetup _mvcModuleSetup = null;
 
@@ -40,8 +40,6 @@ namespace Mystique.Core.BusinessLogics
             return _unitOfWork.PluginRepository.GetPlugin(pluginId);
         }
 
-
-
         public void EnablePlugin(Guid pluginId)
         {
             var module = _unitOfWork.PluginRepository.GetPlugin(pluginId);
@@ -53,10 +51,17 @@ namespace Mystique.Core.BusinessLogics
         public void DeletePlugin(Guid pluginId)
         {
             var plugin = _unitOfWork.PluginRepository.GetPlugin(pluginId);
+
+            if (plugin.IsEnable)
+            {
+                DisablePlugin(pluginId);
+            }
+
             _unitOfWork.PluginRepository.RunDownMigrations(pluginId);
             _unitOfWork.PluginRepository.DeletePlugin(pluginId);
-
             _unitOfWork.Commit();
+
+            _mvcModuleSetup.DeleteModule(plugin.Name);
         }
 
         public void DisablePlugin(Guid pluginId)
