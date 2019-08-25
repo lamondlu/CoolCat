@@ -1,15 +1,13 @@
-﻿using Mystique.Core.Contracts;
+﻿using Microsoft.Extensions.Options;
+using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
 using Mystique.Core.Models;
 using Mystique.Core.Repositories;
 using Mystique.Core.ViewModels;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Loader;
-using System.Text;
 using System.Linq;
+using Version = Mystique.Core.DomainModel.Version;
 
 namespace Mystique.Core.BusinessLogics
 {
@@ -79,17 +77,17 @@ namespace Mystique.Core.BusinessLogics
             {
                 InitializePlugin(pluginPackage);
             }
-            else if (new DomainModel.Version(pluginPackage.Configuration.Version) > new DomainModel.Version(existedPlugin.Version))
+            else if (new Version(pluginPackage.Configuration.Version) > new Version(existedPlugin.Version))
             {
                 UpgradePlugin(pluginPackage, existedPlugin);
             }
-            else if (new DomainModel.Version(pluginPackage.Configuration.Version) == new DomainModel.Version(existedPlugin.Version))
+            else if (new Version(pluginPackage.Configuration.Version) == new Version(existedPlugin.Version))
             {
                 throw new Exception("The package version is same as the current plugin version.");
             }
             else
             {
-                DegradePlugin(pluginPackage);
+                DegradePlugin(pluginPackage, existedPlugin);
             }
         }
 
@@ -134,9 +132,10 @@ namespace Mystique.Core.BusinessLogics
             pluginPackage.SetupFolder();
         }
 
-        public void DegradePlugin(PluginPackage pluginPackage)
+        public void DegradePlugin(PluginPackage pluginPackage, PluginViewModel oldPlugin)
         {
-            throw new NotImplementedException();
+            _unitOfWork.PluginRepository.UpdatePluginVersion(oldPlugin.PluginId, pluginPackage.Configuration.Version);
+            _unitOfWork.Commit();
         }
     }
 }

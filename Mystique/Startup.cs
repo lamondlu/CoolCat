@@ -19,8 +19,7 @@ namespace Mystique
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var mvcBuilders = services.AddMvc();
-            services.MystiqueSetup(Configuration, mvcBuilders);
+            services.MystiqueSetup(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

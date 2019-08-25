@@ -19,8 +19,9 @@ namespace Mystique.Core.Mvc.Infrastructure
     {
         private static IList<string> _presets = new List<string>();
 
-        public static void MystiqueSetup(this IServiceCollection services, IConfiguration configuration, IMvcBuilder mvcBuilder)
+        public static void MystiqueSetup(this IServiceCollection services, IConfiguration configuration)
         {
+            var mvcBuilder = services.AddMvc();
             services.AddOptions();
             services.Configure<ConnectionStringSetting>(configuration.GetSection("ConnectionStringSetting"));
 
