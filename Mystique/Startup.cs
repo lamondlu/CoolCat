@@ -35,17 +35,7 @@ namespace Mystique
 
             app.UseStaticFiles();
 
-            app.UseRouting();
-            app.UseEndpoints(routes =>
-            {
-                routes.MapControllerRoute(
-                    name: "Customer",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-                routes.MapControllerRoute(
-                    name: "Customer",
-                    pattern: "Modules/{area}/{controller=Home}/{action=Index}/{id?}");
-            });
+            app.MystiqueRoute();
         }
     }
 }
