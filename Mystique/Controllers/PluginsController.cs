@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Mystique.Core;
 using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
 using Mystique.Core.Mvc.Extensions;
 using Mystique.Mvc.Infrastructure;
 using System;
-using System.IO;
-using System.Linq;
 
 namespace Mystique.Controllers
 {

@@ -1,5 +1,3 @@
-using System;
-
 namespace Mystique.Models
 {
     public class ErrorViewModel
