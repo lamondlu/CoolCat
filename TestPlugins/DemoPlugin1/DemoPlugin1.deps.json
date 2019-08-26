@@ -8,9 +8,9 @@
     ".NETCoreApp,Version=v3.0": {
       "DemoPlugin1/1.0.0": {
         "dependencies": {
-          "DynamicPlugins.Core": "1.0.0",
           "Microsoft.AspNetCore.Mvc.Abstractions": "2.2.0",
-          "Microsoft.AspNetCore.Mvc.ViewFeatures": "2.2.0"
+          "Microsoft.AspNetCore.Mvc.ViewFeatures": "2.2.0",
+          "Mystique.Core": "1.0.0"
         },
         "runtime": {
           "DemoPlugin1.dll": {}
@@ -1319,12 +1319,12 @@
           "System.Xml.ReaderWriter": "4.3.0"
         }
       },
-      "DynamicPlugins.Core/1.0.0": {
+      "Mystique.Core/1.0.0": {
         "dependencies": {
           "System.Data.SqlClient": "4.7.0-preview8.19405.3"
         },
         "runtime": {
-          "DynamicPlugins.Core.dll": {}
+          "Mystique.Core.dll": {}
         }
       }
     }
@@ -2266,7 +2266,7 @@
       "path": "system.xml.xdocument/4.3.0",
       "hashPath": "system.xml.xdocument.4.3.0.nupkg.sha512"
     },
-    "DynamicPlugins.Core/1.0.0": {
+    "Mystique.Core/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

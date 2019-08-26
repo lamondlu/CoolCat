@@ -20,7 +20,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
         public static void MystiqueSetup(this IServiceCollection services, IConfiguration configuration)
         {
-            var mvcBuilder = services.AddMvc();
+            
             services.AddOptions();
             services.Configure<ConnectionStringSetting>(configuration.GetSection("ConnectionStringSetting"));
 
@@ -29,6 +29,16 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
+
+            var mvcBuilder = services.AddMvc().AddRazorRuntimeCompilation(o =>
+            {
+                foreach (var item in _presets)
+                {
+                    o.AdditionalReferencePaths.Add(item);
+                }
+
+                AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
+            });
 
             var provider = services.BuildServiceProvider();
             using (var scope = provider.CreateScope())
@@ -62,15 +72,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                 o.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
             });
 
-            mvcBuilder.AddRazorRuntimeCompilation(o =>
-            {
-                foreach (var item in _presets)
-                {
-                    o.AdditionalReferencePaths.Add(item);
-                }
-
-                AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
-            });
+            
         }
     }
 }

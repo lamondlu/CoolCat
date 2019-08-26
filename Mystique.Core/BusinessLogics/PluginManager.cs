@@ -21,6 +21,7 @@ namespace Mystique.Core.BusinessLogics
         {
             _unitOfWork = unitOfWork;
             _connectionString = connectionStringSettingAccessor.Value.ConnectionString;
+            _mvcModuleSetup = mvcModuleSetup;
         }
 
         public List<PluginListItemViewModel> GetAllPlugins()
