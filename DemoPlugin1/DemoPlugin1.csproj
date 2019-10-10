@@ -18,12 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Microsoft.AspNetCore.Mvc.Core">
-      <HintPath>..\..\..\..\..\..\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\3.0.0-preview8.19405.7\ref\netcoreapp3.0\Microsoft.AspNetCore.Mvc.Core.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Views\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
