@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Mystique.Core.Repositories
+﻿namespace Mystique.Core.Repositories
 {
     public interface IUnitOfWork
     {

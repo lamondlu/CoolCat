@@ -1,9 +1,6 @@
-﻿using Mystique.Core.Contracts;
-using Mystique.Core.DomainModel;
+﻿using Mystique.Core.DomainModel;
 using Mystique.Core.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DemoPlugin1.Migrations
 {

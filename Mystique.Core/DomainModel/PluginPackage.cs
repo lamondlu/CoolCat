@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Text;
 using ZipTool = System.IO.Compression.ZipArchive;
 using System.Linq;
 using Newtonsoft.Json;
 using Mystique.Core.Contracts;
-using System.Reflection;
 using Mystique.Core.Helpers;
 
 namespace Mystique.Core.DomainModel
