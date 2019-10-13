@@ -36,27 +36,25 @@ namespace Mystique.Core.DomainModel
             var context = new CollectibleAssemblyLoadContext();
             var assemblyPath = $"{_tempFolderName}/{_pluginConfiguration.Name}.dll";
 
-            using (var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read))
+            using var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);
+            var dbHelper = new DbHelper(connectionString);
+            var assembly = context.LoadFromStream(fs);
+            var migrationTypes = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration)));
+
+            List<IMigration> migrations = new List<IMigration>();
+            foreach (var migrationType in migrationTypes)
             {
-                var dbHelper = new DbHelper(connectionString);
-                var assembly = context.LoadFromStream(fs);
-                var migrationTypes = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration)));
+                var constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(DbHelper));
 
-                List<IMigration> migrations = new List<IMigration>();
-                foreach (var migrationType in migrationTypes)
-                {
-                    var constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(DbHelper));
-
-                    migrations.Add((IMigration)constructor.Invoke(new object[] { dbHelper }));
-                }
-
-                context.Unload();
-
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-
-                return migrations.OrderBy(p => p.Version).ToList();
+                migrations.Add((IMigration)constructor.Invoke(new object[] { dbHelper }));
             }
+
+            context.Unload();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            return migrations.OrderBy(p => p.Version).ToList();
         }
 
         public void Initialize(Stream stream)
@@ -79,10 +77,8 @@ namespace Mystique.Core.DomainModel
             }
             else
             {
-                using (var s = configFiles.First().OpenRead())
-                {
-                    LoadConfiguration(s);
-                }
+                using var s = configFiles.First().OpenRead();
+                LoadConfiguration(s);
             }
         }
 
@@ -100,15 +96,13 @@ namespace Mystique.Core.DomainModel
 
         private void LoadConfiguration(Stream stream)
         {
-            using (var sr = new StreamReader(stream))
-            {
-                var content = sr.ReadToEnd();
-                _pluginConfiguration = JsonConvert.DeserializeObject<PluginConfiguration>(content);
+            using var sr = new StreamReader(stream);
+            var content = sr.ReadToEnd();
+            _pluginConfiguration = JsonConvert.DeserializeObject<PluginConfiguration>(content);
 
-                if (_pluginConfiguration == null)
-                {
-                    throw new Exception("The configuration file is wrong format.");
-                }
+            if (_pluginConfiguration == null)
+            {
+                throw new Exception("The configuration file is wrong format.");
             }
         }
     }

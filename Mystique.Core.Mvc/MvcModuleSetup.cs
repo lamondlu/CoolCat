@@ -24,16 +24,14 @@ namespace Mystique.Core.Mvc
                 var context = new CollectibleAssemblyLoadContext();
 
                 var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
-                using (var fs = new FileStream(filePath, FileMode.Open))
-                {
-                    var assembly = context.LoadFromStream(fs);
+                using var fs = new FileStream(filePath, FileMode.Open);
+                var assembly = context.LoadFromStream(fs);
 
-                    var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
+                var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
 
-                    AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
-                    _partManager.ApplicationParts.Add(controllerAssemblyPart);
-                    PluginsLoadContexts.AddPluginContext(moduleName, context);
-                }
+                AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
+                _partManager.ApplicationParts.Add(controllerAssemblyPart);
+                PluginsLoadContexts.AddPluginContext(moduleName, context);
             }
             else
             {

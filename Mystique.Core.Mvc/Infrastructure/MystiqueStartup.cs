@@ -55,14 +55,12 @@ namespace Mystique.Core.Mvc.Infrastructure
                     var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
 
                     _presets.Add(filePath);
-                    using (var fs = new FileStream(filePath, FileMode.Open))
-                    {
-                        var assembly = context.LoadFromStream(fs);
+                    using var fs = new FileStream(filePath, FileMode.Open);
+                    var assembly = context.LoadFromStream(fs);
 
-                        var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
-                        mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
-                        PluginsLoadContexts.AddPluginContext(plugin.Name, context);
-                    }
+                    var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
+                    mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
+                    PluginsLoadContexts.AddPluginContext(plugin.Name, context);
                 }
             }
 
