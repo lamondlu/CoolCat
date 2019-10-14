@@ -1,203 +1,133 @@
-﻿using System;
-using System.Collections.Generic;
-using Mystique.Core.Helpers;
-using Mystique.Core.ViewModels;
-using System.Linq;
-using System.Data;
+﻿using Microsoft.EntityFrameworkCore;
 using Mystique.Core.DTOs;
-using System.Data.SqlClient;
+using Mystique.Core.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mystique.Core.Repositories
 {
     public class PluginRepository : IPluginRepository
     {
-        private DbHelper _dbHelper = null;
-        private List<Command> _commands = null;
+        private readonly PluginDbContext pluginDbContext;
+        private readonly IUnitOfWork unitOfWork;
 
-        public PluginRepository(DbHelper dbHelper, List<Command> commands)
+        public PluginRepository(PluginDbContext pluginDbContext, IUnitOfWork unitOfWork)
         {
-            _dbHelper = dbHelper;
-            _commands = commands;
+            this.pluginDbContext = pluginDbContext;
+            this.unitOfWork = unitOfWork;
         }
 
-        public void AddPlugin(AddPluginDTO dto)
+        public async Task AddPluginAsync(AddPluginDTO dto)
         {
-            var command = new Command
-            {
-                Parameters = new List<SqlParameter>(),
-                Sql = "INSERT INTO Plugins(PluginId, Name, UniqueKey, Version, DisplayName,Enable) values(@pluginId, @name, @uniqueKey, @version, @displayName, @enable)"
-            };
-
-            command.Parameters.Add(new SqlParameter { ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
-            command.Parameters.Add(new SqlParameter { ParameterName = "@name", SqlDbType = SqlDbType.NVarChar, Value = dto.Name });
-
-            command.Parameters.Add(new SqlParameter { ParameterName = "@uniqueKey", SqlDbType = SqlDbType.NVarChar, Value = dto.UniqueKey });
-
-            command.Parameters.Add(new SqlParameter { ParameterName = "@version", SqlDbType = SqlDbType.NVarChar, Value = dto.Version });
-
-            command.Parameters.Add(new SqlParameter { ParameterName = "@displayName", SqlDbType = SqlDbType.NVarChar, Value = dto.DisplayName });
-
-            command.Parameters.Add(new SqlParameter { ParameterName = "@enable", SqlDbType = SqlDbType.Bit, Value = false });
-
-            _commands.Add(command);
-        }
-
-        public void UpdatePluginVersion(Guid pluginId, string version)
-        {
-            var command = new Command
-            {
-                Parameters = new List<SqlParameter>(),
-                Sql = "UPDATE Plugins SET Version = @version WHERE PluginId = @pluginId"
-            };
-
-
-            command.Parameters.Add(new SqlParameter { ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = pluginId });
-            command.Parameters.Add(new SqlParameter { ParameterName = "@version", SqlDbType = SqlDbType.NVarChar, Value = version });
-
-            _commands.Add(command);
-        }
-
-        public List<PluginListItemViewModel> GetAllPlugins()
-        {
-            var plugins = new List<PluginListItemViewModel>();
-            var sql = "SELECT * from Plugins";
-
-            var table = _dbHelper.ExecuteDataTable(sql);
-
-            foreach (var row in table.Rows.Cast<DataRow>())
-            {
-                var plugin = new PluginListItemViewModel
-                {
-                    PluginId = Guid.Parse(row["PluginId"].ToString()),
-                    Name = row["Name"].ToString(),
-                    UniqueKey = row["UniqueKey"].ToString(),
-                    Version = row["Version"].ToString(),
-                    DisplayName = row["DisplayName"].ToString(),
-                    IsEnable = Convert.ToBoolean(row["Enable"])
-                };
-
-                plugins.Add(plugin);
-            }
-
-            return plugins;
-        }
-
-        public List<PluginListItemViewModel> GetAllEnabledPlugins()
-        {
-            return GetAllPlugins().Where(p => p.IsEnable).ToList();
-        }
-
-        public void SetPluginStatus(Guid pluginId, bool enable)
-        {
-            var sql = "UPDATE Plugins SET Enable=@enable WHERE PluginId = @pluginId";
-
-            _dbHelper.ExecuteNonQuery(sql, new List<SqlParameter> {
-                new SqlParameter{ParameterName = "@enable", SqlDbType = SqlDbType.Bit, Value= enable},
-                new SqlParameter{ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value= pluginId}
-             }.ToArray());
-        }
-
-        public PluginViewModel GetPlugin(string pluginName)
-        {
-            var sql = "SELECT * from Plugins where Name = @pluginName";
-
-            var table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
-            {
-                ParameterName = "@pluginName",
-                Value = pluginName,
-                SqlDbType = SqlDbType.NVarChar
-            });
-
-            if (table.Rows.Cast<DataRow>().Count() == 0)
-            {
-                return null;
-            }
-
-            var row = table.Rows.Cast<DataRow>().First();
-
             var plugin = new PluginViewModel
             {
-                PluginId = Guid.Parse(row["PluginId"].ToString()),
-                Name = row["Name"].ToString(),
-                UniqueKey = row["UniqueKey"].ToString(),
-                Version = row["Version"].ToString(),
-                DisplayName = row["DisplayName"].ToString(),
-                IsEnable = Convert.ToBoolean(row["Enable"])
+                PluginId = dto.PluginId,
+                Name = dto.Name,
+                UniqueKey = dto.UniqueKey,
+                Version = dto.Version,
+                DisplayName = dto.DisplayName,
+                IsEnable = false,
             };
-
-            return plugin;
+            pluginDbContext.Plugins.Add(plugin);
+            await unitOfWork.SaveAsync();
         }
 
-        public PluginViewModel GetPlugin(Guid pluginId)
+        public async Task UpdatePluginVersionAsync(Guid pluginId, string version)
         {
-            var sql = "SELECT * from Plugins where PluginId = @pluginId";
-
-            var table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
+            var find = await pluginDbContext.Plugins.FirstOrDefaultAsync(o => o.PluginId == pluginId);
+            if (find == null)
             {
-                ParameterName = "@pluginId",
-                Value = pluginId,
-                SqlDbType = SqlDbType.UniqueIdentifier
-            });
+                return;
+            }
+            find.Version = version;
+            await unitOfWork.SaveAsync();
+        }
 
-            if (table.Rows.Cast<DataRow>().Count() == 0)
+        public async Task<List<PluginListItemViewModel>> GetAllPluginsAsync()
+        {
+            var plugins = await pluginDbContext.Plugins.AsNoTracking().ToListAsync();
+            return plugins.Select(o => new PluginListItemViewModel
             {
-                throw new Exception("The plugin is missing in the system.");
+                PluginId = o.PluginId,
+                Name = o.Name,
+                UniqueKey = o.UniqueKey,
+                Version = o.Version,
+                DisplayName = o.DisplayName,
+                IsEnable = o.IsEnable,
+            }).ToList();
+        }
+
+        public async Task<List<PluginListItemViewModel>> GetAllEnabledPluginsAsync()
+        {
+            var plugins = await GetAllPluginsAsync();
+            return plugins.Where(o => o.IsEnable).ToList();
+        }
+
+        public async Task SetPluginStatusAsync(Guid pluginId, bool enable)
+        {
+            var plugin = await pluginDbContext.Plugins.FirstOrDefaultAsync(o => o.PluginId == pluginId);
+            if (plugin == null)
+            {
+                return;
+            }
+            plugin.IsEnable = enable;
+            await unitOfWork.SaveAsync();
+        }
+
+        public async Task<PluginViewModel> GetPluginAsync(string pluginName)
+        {
+            return await pluginDbContext.Plugins.AsNoTracking().FirstOrDefaultAsync(o => o.Name == pluginName);
+        }
+
+        public async Task<PluginViewModel> GetPluginAsync(Guid pluginId)
+        {
+            return await pluginDbContext.Plugins.AsNoTracking().FirstOrDefaultAsync(o => o.PluginId == pluginId);
+        }
+
+        public async Task DeletePluginAsync(Guid pluginId)
+        {
+            var plugin = await pluginDbContext.Plugins.FirstOrDefaultAsync(o => o.PluginId == pluginId);
+            if (plugin == null)
+            {
+                return;
+            }
+            pluginDbContext.Plugins.Remove(plugin);
+            await unitOfWork.SaveAsync();
+        }
+
+        public async Task RunDownMigrationsAsync(Guid pluginId)
+        {
+            var plugin = await pluginDbContext.Plugins.FirstOrDefaultAsync(o => o.PluginId == pluginId);
+            if (plugin == null)
+            {
+                return;
+            }
+            var downs = await pluginDbContext.PluginMigrations.Where(o => o.Plugin == plugin).OrderByDescending(o => o.Version).Select(o => o.Down).ToListAsync();
+            foreach (var down in downs)
+            {
+                // pluginDbContext.
             }
 
-            var row = table.Rows.Cast<DataRow>().First();
+            // TODO FROMSQL()
 
-            var plugin = new PluginViewModel
-            {
-                PluginId = Guid.Parse(row["PluginId"].ToString()),
-                Name = row["Name"].ToString(),
-                UniqueKey = row["UniqueKey"].ToString(),
-                Version = row["Version"].ToString(),
-                DisplayName = row["DisplayName"].ToString(),
-                IsEnable = Convert.ToBoolean(row["Enable"])
-            };
+            //var sql = "SELECT Down from PluginMigrations WHERE PluginId = @pluginId ORDER BY [Version] DESC";
 
-            return plugin;
+            //var table = dbHelper.ExecuteDataTable(sql, new SqlParameter
+            //{
+            //    ParameterName = "@pluginId",
+            //    Value = pluginId,
+            //    SqlDbType = SqlDbType.UniqueIdentifier
+            //});
 
-        }
+            //foreach (var item in table.Rows.Cast<DataRow>())
+            //{
+            //    var script = item[0].ToString();
 
-        public void DeletePlugin(Guid pluginId)
-        {
-            var sqlPluginMigrations = "DELETE PluginMigrations where PluginId = @pluginId";
-
-            _dbHelper.ExecuteNonQuery(sqlPluginMigrations, new List<SqlParameter>{new SqlParameter
-            {
-                ParameterName = "@pluginId",
-                Value = pluginId,
-                SqlDbType = SqlDbType.UniqueIdentifier
-            } }.ToArray());
-
-            var sqlPlugins = "DELETE Plugins where PluginId = @pluginId";
-
-            _dbHelper.ExecuteNonQuery(sqlPlugins, new List<SqlParameter>{new SqlParameter
-            {
-                ParameterName = "@pluginId",
-                Value = pluginId,
-                SqlDbType = SqlDbType.UniqueIdentifier
-            } }.ToArray());
-        }
-
-        public void RunDownMigrations(Guid pluginId)
-        {
-            var sql = "SELECT Down from PluginMigrations WHERE PluginId = @pluginId ORDER BY [Version] DESC";
-
-            var table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
-            {
-                ParameterName = "@pluginId",
-                Value = pluginId,
-                SqlDbType = SqlDbType.UniqueIdentifier
-            });
-
-            foreach (var item in table.Rows.Cast<DataRow>())
-            {
-                var script = item[0].ToString();
-
-                _dbHelper.ExecuteNonQuery(script);
-            }
+            //    dbHelper.ExecuteNonQuery(script);
+            //}
         }
     }
 }

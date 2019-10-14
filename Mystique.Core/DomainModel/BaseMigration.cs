@@ -1,56 +1,54 @@
-﻿using Mystique.Core.Contracts;
-using Mystique.Core.Helpers;
+﻿using Microsoft.EntityFrameworkCore;
+using Mystique.Core.Contracts;
+using Mystique.Core.Repositories;
+using Mystique.Core.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mystique.Core.DomainModel
 {
     public abstract class BaseMigration : IMigration
     {
-        private readonly DbHelper dbHelper = null;
+        private readonly PluginDbContext pluginDbContext;
+        private readonly IUnitOfWork unitOfWork;
 
-        public BaseMigration(DbHelper dbHelper, Version version)
+        public BaseMigration(PluginDbContext pluginDbContext, IUnitOfWork unitOfWork, Version version)
         {
+            this.pluginDbContext = pluginDbContext;
+            this.unitOfWork = unitOfWork;
             Version = version;
-            this.dbHelper = dbHelper;
         }
 
         public Version Version { get; }
-
-        protected void SQL(string sql)
-        {
-            dbHelper.ExecuteNonQuery(sql);
-        }
 
         public abstract void MigrationDown(Guid pluginId);
 
         public abstract void MigrationUp(Guid pluginId);
 
-        protected void RemoveMigrationScripts(Guid pluginId)
+        protected async Task RemoveMigrationScriptsAsync(Guid pluginId)
         {
-            var sql = "DELETE PluginMigrations WHERE PluginId = @pluginId AND Version = @version";
-
-            dbHelper.ExecuteNonQuery(sql, new List<SqlParameter>
+            var plugins = await pluginDbContext.Plugins.Where(o => o.PluginId == pluginId).ToListAsync();
+            foreach (var plugin in plugins)
             {
-                new SqlParameter{ ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = pluginId },
-                new SqlParameter{ ParameterName = "@version", SqlDbType = SqlDbType.NVarChar, Value = Version.VersionNumber }
-            }.ToArray());
+                var migrations = await pluginDbContext.PluginMigrations.Where(o => o.Plugin == plugin && o.Version == Version.VersionNumber).ToArrayAsync();
+                pluginDbContext.PluginMigrations.RemoveRange(migrations);
+            }
         }
 
-        protected void WriteMigrationScripts(Guid pluginId, string up, string down)
+        protected async Task WriteMigrationScriptsAsync(Guid pluginId, string up, string down)
         {
-            var sql = "INSERT INTO PluginMigrations(PluginMigrationId, PluginId, Version, Up, Down) VALUES(@pluginMigrationId, @pluginId, @version, @up, @down)";
-
-            dbHelper.ExecuteNonQuery(sql, new List<SqlParameter>
+            var migration = new PluginMigrationViewModel
             {
-                new SqlParameter{ ParameterName = "@pluginMigrationId", SqlDbType = SqlDbType.UniqueIdentifier, Value = Guid.NewGuid() },
-                new SqlParameter{ ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = pluginId },
-                new SqlParameter{ ParameterName = "@version", SqlDbType = SqlDbType.NVarChar, Value = Version.VersionNumber },
-                new SqlParameter{ ParameterName = "@up", SqlDbType = SqlDbType.NVarChar, Value = up},
-                new SqlParameter{ ParameterName = "@down", SqlDbType = SqlDbType.NVarChar, Value = down}
-            }.ToArray());
+                PluginMigrationId = Guid.NewGuid(),
+                Plugin = await pluginDbContext.Plugins.AsNoTracking().FirstOrDefaultAsync(o => o.PluginId == pluginId),
+                Version = Version.VersionNumber,
+                Up = up,
+                Down = down,
+            };
+            pluginDbContext.PluginMigrations.Add(migration);
+            await unitOfWork.SaveAsync();
         }
     }
 }

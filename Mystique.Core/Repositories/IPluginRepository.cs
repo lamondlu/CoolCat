@@ -2,27 +2,28 @@
 using Mystique.Core.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Mystique.Core.Repositories
 {
     public interface IPluginRepository
     {
-        List<PluginListItemViewModel> GetAllPlugins();
+        Task<List<PluginListItemViewModel>> GetAllPluginsAsync();
 
-        List<PluginListItemViewModel> GetAllEnabledPlugins();
+        Task<List<PluginListItemViewModel>> GetAllEnabledPluginsAsync();
 
-        void AddPlugin(AddPluginDTO dto);
+        Task AddPluginAsync(AddPluginDTO dto);
 
-        void UpdatePluginVersion(Guid pluginId, string version);
+        Task UpdatePluginVersionAsync(Guid pluginId, string version);
 
-        PluginViewModel GetPlugin(Guid pluginId);
+        Task<PluginViewModel> GetPluginAsync(Guid pluginId);
 
-        PluginViewModel GetPlugin(string pluginName);
+        Task<PluginViewModel> GetPluginAsync(string pluginName);
 
-        void SetPluginStatus(Guid pluginId, bool enable);
+        Task SetPluginStatusAsync(Guid pluginId, bool enable);
 
-        void DeletePlugin(Guid pluginId);
+        Task DeletePluginAsync(Guid pluginId);
 
-        void RunDownMigrations(Guid pluginId);
+        Task RunDownMigrationsAsync(Guid pluginId);
     }
 }

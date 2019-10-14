@@ -1,26 +1,40 @@
-﻿using Mystique.Core.Helpers;
-using Mystique.Core.Models;
-using Microsoft.Extensions.Options;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using Mystique.Core.ViewModels;
+using System.Threading.Tasks;
 
 namespace Mystique.Core.Repositories
 {
-    public class UnitOfWork : IUnitOfWork
+    public class PluginDbContext : DbContext
     {
-        private readonly List<Command> commands;
-        private readonly string connectionString;
-        private readonly DbHelper dbHelper;
-        private IPluginRepository pluginRepository;
-
-        public UnitOfWork(IOptions<ConnectionStringSetting> connectionStringAccessor)
+        public PluginDbContext(DbContextOptions<PluginDbContext> options) : base(options)
         {
-            commands = new List<Command>();
-            connectionString = connectionStringAccessor.Value.ConnectionString;
-            dbHelper = new DbHelper(connectionString);
         }
 
-        public IPluginRepository PluginRepository => pluginRepository ?? (pluginRepository = new PluginRepository(dbHelper, commands));
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+        }
 
-        public void Commit() => dbHelper.ExecuteNonQuery(commands);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(PluginDbContext).Assembly);
+        }
+
+        public DbSet<PluginListItemViewModel> PluginListItems { get; set; }
+        public DbSet<PluginViewModel> Plugins { get; set; }
+        public DbSet<PluginMigrationViewModel> PluginMigrations { get; set; }
+    }
+
+    public class UnitOfWork : IUnitOfWork
+    {
+        private readonly PluginDbContext context;
+
+        public UnitOfWork(PluginDbContext context)
+        {
+            this.context = context;
+        }
+
+        public async Task<bool> SaveAsync() => await context.SaveChangesAsync() > 0;
     }
 }

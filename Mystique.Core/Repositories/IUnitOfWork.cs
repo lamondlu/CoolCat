@@ -1,9 +1,9 @@
-﻿namespace Mystique.Core.Repositories
+﻿using System.Threading.Tasks;
+
+namespace Mystique.Core.Repositories
 {
     public interface IUnitOfWork
     {
-        IPluginRepository PluginRepository { get; }
-
-        void Commit();
+        Task<bool> SaveAsync();
     }
 }

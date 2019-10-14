@@ -2,21 +2,17 @@
 using Mystique.Core.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Mystique.Core.Contracts
 {
     public interface IPluginManager
     {
-        List<PluginListItemViewModel> GetAllPlugins();
-
-        void AddPlugins(PluginPackage pluginPackage);
-
-        PluginViewModel GetPlugin(Guid pluginId);
-
-        void DeletePlugin(Guid pluginId);
-
-        void EnablePlugin(Guid pluginId);
-
-        void DisablePlugin(Guid pluginId);
+        Task<List<PluginListItemViewModel>> GetAllPluginsAsync();
+        Task AddPluginsAsync(PluginPackage pluginPackage);
+        Task<PluginViewModel> GetPluginAsync(Guid pluginId);
+        Task DeletePluginAsync(Guid pluginId);
+        Task EnablePluginAsync(Guid pluginId);
+        Task DisablePluginAsync(Guid pluginId);
     }
 }

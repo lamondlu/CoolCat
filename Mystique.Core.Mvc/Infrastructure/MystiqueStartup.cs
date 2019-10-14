@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mystique.Core.BusinessLogics;
 using Mystique.Core.Contracts;
-using Mystique.Core.Models;
+using Mystique.Core.DomainModel;
 using Mystique.Core.Repositories;
 using Mystique.Mvc.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Mystique.Core.Mvc.Infrastructure
 {
@@ -18,15 +20,22 @@ namespace Mystique.Core.Mvc.Infrastructure
     {
         private static readonly IList<string> presets = new List<string>();
 
-        public static void MystiqueSetup(this IServiceCollection services, IConfiguration configuration)
+        public static async Task MystiqueSetupAsync(this IServiceCollection services, IConfiguration configuration)
         {
-            
             services.AddOptions();
-            services.Configure<ConnectionStringSetting>(configuration.GetSection("ConnectionStringSetting"));
+            services.AddDbContext<PluginDbContext>(options =>
+            {
+                var connectionString = configuration.GetConnectionString("PluginsConnectionString");
+                options.UseSqlServer(connectionString, o => o.UseRowNumberForPaging(true));
+                options.EnableSensitiveDataLogging(true);
+                options.EnableDetailedErrors(true);
+            });
 
             services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IPluginRepository, PluginRepository>();
+            services.AddScoped<PluginPackage>();
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
 
@@ -36,7 +45,6 @@ namespace Mystique.Core.Mvc.Infrastructure
                 {
                     o.AdditionalReferencePaths.Add(item);
                 }
-
                 AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
             });
 
@@ -46,7 +54,8 @@ namespace Mystique.Core.Mvc.Infrastructure
                 var option = scope.ServiceProvider.GetService<MvcRazorRuntimeCompilationOptions>();
 
                 var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
-                var allEnabledPlugins = unitOfWork.PluginRepository.GetAllEnabledPlugins();
+                var pluginRepository = scope.ServiceProvider.GetService<IPluginRepository>();
+                var allEnabledPlugins = await pluginRepository.GetAllEnabledPluginsAsync();
 
                 foreach (var plugin in allEnabledPlugins)
                 {
@@ -54,9 +63,9 @@ namespace Mystique.Core.Mvc.Infrastructure
                     var moduleName = plugin.Name;
                     var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
 
-                    presets.Add(filePath);
                     using var fs = new FileStream(filePath, FileMode.Open);
                     var assembly = context.LoadFromStream(fs);
+                    presets.Add(filePath);
 
                     var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
                     mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
@@ -68,7 +77,7 @@ namespace Mystique.Core.Mvc.Infrastructure
             {
                 o.AreaViewLocationFormats.Add("/Modules/{2}/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
                 o.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
-            });            
+            });
         }
     }
 }
