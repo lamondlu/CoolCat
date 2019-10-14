@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Mystique.Core.Contracts;
 using System.Reflection;
 using Mystique.Core.Helpers;
+using Mystique.Core.Exceptions;
 
 namespace Mystique.Core.DomainModel
 {
@@ -73,15 +74,15 @@ namespace Mystique.Core.DomainModel
 
             var files = folder.GetFiles();
 
-            var configFiles = files.Where(p => p.Name == "plugin.json");
+            var configFile = files.SingleOrDefault(p => p.Name == "plugin.json");
 
-            if (!configFiles.Any())
+            if (configFile == null)
             {
-                throw new Exception("The plugin is missing the configuration file.");
+                throw new MissingConfigurationFileException();
             }
             else
             {
-                using (var s = configFiles.First().OpenRead())
+                using (var s = configFile.OpenRead())
                 {
                     LoadConfiguration(s);
                 }
@@ -109,7 +110,7 @@ namespace Mystique.Core.DomainModel
 
                 if (_pluginConfiguration == null)
                 {
-                    throw new Exception("The configuration file is wrong format.");
+                    throw new WrongFormatConfigurationException();
                 }
             }
         }
