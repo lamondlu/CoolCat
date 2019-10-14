@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DemoReferenceLibrary;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DemoPlugin1.Controllers
 {
@@ -7,6 +8,8 @@ namespace DemoPlugin1.Controllers
     {
         public IActionResult HelloWorld()
         {
+            var content = new Demo().SayHello();
+            ViewBag.Content = content;
             return View();
         }
     }
