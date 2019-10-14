@@ -34,7 +34,7 @@ namespace Mystique.Core.BusinessLogics
             var module = await pluginRepository.GetPluginAsync(pluginId);
             await pluginRepository.SetPluginStatusAsync(pluginId, true);
 
-            mvcModuleSetup.EnableModule(module.Name);
+            await mvcModuleSetup.EnableModuleAsync(module.Name);
         }
 
         public async Task DeletePluginAsync(Guid pluginId)
@@ -50,14 +50,14 @@ namespace Mystique.Core.BusinessLogics
             await pluginRepository.DeletePluginAsync(pluginId);
             await unitOfWork.SaveAsync();
 
-            mvcModuleSetup.DeleteModule(plugin.Name);
+            await mvcModuleSetup.DeleteModuleAsync(plugin.Name);
         }
 
         public async Task DisablePluginAsync(Guid pluginId)
         {
             var module = await pluginRepository.GetPluginAsync(pluginId);
             await pluginRepository.SetPluginStatusAsync(pluginId, false);
-            mvcModuleSetup.DisableModule(module.Name);
+            await mvcModuleSetup.DisableModuleAsync(module.Name);
         }
 
         public async Task AddPluginsAsync(PluginPackage pluginPackage)

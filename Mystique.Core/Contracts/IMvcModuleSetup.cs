@@ -1,11 +1,11 @@
-﻿namespace Mystique.Core.Contracts
+﻿using System.Threading.Tasks;
+
+namespace Mystique.Core.Contracts
 {
     public interface IMvcModuleSetup
     {
-        void DisableModule(string moduleName);
-
-        void EnableModule(string moduleName);
-
-        void DeleteModule(string moduleName);
+        Task DisableModuleAsync(string moduleName);
+        Task EnableModuleAsync(string moduleName);
+        Task DeleteModuleAsync(string moduleName);
     }
 }

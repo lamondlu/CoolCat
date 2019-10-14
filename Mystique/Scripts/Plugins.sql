@@ -5,5 +5,5 @@
     [Name] NVARCHAR(50) NOT NULL, 
     [DisplayName] NVARCHAR(MAX) NULL, 
     [Version] NVARCHAR(50) NOT NULL, 
-    [Enable] BIT NOT NULL 
+    IsEnable BIT NOT NULL 
 )

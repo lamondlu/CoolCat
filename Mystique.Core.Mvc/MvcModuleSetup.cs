@@ -5,6 +5,7 @@ using Mystique.Mvc.Infrastructure;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mystique.Core.Mvc
 {
@@ -17,7 +18,7 @@ namespace Mystique.Core.Mvc
             this.partManager = partManager;
         }
 
-        public void EnableModule(string moduleName)
+        public async Task EnableModuleAsync(string moduleName)
         {
             if (PluginsLoadContexts.Any(moduleName))
             {
@@ -40,29 +41,37 @@ namespace Mystique.Core.Mvc
                 PluginsLoadContexts.AddPluginContext(moduleName, context);
             }
 
-            ResetControllActions();
+            await ResetControllerActionsAsync();
         }
 
-        public void DisableModule(string moduleName)
+        public async Task DisableModuleAsync(string moduleName)
         {
-            var last = partManager.ApplicationParts.First(p => p.Name == moduleName);
-            partManager.ApplicationParts.Remove(last);
-
-            ResetControllActions();
+            var find = partManager.ApplicationParts.First(p => p.Name == moduleName);
+            if (find != null)
+            {
+                partManager.ApplicationParts.Remove(find);
+                await ResetControllerActionsAsync();
+            }
         }
 
-        public void DeleteModule(string moduleName)
+        public async Task DeleteModuleAsync(string moduleName)
         {
             PluginsLoadContexts.RemovePluginContext(moduleName);
 
-            var directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}");
-            directory.Delete(true);
+            await Task.Run(() =>
+            {
+                var directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}");
+                directory.Delete(true);
+            });
         }
 
-        private void ResetControllActions()
+        private Task ResetControllerActionsAsync()
         {
-            MystiqueActionDescriptorChangeProvider.Instance.HasChanged = true;
-            MystiqueActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+            return Task.Run(() =>
+            {
+                MystiqueActionDescriptorChangeProvider.Instance.HasChanged = true;
+                MystiqueActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+            });
         }
     }
 }
