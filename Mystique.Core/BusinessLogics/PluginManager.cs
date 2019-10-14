@@ -13,66 +13,57 @@ namespace Mystique.Core.BusinessLogics
 {
     public class PluginManager : IPluginManager
     {
-        private readonly IUnitOfWork _unitOfWork = null;
-        private string _connectionString = null;
-        private IMvcModuleSetup _mvcModuleSetup = null;
+        private readonly IUnitOfWork unitOfWork = null;
+        private readonly string connectionString = null;
+        private readonly IMvcModuleSetup mvcModuleSetup = null;
 
         public PluginManager(IUnitOfWork unitOfWork, IOptions<ConnectionStringSetting> connectionStringSettingAccessor, IMvcModuleSetup mvcModuleSetup)
         {
-            _unitOfWork = unitOfWork;
-            _connectionString = connectionStringSettingAccessor.Value.ConnectionString;
-            _mvcModuleSetup = mvcModuleSetup;
+            this.unitOfWork = unitOfWork;
+            connectionString = connectionStringSettingAccessor.Value.ConnectionString;
+            this.mvcModuleSetup = mvcModuleSetup;
         }
 
-        public List<PluginListItemViewModel> GetAllPlugins()
-        {
-            return _unitOfWork.PluginRepository.GetAllPlugins();
-        }
+        public List<PluginListItemViewModel> GetAllPlugins() => unitOfWork.PluginRepository.GetAllPlugins();
 
-        public List<PluginListItemViewModel> GetAllEnabledPlugins()
-        {
-            return _unitOfWork.PluginRepository.GetAllEnabledPlugins();
-        }
+        public List<PluginListItemViewModel> GetAllEnabledPlugins() => unitOfWork.PluginRepository.GetAllEnabledPlugins();
 
-        public PluginViewModel GetPlugin(Guid pluginId)
-        {
-            return _unitOfWork.PluginRepository.GetPlugin(pluginId);
-        }
+        public PluginViewModel GetPlugin(Guid pluginId) => unitOfWork.PluginRepository.GetPlugin(pluginId);
 
         public void EnablePlugin(Guid pluginId)
         {
-            var module = _unitOfWork.PluginRepository.GetPlugin(pluginId);
-            _unitOfWork.PluginRepository.SetPluginStatus(pluginId, true);
+            var module = unitOfWork.PluginRepository.GetPlugin(pluginId);
+            unitOfWork.PluginRepository.SetPluginStatus(pluginId, true);
 
-            _mvcModuleSetup.EnableModule(module.Name);
+            mvcModuleSetup.EnableModule(module.Name);
         }
 
         public void DeletePlugin(Guid pluginId)
         {
-            var plugin = _unitOfWork.PluginRepository.GetPlugin(pluginId);
+            var plugin = unitOfWork.PluginRepository.GetPlugin(pluginId);
 
             if (plugin.IsEnable)
             {
                 DisablePlugin(pluginId);
             }
 
-            _unitOfWork.PluginRepository.RunDownMigrations(pluginId);
-            _unitOfWork.PluginRepository.DeletePlugin(pluginId);
-            _unitOfWork.Commit();
+            unitOfWork.PluginRepository.RunDownMigrations(pluginId);
+            unitOfWork.PluginRepository.DeletePlugin(pluginId);
+            unitOfWork.Commit();
 
-            _mvcModuleSetup.DeleteModule(plugin.Name);
+            mvcModuleSetup.DeleteModule(plugin.Name);
         }
 
         public void DisablePlugin(Guid pluginId)
         {
-            var module = _unitOfWork.PluginRepository.GetPlugin(pluginId);
-            _unitOfWork.PluginRepository.SetPluginStatus(pluginId, false);
-            _mvcModuleSetup.DisableModule(module.Name);
+            var module = unitOfWork.PluginRepository.GetPlugin(pluginId);
+            unitOfWork.PluginRepository.SetPluginStatus(pluginId, false);
+            mvcModuleSetup.DisableModule(module.Name);
         }
 
         public void AddPlugins(PluginPackage pluginPackage)
         {
-            var existedPlugin = _unitOfWork.PluginRepository.GetPlugin(pluginPackage.Configuration.Name);
+            var existedPlugin = unitOfWork.PluginRepository.GetPlugin(pluginPackage.Configuration.Name);
 
             if (existedPlugin == null)
             {
@@ -103,10 +94,10 @@ namespace Mystique.Core.BusinessLogics
                 Version = pluginPackage.Configuration.Version
             };
 
-            _unitOfWork.PluginRepository.AddPlugin(plugin);
-            _unitOfWork.Commit();
+            unitOfWork.PluginRepository.AddPlugin(plugin);
+            unitOfWork.Commit();
 
-            var versions = pluginPackage.GetAllMigrations(_connectionString);
+            var versions = pluginPackage.GetAllMigrations(connectionString);
 
             foreach (var version in versions)
             {
@@ -118,10 +109,10 @@ namespace Mystique.Core.BusinessLogics
 
         public void UpgradePlugin(PluginPackage pluginPackage, PluginViewModel oldPlugin)
         {
-            _unitOfWork.PluginRepository.UpdatePluginVersion(oldPlugin.PluginId, pluginPackage.Configuration.Version);
-            _unitOfWork.Commit();
+            unitOfWork.PluginRepository.UpdatePluginVersion(oldPlugin.PluginId, pluginPackage.Configuration.Version);
+            unitOfWork.Commit();
 
-            var migrations = pluginPackage.GetAllMigrations(_connectionString);
+            var migrations = pluginPackage.GetAllMigrations(connectionString);
 
             var pendingMigrations = migrations.Where(p => p.Version > oldPlugin.Version);
 
@@ -135,8 +126,8 @@ namespace Mystique.Core.BusinessLogics
 
         public void DegradePlugin(PluginPackage pluginPackage, PluginViewModel oldPlugin)
         {
-            _unitOfWork.PluginRepository.UpdatePluginVersion(oldPlugin.PluginId, pluginPackage.Configuration.Version);
-            _unitOfWork.Commit();
+            unitOfWork.PluginRepository.UpdatePluginVersion(oldPlugin.PluginId, pluginPackage.Configuration.Version);
+            unitOfWork.Commit();
         }
     }
 }

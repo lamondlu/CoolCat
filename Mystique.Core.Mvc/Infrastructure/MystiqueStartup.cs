@@ -16,7 +16,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 {
     public static class MystiqueStartup
     {
-        private static IList<string> _presets = new List<string>();
+        private static readonly IList<string> presets = new List<string>();
 
         public static void MystiqueSetup(this IServiceCollection services, IConfiguration configuration)
         {
@@ -32,7 +32,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
             var mvcBuilder = services.AddMvc().AddRazorRuntimeCompilation(o =>
             {
-                foreach (var item in _presets)
+                foreach (var item in presets)
                 {
                     o.AdditionalReferencePaths.Add(item);
                 }
@@ -54,7 +54,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                     var moduleName = plugin.Name;
                     var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
 
-                    _presets.Add(filePath);
+                    presets.Add(filePath);
                     using var fs = new FileStream(filePath, FileMode.Open);
                     var assembly = context.LoadFromStream(fs);
 
@@ -68,9 +68,7 @@ namespace Mystique.Core.Mvc.Infrastructure
             {
                 o.AreaViewLocationFormats.Add("/Modules/{2}/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
                 o.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
-            });
-
-            
+            });            
         }
     }
 }

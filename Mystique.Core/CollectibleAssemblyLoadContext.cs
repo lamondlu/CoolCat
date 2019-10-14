@@ -9,9 +9,6 @@ namespace Mystique.Core
         {
         }
 
-        protected override Assembly Load(AssemblyName name)
-        {
-            return null;
-        }
+        protected override Assembly Load(AssemblyName name) => null;
     }
 }

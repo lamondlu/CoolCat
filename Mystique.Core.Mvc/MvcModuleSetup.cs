@@ -10,16 +10,22 @@ namespace Mystique.Core.Mvc
 {
     public class MvcModuleSetup : IMvcModuleSetup
     {
-        private ApplicationPartManager _partManager;
+        private readonly ApplicationPartManager partManager;
 
         public MvcModuleSetup(ApplicationPartManager partManager)
         {
-            _partManager = partManager;
+            this.partManager = partManager;
         }
 
         public void EnableModule(string moduleName)
         {
-            if (!PluginsLoadContexts.Any(moduleName))
+            if (PluginsLoadContexts.Any(moduleName))
+            {
+                var context = PluginsLoadContexts.GetContext(moduleName);
+                var controllerAssemblyPart = new MystiqueAssemblyPart(context.Assemblies.First());
+                partManager.ApplicationParts.Add(controllerAssemblyPart);
+            }
+            else
             {
                 var context = new CollectibleAssemblyLoadContext();
 
@@ -30,14 +36,8 @@ namespace Mystique.Core.Mvc
                 var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
 
                 AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
-                _partManager.ApplicationParts.Add(controllerAssemblyPart);
+                partManager.ApplicationParts.Add(controllerAssemblyPart);
                 PluginsLoadContexts.AddPluginContext(moduleName, context);
-            }
-            else
-            {
-                var context = PluginsLoadContexts.GetContext(moduleName);
-                var controllerAssemblyPart = new MystiqueAssemblyPart(context.Assemblies.First());
-                _partManager.ApplicationParts.Add(controllerAssemblyPart);
             }
 
             ResetControllActions();
@@ -45,8 +45,8 @@ namespace Mystique.Core.Mvc
 
         public void DisableModule(string moduleName)
         {
-            var last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
-            _partManager.ApplicationParts.Remove(last);
+            var last = partManager.ApplicationParts.First(p => p.Name == moduleName);
+            partManager.ApplicationParts.Remove(last);
 
             ResetControllActions();
         }

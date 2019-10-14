@@ -7,13 +7,13 @@ namespace Mystique.Core.DomainModel
     public class Version : IComparable<Version>
     {
         private const string _pattern = "^[0-9]*$";
-        private static Regex _regex = new Regex(_pattern);
+        private static readonly Regex _regex = new Regex(_pattern);
 
         public Version(string versionNumber)
         {
             if (Validate(versionNumber))
             {
-                this.VersionNumber = versionNumber;
+                VersionNumber = versionNumber;
             }
             else
             {
@@ -22,29 +22,11 @@ namespace Mystique.Core.DomainModel
 
         }
 
-        public int PrimaryVersion
-        {
-            get
-            {
-                return Convert.ToInt32(this.VersionNumber.Split('.')[0]);
-            }
-        }
+        public int PrimaryVersion => Convert.ToInt32(VersionNumber.Split('.')[0]);
 
-        public int SecondaryVersion
-        {
-            get
-            {
-                return Convert.ToInt32(this.VersionNumber.Split('.')[1]);
-            }
-        }
+        public int SecondaryVersion => Convert.ToInt32(VersionNumber.Split('.')[1]);
 
-        public int MinorVersion
-        {
-            get
-            {
-                return Convert.ToInt32(this.VersionNumber.Split('.')[2]);
-            }
-        }
+        public int MinorVersion => Convert.ToInt32(VersionNumber.Split('.')[2]);
 
         private bool Validate(string versionNumber)
         {
@@ -72,9 +54,7 @@ namespace Mystique.Core.DomainModel
             {
                 return 1;
             }
-            else if (PrimaryVersion == other.PrimaryVersion
-                && SecondaryVersion == other.SecondaryVersion
-                && MinorVersion == other.MinorVersion)
+            else if (PrimaryVersion == other.PrimaryVersion && SecondaryVersion == other.SecondaryVersion && MinorVersion == other.MinorVersion)
             {
                 return 0;
             }
@@ -94,15 +74,9 @@ namespace Mystique.Core.DomainModel
             return left.VersionNumber.Equals(right.VersionNumber);
         }
 
-        public static bool operator !=(Version left, Version right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(Version left, Version right) => !(left == right);
 
-        public static implicit operator Version(string versionNumber)
-        {
-            return new Version(versionNumber);
-        }
+        public static implicit operator Version(string versionNumber) => new Version(versionNumber);
 
         public static bool operator >(Version x, Version y)
         {

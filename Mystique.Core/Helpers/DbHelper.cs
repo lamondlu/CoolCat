@@ -8,7 +8,7 @@ namespace Mystique.Core.Helpers
 {
     public class DbHelper
     {
-        private string connectionString = string.Empty;
+        private readonly string connectionString;
 
         public DbHelper(string connectionString)
         {
@@ -25,8 +25,10 @@ namespace Mystique.Core.Helpers
             {
                 foreach (var query in commands)
                 {
-                    SqlCommand cmd = new SqlCommand(query.Sql, Connection);
-                    cmd.Transaction = trans;
+                    SqlCommand cmd = new SqlCommand(query.Sql, Connection)
+                    {
+                        Transaction = trans
+                    };
                     cmd.Parameters.AddRange(query.Parameters.ToArray());
                     if (Connection.State != ConnectionState.Open)
                     {
@@ -57,8 +59,10 @@ namespace Mystique.Core.Helpers
             {
                 foreach (var query in queries)
                 {
-                    SqlCommand cmd = new SqlCommand(query.Key, Connection);
-                    cmd.Transaction = trans;
+                    SqlCommand cmd = new SqlCommand(query.Key, Connection)
+                    {
+                        Transaction = trans
+                    };
                     cmd.Parameters.AddRange(query.Value.ToArray());
                     if (Connection.State != ConnectionState.Open)
                     {
@@ -89,8 +93,10 @@ namespace Mystique.Core.Helpers
             SqlTransaction trans = Connection.BeginTransaction();
             try
             {
-                SqlCommand cmd = new SqlCommand(safeSql, Connection);
-                cmd.Transaction = trans;
+                SqlCommand cmd = new SqlCommand(safeSql, Connection)
+                {
+                    Transaction = trans
+                };
 
                 if (Connection.State != ConnectionState.Open)
                 {
@@ -115,8 +121,10 @@ namespace Mystique.Core.Helpers
             SqlTransaction trans = Connection.BeginTransaction();
             try
             {
-                SqlCommand cmd = new SqlCommand(sql, Connection);
-                cmd.Transaction = trans;
+                SqlCommand cmd = new SqlCommand(sql, Connection)
+                {
+                    Transaction = trans
+                };
                 cmd.Parameters.AddRange(values);
                 if (Connection.State != ConnectionState.Open)
                 {
@@ -138,7 +146,10 @@ namespace Mystique.Core.Helpers
         {
             using SqlConnection Connection = new SqlConnection(connectionString);
             if (Connection.State != ConnectionState.Open)
+            {
                 Connection.Open();
+            }
+
             SqlCommand cmd = new SqlCommand(safeSql, Connection);
             int result = Convert.ToInt32(cmd.ExecuteScalar());
             return result;
@@ -148,7 +159,10 @@ namespace Mystique.Core.Helpers
         {
             using SqlConnection Connection = new SqlConnection(connectionString);
             if (Connection.State != ConnectionState.Open)
+            {
                 Connection.Open();
+            }
+
             SqlCommand cmd = new SqlCommand(sql, Connection);
             cmd.Parameters.AddRange(values);
             int result = Convert.ToInt32(cmd.ExecuteScalar());
@@ -158,7 +172,10 @@ namespace Mystique.Core.Helpers
         public SqlDataReader ExecuteReader(string safeSql, SqlConnection Connection)
         {
             if (Connection.State != ConnectionState.Open)
+            {
                 Connection.Open();
+            }
+
             SqlCommand cmd = new SqlCommand(safeSql, Connection);
             SqlDataReader reader = cmd.ExecuteReader();
             return reader;
@@ -167,7 +184,10 @@ namespace Mystique.Core.Helpers
         public SqlDataReader ExecuteReader(string sql, SqlParameter[] values, SqlConnection Connection)
         {
             if (Connection.State != ConnectionState.Open)
+            {
                 Connection.Open();
+            }
+
             SqlCommand cmd = new SqlCommand(sql, Connection);
             cmd.Parameters.AddRange(values);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -178,10 +198,15 @@ namespace Mystique.Core.Helpers
         {
             using SqlConnection Connection = new SqlConnection(connectionString);
             if (Connection.State != ConnectionState.Open)
+            {
                 Connection.Open();
+            }
+
             DataSet ds = new DataSet();
-            SqlCommand cmd = new SqlCommand(safeSql, Connection);
-            cmd.CommandType = type;
+            SqlCommand cmd = new SqlCommand(safeSql, Connection)
+            {
+                CommandType = type
+            };
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(ds);
             return ds.Tables[0];
@@ -191,7 +216,10 @@ namespace Mystique.Core.Helpers
         {
             using SqlConnection Connection = new SqlConnection(connectionString);
             if (Connection.State != ConnectionState.Open)
+            {
                 Connection.Open();
+            }
+
             DataSet ds = new DataSet();
             SqlCommand cmd = new SqlCommand(safeSql, Connection);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -210,10 +238,15 @@ namespace Mystique.Core.Helpers
         {
             using SqlConnection Connection = new SqlConnection(connectionString);
             if (Connection.State != ConnectionState.Open)
+            {
                 Connection.Open();
+            }
+
             DataSet ds = new DataSet();
-            SqlCommand cmd = new SqlCommand(sql, Connection);
-            cmd.CommandTimeout = 0;
+            SqlCommand cmd = new SqlCommand(sql, Connection)
+            {
+                CommandTimeout = 0
+            };
             cmd.Parameters.AddRange(values);
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             da.Fill(ds);
@@ -224,12 +257,17 @@ namespace Mystique.Core.Helpers
         {
             using SqlConnection Connection = new SqlConnection(connectionString);
             if (Connection.State != ConnectionState.Open)
+            {
                 Connection.Open();
+            }
+
             DataSet ds = new DataSet();
             SqlCommand cmd = new SqlCommand(safeSql, Connection);
 
             if (values != null)
+            {
                 cmd.Parameters.AddRange(values);
+            }
 
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             try

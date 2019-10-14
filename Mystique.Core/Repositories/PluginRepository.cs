@@ -22,9 +22,11 @@ namespace Mystique.Core.Repositories
 
         public void AddPlugin(AddPluginDTO dto)
         {
-            var command = new Command();
-            command.Parameters = new List<SqlParameter>();
-            command.Sql = "INSERT INTO Plugins(PluginId, Name, UniqueKey, Version, DisplayName,Enable) values(@pluginId, @name, @uniqueKey, @version, @displayName, @enable)";
+            var command = new Command
+            {
+                Parameters = new List<SqlParameter>(),
+                Sql = "INSERT INTO Plugins(PluginId, Name, UniqueKey, Version, DisplayName,Enable) values(@pluginId, @name, @uniqueKey, @version, @displayName, @enable)"
+            };
 
             command.Parameters.Add(new SqlParameter { ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
             command.Parameters.Add(new SqlParameter { ParameterName = "@name", SqlDbType = SqlDbType.NVarChar, Value = dto.Name });
@@ -42,9 +44,11 @@ namespace Mystique.Core.Repositories
 
         public void UpdatePluginVersion(Guid pluginId, string version)
         {
-            var command = new Command();
-            command.Parameters = new List<SqlParameter>();
-            command.Sql = "UPDATE Plugins SET Version = @version WHERE PluginId = @pluginId";
+            var command = new Command
+            {
+                Parameters = new List<SqlParameter>(),
+                Sql = "UPDATE Plugins SET Version = @version WHERE PluginId = @pluginId"
+            };
 
 
             command.Parameters.Add(new SqlParameter { ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = pluginId });
@@ -62,13 +66,15 @@ namespace Mystique.Core.Repositories
 
             foreach (var row in table.Rows.Cast<DataRow>())
             {
-                var plugin = new PluginListItemViewModel();
-                plugin.PluginId = Guid.Parse(row["PluginId"].ToString());
-                plugin.Name = row["Name"].ToString();
-                plugin.UniqueKey = row["UniqueKey"].ToString();
-                plugin.Version = row["Version"].ToString();
-                plugin.DisplayName = row["DisplayName"].ToString();
-                plugin.IsEnable = Convert.ToBoolean(row["Enable"]);
+                var plugin = new PluginListItemViewModel
+                {
+                    PluginId = Guid.Parse(row["PluginId"].ToString()),
+                    Name = row["Name"].ToString(),
+                    UniqueKey = row["UniqueKey"].ToString(),
+                    Version = row["Version"].ToString(),
+                    DisplayName = row["DisplayName"].ToString(),
+                    IsEnable = Convert.ToBoolean(row["Enable"])
+                };
 
                 plugins.Add(plugin);
             }
@@ -109,13 +115,15 @@ namespace Mystique.Core.Repositories
 
             var row = table.Rows.Cast<DataRow>().First();
 
-            var plugin = new PluginViewModel();
-            plugin.PluginId = Guid.Parse(row["PluginId"].ToString());
-            plugin.Name = row["Name"].ToString();
-            plugin.UniqueKey = row["UniqueKey"].ToString();
-            plugin.Version = row["Version"].ToString();
-            plugin.DisplayName = row["DisplayName"].ToString();
-            plugin.IsEnable = Convert.ToBoolean(row["Enable"]);
+            var plugin = new PluginViewModel
+            {
+                PluginId = Guid.Parse(row["PluginId"].ToString()),
+                Name = row["Name"].ToString(),
+                UniqueKey = row["UniqueKey"].ToString(),
+                Version = row["Version"].ToString(),
+                DisplayName = row["DisplayName"].ToString(),
+                IsEnable = Convert.ToBoolean(row["Enable"])
+            };
 
             return plugin;
         }
@@ -138,13 +146,15 @@ namespace Mystique.Core.Repositories
 
             var row = table.Rows.Cast<DataRow>().First();
 
-            var plugin = new PluginViewModel();
-            plugin.PluginId = Guid.Parse(row["PluginId"].ToString());
-            plugin.Name = row["Name"].ToString();
-            plugin.UniqueKey = row["UniqueKey"].ToString();
-            plugin.Version = row["Version"].ToString();
-            plugin.DisplayName = row["DisplayName"].ToString();
-            plugin.IsEnable = Convert.ToBoolean(row["Enable"]);
+            var plugin = new PluginViewModel
+            {
+                PluginId = Guid.Parse(row["PluginId"].ToString()),
+                Name = row["Name"].ToString(),
+                UniqueKey = row["UniqueKey"].ToString(),
+                Version = row["Version"].ToString(),
+                DisplayName = row["DisplayName"].ToString(),
+                IsEnable = Convert.ToBoolean(row["Enable"])
+            };
 
             return plugin;
 

@@ -7,34 +7,20 @@ namespace Mystique.Core.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private DbHelper _dbHelper = null;
-        private string _connectionString = string.Empty;
-        private IPluginRepository _pluginRepository = null;
-        private List<Command> _commands;
+        private readonly List<Command> commands;
+        private readonly string connectionString;
+        private readonly DbHelper dbHelper;
+        private IPluginRepository pluginRepository;
 
         public UnitOfWork(IOptions<ConnectionStringSetting> connectionStringAccessor)
         {
-            _commands = new List<Command>();
-            _connectionString = connectionStringAccessor.Value.ConnectionString;
-            _dbHelper = new DbHelper(_connectionString);
+            commands = new List<Command>();
+            connectionString = connectionStringAccessor.Value.ConnectionString;
+            dbHelper = new DbHelper(connectionString);
         }
 
-        public IPluginRepository PluginRepository
-        {
-            get
-            {
-                if (_pluginRepository == null)
-                {
-                    _pluginRepository = new PluginRepository(_dbHelper, _commands);
-                }
+        public IPluginRepository PluginRepository => pluginRepository ?? (pluginRepository = new PluginRepository(dbHelper, commands));
 
-                return _pluginRepository;
-            }
-        }
-
-        public void Commit()
-        {
-            _dbHelper.ExecuteNonQuery(_commands);
-        }
+        public void Commit() => dbHelper.ExecuteNonQuery(commands);
     }
 }
