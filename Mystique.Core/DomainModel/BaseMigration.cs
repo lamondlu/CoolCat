@@ -27,16 +27,34 @@ namespace Mystique.Core.DomainModel
             }
         }
 
+        public abstract string UpScripts
+        {
+            get;
+        }
+
+        public abstract string DownScripts
+        {
+            get;
+        }
+
         protected void SQL(string sql)
         {
             _dbHelper.ExecuteNonQuery(sql);
         }
 
-        public abstract void MigrationDown(Guid pluginId);
+        public void MigrateUp(Guid pluginId)
+        {
+            SQL(UpScripts);
+            WriteMigrationScripts(pluginId);
+        }
 
-        public abstract void MigrationUp(Guid pluginId);
+        public void MigrateDown(Guid pluginId)
+        {
+            SQL(DownScripts);
+            RemoveMigrationScripts(pluginId);
+        }
 
-        protected void RemoveMigrationScripts(Guid pluginId)
+        private void RemoveMigrationScripts(Guid pluginId)
         {
             var sql = "DELETE PluginMigrations WHERE PluginId = @pluginId AND Version = @version";
 
@@ -47,7 +65,7 @@ namespace Mystique.Core.DomainModel
             }.ToArray());
         }
 
-        protected void WriteMigrationScripts(Guid pluginId, string up, string down)
+        private void WriteMigrationScripts(Guid pluginId)
         {
             var sql = "INSERT INTO PluginMigrations(PluginMigrationId, PluginId, Version, Up, Down) VALUES(@pluginMigrationId, @pluginId, @version, @up, @down)";
 
@@ -56,8 +74,8 @@ namespace Mystique.Core.DomainModel
                 new SqlParameter{ ParameterName = "@pluginMigrationId", SqlDbType = SqlDbType.UniqueIdentifier, Value = Guid.NewGuid() },
                 new SqlParameter{ ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = pluginId },
                 new SqlParameter{ ParameterName = "@version", SqlDbType = SqlDbType.NVarChar, Value = _version.VersionNumber },
-                new SqlParameter{ ParameterName = "@up", SqlDbType = SqlDbType.NVarChar, Value = up},
-                new SqlParameter{ ParameterName = "@down", SqlDbType = SqlDbType.NVarChar, Value = down}
+                new SqlParameter{ ParameterName = "@up", SqlDbType = SqlDbType.NVarChar, Value = UpScripts},
+                new SqlParameter{ ParameterName = "@down", SqlDbType = SqlDbType.NVarChar, Value = DownScripts}
             }.ToArray());
         }
     }

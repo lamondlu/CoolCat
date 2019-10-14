@@ -8,8 +8,8 @@ namespace Mystique.Core.Contracts
     {
         DomainModel.Version Version { get; }
 
-        void MigrationUp(Guid pluginId);
+        void MigrateUp(Guid pluginId);
 
-        void MigrationDown(Guid pluginId);
+        void MigrateDown(Guid pluginId);
     }
 }
