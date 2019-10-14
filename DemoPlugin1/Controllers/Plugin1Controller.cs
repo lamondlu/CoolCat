@@ -5,9 +5,8 @@ namespace DemoPlugin1.Controllers
     [Area("DemoPlugin1")]
     public class Plugin1Controller : Controller
     {
-        public IActionResult HelloWorld()
-        {
-            return View();
-        }
+        public IActionResult HelloWorld() => View();
+
+        public IActionResult Ping() => Content("pong");
     }
 }
