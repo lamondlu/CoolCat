@@ -10,7 +10,6 @@ namespace Mystique.Core.Helpers
 {
     public class DefaultReferenceLoader : IRefenerceLoader
     {
-        private string _referenceContent = string.Empty;
         private string _folderName = string.Empty;
         private string _excludeFile = string.Empty;
 
@@ -30,7 +29,15 @@ namespace Mystique.Core.Helpers
             {
                 using (var sr = new StreamReader(file.OpenRead()))
                 {
-                    context.LoadFromStream(sr.BaseStream);
+                    var baseStream = sr.BaseStream;
+
+                    var memoryStream = new MemoryStream();
+                    baseStream.CopyTo(memoryStream);
+
+                    baseStream.Position = 0;
+                    var assembly = context.LoadFromStream(sr.BaseStream);
+
+                    DefaultReferenceContainer.SaveStream(assembly.GetName().Name, assembly.GetName().Version.ToString(), memoryStream);
                 }
             }
         }

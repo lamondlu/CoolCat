@@ -62,7 +62,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
                         var assembly = context.LoadFromStream(fs);
 
-                        AdvancedReferenceLoader loader = new AdvancedReferenceLoader(referenceFolderPath, assembly);
+                        DefaultReferenceLoader loader = new DefaultReferenceLoader(referenceFolderPath, $"{moduleName}.dll");
                         loader.LoadStreamsIntoContext(context);
 
                         var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
