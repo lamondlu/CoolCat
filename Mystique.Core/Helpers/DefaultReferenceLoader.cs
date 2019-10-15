@@ -34,20 +34,5 @@ namespace Mystique.Core.Helpers
                 }
             }
         }
-
-        //public List<string> GetReferences()
-        //{
-        //    var content = _dependanceConfiguration.Libraries;
-
-        //    foreach (var item in content.Descendants().ToList())
-        //    {
-        //        var itemKey = item.Path;
-        //        var type = item.Children().First().Values<DependanceConfiguration>();
-
-        //        var a = item.Children().First().Children().f().Values<string>();
-        //    }
-
-        //    return new List<string>();
-        //}
     }
 }
