@@ -29,6 +29,7 @@ namespace Mystique.Core.Helpers
 
             if (key != null)
             {
+                References[key].Position = 0;
                 return References[key];
             }
 
