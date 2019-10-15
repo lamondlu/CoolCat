@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mystique.Core.BusinessLogics;
 using Mystique.Core.Contracts;
+using Mystique.Core.Helpers;
 using Mystique.Core.Models;
 using Mystique.Core.Repositories;
 using Mystique.Mvc.Infrastructure;
@@ -53,22 +54,15 @@ namespace Mystique.Core.Mvc.Infrastructure
                     var context = new CollectibleAssemblyLoadContext();
                     var moduleName = plugin.Name;
                     var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
-                    var filePath1 = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\DemoReferenceLibrary.dll";
+                    var referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
 
                     _presets.Add(filePath);
                     using (var fs = new FileStream(filePath, FileMode.Open))
                     {
                         var assembly = context.LoadFromStream(fs);
 
-                        var references = assembly.GetReferencedAssemblies();
-
-                        if (references != null)
-                        {
-                            using (var fs1 = new FileStream(filePath1, FileMode.Open))
-                            {
-                                context.LoadFromStream(fs1);
-                            }
-                        }
+                        DefaultReferenceLoader loader = new DefaultReferenceLoader(referenceFolderPath, $"{moduleName}.dll");
+                        loader.LoadStreamsIntoContext(context);
 
                         var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
                         mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);

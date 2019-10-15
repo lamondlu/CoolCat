@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Mystique.Core.Contracts;
+using Mystique.Core.Helpers;
 using Mystique.Core.Mvc.Infrastructure;
 using Mystique.Mvc.Infrastructure;
 using System;
@@ -26,9 +27,15 @@ namespace Mystique.Core.Mvc
                 var context = new CollectibleAssemblyLoadContext();
 
                 var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
+                var referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
                 using (var fs = new FileStream(filePath, FileMode.Open))
                 {
                     var assembly = context.LoadFromStream(fs);
+
+
+                    DefaultReferenceLoader loader = new DefaultReferenceLoader(referenceFolderPath, $"{moduleName}.dll");
+                    loader.LoadStreamsIntoContext(context);
+
 
                     var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
 
