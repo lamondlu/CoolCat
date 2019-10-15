@@ -1,5 +1,4 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Mystique.Core.DomainModel;
 using System;
 using Version = Mystique.Core.DomainModel.Version;
 
@@ -22,7 +21,5 @@ namespace Mystique.Core.Test
                 var version = new Version("abc");
             });
         }
-
-
     }
 }
