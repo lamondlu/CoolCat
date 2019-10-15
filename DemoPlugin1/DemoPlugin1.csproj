@@ -11,11 +11,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.Extensions" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
-    <PackageReference Include="Mystique.Core" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DemoReferenceLibrary\DemoReferenceLibrary.csproj" />
+    <ProjectReference Include="..\Mystique.Core\Mystique.Core.csproj" />
   </ItemGroup>
 
 
