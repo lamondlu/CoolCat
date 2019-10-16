@@ -31,15 +31,7 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
 
-            var mvcBuilder = services.AddMvc().AddRazorRuntimeCompilation(o =>
-            {
-                foreach (var item in _presets)
-                {
-                    o.AdditionalReferencePaths.Add(item);
-                }
-
-                AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
-            });
+            var mvcBuilder = services.AddMvc();
 
             var provider = services.BuildServiceProvider();
             using (var scope = provider.CreateScope())
@@ -71,6 +63,16 @@ namespace Mystique.Core.Mvc.Infrastructure
                     }
                 }
             }
+
+            mvcBuilder.AddRazorRuntimeCompilation(o =>
+            {
+                foreach (var item in _presets)
+                {
+                    o.AdditionalReferencePaths.Add(item);
+                }
+
+                AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
+            });
 
             services.Configure<RazorViewEngineOptions>(o =>
             {

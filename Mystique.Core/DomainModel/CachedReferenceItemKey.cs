@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Mystique.Core.DomainModel
 {
-    public class ReferenceItem
+    public class CachedReferenceItemKey
     {
         public string ReferenceName { get; set; }
 
