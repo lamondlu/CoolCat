@@ -1,10 +1,10 @@
 {
     "$schema": "http://json.schemastore.org/template",
-    "author": "qjesus",
+    "author": "Mystique",
     "classifications": [ "WebAPI", "SPA"],
-    "identity": "Smt.Eusb.Terminal",
-    "name": "Smt.Eusb",
-    "shortName": "eusb", 
+    "identity": "Mystique",
+    "name": "mystique",
+    "shortName": "mystq", 
     "tags": { "language": "C#", "type": "project" },
     "sourceName": "Mystique",
     "preferNameDirectory": true
