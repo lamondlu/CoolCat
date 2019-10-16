@@ -29,6 +29,8 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
+            services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
+            services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
 
             var mvcBuilder = services.AddMvc();
@@ -40,6 +42,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
                 var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
                 var allEnabledPlugins = unitOfWork.PluginRepository.GetAllEnabledPlugins();
+                var loader = scope.ServiceProvider.GetService<IReferenceLoader>();
 
                 foreach (var plugin in allEnabledPlugins)
                 {
@@ -53,8 +56,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                     using (var fs = new FileStream(filePath, FileMode.Open))
                     {
                         var assembly = context.LoadFromStream(fs);
-                        AdvancedReferenceLoader loader = new AdvancedReferenceLoader(referenceFolderPath, assembly, jsonPath);
-                        loader.LoadStreamsIntoContext(context);
+                        loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly, jsonPath);
 
                         var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
                         mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);

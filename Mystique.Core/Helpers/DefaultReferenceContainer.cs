@@ -1,39 +1,40 @@
-﻿using Mystique.Core.DomainModel;
+﻿using Mystique.Core.Contracts;
+using Mystique.Core.DomainModel;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace Mystique.Core.Helpers
 {
-    public class DefaultReferenceContainer
+    public class DefaultReferenceContainer : IReferenceContainer
     {
-        public static Dictionary<CachedReferenceItemKey, Stream> CachedReferences = new Dictionary<CachedReferenceItemKey, Stream>();
+        private Dictionary<CachedReferenceItemKey, Stream> _cachedReferences = new Dictionary<CachedReferenceItemKey, Stream>();
 
-        public static bool Exist(string name, string version)
+        public bool Exist(string name, string version)
         {
-            return CachedReferences.Keys.Any(p => p.ReferenceName == name
+            return _cachedReferences.Keys.Any(p => p.ReferenceName == name
                 && p.Version == version);
         }
 
-        public static void SaveStream(string name, string version, Stream stream)
+        public void SaveStream(string name, string version, Stream stream)
         {
             if (Exist(name, version))
             {
                 return;
             }
 
-            CachedReferences.Add(new CachedReferenceItemKey { ReferenceName = name, Version = version }, stream);
+            _cachedReferences.Add(new CachedReferenceItemKey { ReferenceName = name, Version = version }, stream);
         }
 
-        public static Stream GetStream(string name, string version)
+        public Stream GetStream(string name, string version)
         {
-            var key = CachedReferences.Keys.FirstOrDefault(p => p.ReferenceName == name
+            var key = _cachedReferences.Keys.FirstOrDefault(p => p.ReferenceName == name
                 && p.Version == version);
 
             if (key != null)
             {
-                CachedReferences[key].Position = 0;
-                return CachedReferences[key];
+                _cachedReferences[key].Position = 0;
+                return _cachedReferences[key];
             }
 
             return null;
