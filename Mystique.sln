@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core.Mvc", "Mystiq
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoReferenceLibrary", "DemoReferenceLibrary\DemoReferenceLibrary.csproj", "{A5B9082C-5432-4627-901A-18290E794192}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Mystique.Database", "Mystique.Database\Mystique.Database.sqlproj", "{6E246A60-A973-4C51-AC97-FF607D7CEC1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,24 @@ Global
 		{A5B9082C-5432-4627-901A-18290E794192}.Release|x64.Build.0 = Release|Any CPU
 		{A5B9082C-5432-4627-901A-18290E794192}.Release|x86.ActiveCfg = Release|Any CPU
 		{A5B9082C-5432-4627-901A-18290E794192}.Release|x86.Build.0 = Release|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|x64.Build.0 = Debug|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|x86.Build.0 = Debug|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|x86.Deploy.0 = Debug|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|x64.ActiveCfg = Release|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|x64.Build.0 = Release|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|x64.Deploy.0 = Release|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|x86.ActiveCfg = Release|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|x86.Build.0 = Release|Any CPU
+		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|x86.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
