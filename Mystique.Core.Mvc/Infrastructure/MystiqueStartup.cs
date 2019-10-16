@@ -27,6 +27,7 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddDbContext<PluginDbContext>(options =>
             {
                 var connectionString = configuration.GetConnectionString("PluginsConnectionString");
+                // options.UseSqlServer(connectionString);
                 options.UseSqlite(connectionString);
                 options.EnableSensitiveDataLogging(true);
                 options.EnableDetailedErrors(true);
