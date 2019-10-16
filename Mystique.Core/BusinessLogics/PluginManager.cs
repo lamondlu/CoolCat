@@ -62,16 +62,16 @@ namespace Mystique.Core.BusinessLogics
 
         public async Task AddPluginsAsync(PluginPackage pluginPackage)
         {
-            var existedPlugin = await pluginRepository.GetPluginAsync(pluginPackage.Configuration.Name);
+            var existedPlugin = await pluginRepository.GetPluginAsync(pluginPackage.PluginConfiguration.Name);
             if (existedPlugin == null)
             {
                 await InitializePluginAsync(pluginPackage);
             }
-            else if (new Version(pluginPackage.Configuration.Version) > new Version(existedPlugin.Version))
+            else if (new Version(pluginPackage.PluginConfiguration.Version) > new Version(existedPlugin.Version))
             {
                 await UpgradePluginAsync(pluginPackage, existedPlugin);
             }
-            else if (new Version(pluginPackage.Configuration.Version) == new Version(existedPlugin.Version))
+            else if (new Version(pluginPackage.PluginConfiguration.Version) == new Version(existedPlugin.Version))
             {
                 throw new Exception("The package version is same as the current plugin version.");
             }
@@ -85,11 +85,11 @@ namespace Mystique.Core.BusinessLogics
         {
             var plugin = new DTOs.AddPluginDTO
             {
-                Name = pluginPackage.Configuration.Name,
-                DisplayName = pluginPackage.Configuration.DisplayName,
+                Name = pluginPackage.PluginConfiguration.Name,
+                DisplayName = pluginPackage.PluginConfiguration.DisplayName,
                 PluginId = Guid.NewGuid(),
-                UniqueKey = pluginPackage.Configuration.UniqueKey,
-                Version = pluginPackage.Configuration.Version
+                UniqueKey = pluginPackage.PluginConfiguration.UniqueKey,
+                Version = pluginPackage.PluginConfiguration.Version
             };
 
             await pluginRepository.AddPluginAsync(plugin);
@@ -107,7 +107,7 @@ namespace Mystique.Core.BusinessLogics
 
         public async Task UpgradePluginAsync(PluginPackage pluginPackage, PluginViewModel oldPlugin)
         {
-            await pluginRepository.UpdatePluginVersionAsync(oldPlugin.PluginId, pluginPackage.Configuration.Version);
+            await pluginRepository.UpdatePluginVersionAsync(oldPlugin.PluginId, pluginPackage.PluginConfiguration.Version);
             await unitOfWork.SaveAsync();
 
             var migrations = pluginPackage.GetAllMigrations();
@@ -124,7 +124,7 @@ namespace Mystique.Core.BusinessLogics
 
         public async Task DegradePluginAsync(PluginPackage pluginPackage, PluginViewModel oldPlugin)
         {
-            await pluginRepository.UpdatePluginVersionAsync(oldPlugin.PluginId, pluginPackage.Configuration.Version);
+            await pluginRepository.UpdatePluginVersionAsync(oldPlugin.PluginId, pluginPackage.PluginConfiguration.Version);
             await unitOfWork.SaveAsync();
         }
     }

@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core", "Mystique.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core.Mvc", "Mystique.Core.Mvc\Mystique.Core.Mvc.csproj", "{A4377E85-5F8B-4A2E-AE94-19616C646BA4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoReferenceLibrary", "DemoReferenceLibrary\DemoReferenceLibrary.csproj", "{A5B9082C-5432-4627-901A-18290E794192}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{A4377E85-5F8B-4A2E-AE94-19616C646BA4}.Release|x64.Build.0 = Release|Any CPU
 		{A4377E85-5F8B-4A2E-AE94-19616C646BA4}.Release|x86.ActiveCfg = Release|Any CPU
 		{A4377E85-5F8B-4A2E-AE94-19616C646BA4}.Release|x86.Build.0 = Release|Any CPU
+		{A5B9082C-5432-4627-901A-18290E794192}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5B9082C-5432-4627-901A-18290E794192}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5B9082C-5432-4627-901A-18290E794192}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A5B9082C-5432-4627-901A-18290E794192}.Debug|x64.Build.0 = Debug|Any CPU
+		{A5B9082C-5432-4627-901A-18290E794192}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A5B9082C-5432-4627-901A-18290E794192}.Debug|x86.Build.0 = Debug|Any CPU
+		{A5B9082C-5432-4627-901A-18290E794192}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5B9082C-5432-4627-901A-18290E794192}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5B9082C-5432-4627-901A-18290E794192}.Release|x64.ActiveCfg = Release|Any CPU
+		{A5B9082C-5432-4627-901A-18290E794192}.Release|x64.Build.0 = Release|Any CPU
+		{A5B9082C-5432-4627-901A-18290E794192}.Release|x86.ActiveCfg = Release|Any CPU
+		{A5B9082C-5432-4627-901A-18290E794192}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

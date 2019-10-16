@@ -1,4 +1,5 @@
 ﻿using Mystique.Core.Contracts;
+using Mystique.Core.Exceptions;
 using Mystique.Core.Repositories;
 using Newtonsoft.Json;
 using System;
@@ -18,7 +19,7 @@ namespace Mystique.Core.DomainModel
         private readonly PluginDbContext pluginDbContext;
         private readonly IUnitOfWork unitOfWork;
 
-        public PluginConfiguration Configuration { get; private set; }
+        public PluginConfiguration PluginConfiguration { get; private set; }
 
         public PluginPackage(PluginDbContext pluginDbContext, IUnitOfWork unitOfWork)
         {
@@ -26,29 +27,10 @@ namespace Mystique.Core.DomainModel
             this.unitOfWork = unitOfWork;
         }
 
-        public void Initialize(Stream stream)
-        {
-            zipStream = stream;
-            tempFolderName = $"{AppDomain.CurrentDomain.BaseDirectory}{Guid.NewGuid().ToString()}";
-            ZipTool archive = new ZipTool(zipStream, ZipArchiveMode.Read);
-
-            archive.ExtractToDirectory(tempFolderName);
-
-            var folder = new DirectoryInfo(tempFolderName);
-            var files = folder.GetFiles();
-            var configFiles = files.Where(p => p.Name == "plugin.json");
-            if (!configFiles.Any())
-            {
-                throw new Exception("The plugin is missing the configuration file.");
-            }
-            using var s = configFiles.First().OpenRead();
-            LoadConfiguration(s);
-        }
-
         public List<IMigration> GetAllMigrations()
         {
             var context = new CollectibleAssemblyLoadContext();
-            var assemblyPath = $"{tempFolderName}/{Configuration.Name}.dll";
+            var assemblyPath = $"{tempFolderName}/{PluginConfiguration.Name}.dll";
 
             using var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);
             var assembly = context.LoadFromStream(fs);
@@ -66,11 +48,34 @@ namespace Mystique.Core.DomainModel
             return migrations.OrderBy(p => p.Version).ToList();
         }
 
+        public void Initialize(Stream stream)
+        {
+            zipStream = stream;
+            tempFolderName = $"{AppDomain.CurrentDomain.BaseDirectory}{Guid.NewGuid().ToString()}";
+            ZipTool archive = new ZipTool(zipStream, ZipArchiveMode.Read);
+
+            archive.ExtractToDirectory(tempFolderName);
+
+            var folder = new DirectoryInfo(tempFolderName);
+            var files = folder.GetFiles();
+            var configFile = files.SingleOrDefault(p => p.Name == "plugin.json");
+
+            if (configFile == null)
+            {
+                throw new MissingConfigurationFileException();
+            }
+            else
+            {
+                using var s = configFile.OpenRead();
+                LoadConfiguration(s);
+            }
+        }
+
         public void SetupFolder()
         {
             ZipTool archive = new ZipTool(zipStream, ZipArchiveMode.Read);
             zipStream.Position = 0;
-            folderName = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{Configuration.Name}";
+            folderName = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{PluginConfiguration.Name}";
 
             archive.ExtractToDirectory(folderName, true);
 
@@ -82,11 +87,11 @@ namespace Mystique.Core.DomainModel
         {
             using var sr = new StreamReader(stream);
             var content = sr.ReadToEnd();
-            Configuration = JsonConvert.DeserializeObject<PluginConfiguration>(content);
+            PluginConfiguration = JsonConvert.DeserializeObject<PluginConfiguration>(content);
 
-            if (Configuration == null)
+            if (PluginConfiguration == null)
             {
-                throw new Exception("The configuration file is wrong format.");
+                throw new WrongFormatConfigurationException();
             }
         }
     }
