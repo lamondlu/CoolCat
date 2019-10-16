@@ -1,8 +1,6 @@
 ﻿using Mystique.Core.DomainModel;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Linq;
 
 namespace Mystique.Core.Helpers

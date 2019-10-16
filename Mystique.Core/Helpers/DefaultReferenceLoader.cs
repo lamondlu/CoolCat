@@ -1,10 +1,6 @@
-﻿using Mystique.Core.Configurations;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Mystique.Core.Helpers
 {
@@ -33,7 +29,6 @@ namespace Mystique.Core.Helpers
 
                     var memoryStream = new MemoryStream();
                     baseStream.CopyTo(memoryStream);
-
                     baseStream.Position = 0;
                     var assembly = context.LoadFromStream(sr.BaseStream);
 

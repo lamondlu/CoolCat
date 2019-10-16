@@ -27,12 +27,13 @@ namespace Mystique.Core.Mvc
                 var context = new CollectibleAssemblyLoadContext();
 
                 var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
+                var jsonPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.deps.json";
                 var referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
                 using (var fs = new FileStream(filePath, FileMode.Open))
                 {
                     var assembly = context.LoadFromStream(fs);
 
-                    DefaultReferenceLoader loader = new DefaultReferenceLoader(referenceFolderPath, $"{moduleName}.dll");
+                    AdvancedReferenceLoader loader = new AdvancedReferenceLoader(referenceFolderPath, assembly, jsonPath);
                     loader.LoadStreamsIntoContext(context);
 
                     var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
