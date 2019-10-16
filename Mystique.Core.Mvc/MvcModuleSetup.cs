@@ -61,7 +61,10 @@ namespace Mystique.Core.Mvc
             await Task.Run(() =>
             {
                 var directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}");
-                directory.Delete(true);
+                if (directory.Exists)
+                {
+                    directory.Delete(true);
+                }
             });
         }
 

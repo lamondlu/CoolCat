@@ -99,7 +99,7 @@ namespace Mystique.Core.BusinessLogics
 
             foreach (var version in versions)
             {
-                version.MigrationUp(plugin.PluginId);
+                await version.MigrationUpAsync(plugin.PluginId);
             }
 
             pluginPackage.SetupFolder();
@@ -116,7 +116,7 @@ namespace Mystique.Core.BusinessLogics
 
             foreach (var migration in pendingMigrations)
             {
-                migration.MigrationUp(oldPlugin.PluginId);
+                await migration.MigrationUpAsync(oldPlugin.PluginId);
             }
 
             pluginPackage.SetupFolder();

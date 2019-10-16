@@ -53,20 +53,17 @@ namespace Mystique.Core.DomainModel
             using var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);
             var assembly = context.LoadFromStream(fs);
 
-            //var dbHelper = new DbHelper(connectionString);
-            //var migrations = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration))).Select(migrationType =>
-            //{
-            //    var constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(DbHelper));
-            //    return (IMigration)constructor.Invoke(new object[] { dbHelper });
-            //}).ToList();
+            var migrations = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration))).Select(migrationType =>
+            {
+                return Activator.CreateInstance(migrationType, new object[] { pluginDbContext, unitOfWork }) as IMigration;
+            }).ToList();
 
             context.Unload();
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
-            return new List<IMigration>();
-            // return migrations.OrderBy(p => p.Version).ToList();
+            return migrations.OrderBy(p => p.Version).ToList();
         }
 
         public void SetupFolder()

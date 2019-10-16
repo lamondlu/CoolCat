@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Mystique.Core.Contracts
 {
@@ -6,8 +7,8 @@ namespace Mystique.Core.Contracts
     {
         DomainModel.Version Version { get; }
 
-        void MigrationUp(Guid pluginId);
+        Task MigrationUpAsync(Guid pluginId);
 
-        void MigrationDown(Guid pluginId);
+        Task MigrationDownAsync(Guid pluginId);
     }
 }

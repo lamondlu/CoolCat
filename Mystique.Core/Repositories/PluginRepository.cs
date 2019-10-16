@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;
+using Microsoft.EntityFrameworkCore;
 using Mystique.Core.DTOs;
 using Mystique.Core.ViewModels;
 using System;
@@ -106,28 +107,15 @@ namespace Mystique.Core.Repositories
                 return;
             }
             var downs = await pluginDbContext.PluginMigrations.Where(o => o.Plugin == plugin).OrderByDescending(o => o.Version).Select(o => o.Down).ToListAsync();
+            var conn = pluginDbContext.Database.GetDbConnection();
             foreach (var down in downs)
             {
-                // pluginDbContext.
+                if (conn.State != ConnectionState.Open)
+                {
+                    await conn.OpenAsync();
+                }
+                await conn.ExecuteAsync(down, new { pluginId, });
             }
-
-            // TODO FROMSQL()
-
-            //var sql = "SELECT Down from PluginMigrations WHERE PluginId = @pluginId ORDER BY [Version] DESC";
-
-            //var table = dbHelper.ExecuteDataTable(sql, new SqlParameter
-            //{
-            //    ParameterName = "@pluginId",
-            //    Value = pluginId,
-            //    SqlDbType = SqlDbType.UniqueIdentifier
-            //});
-
-            //foreach (var item in table.Rows.Cast<DataRow>())
-            //{
-            //    var script = item[0].ToString();
-
-            //    dbHelper.ExecuteNonQuery(script);
-            //}
         }
     }
 }

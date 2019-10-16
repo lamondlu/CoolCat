@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;
+using Microsoft.EntityFrameworkCore;
 using Mystique.Core.Contracts;
 using Mystique.Core.Repositories;
 using Mystique.Core.ViewModels;
@@ -21,12 +22,34 @@ namespace Mystique.Core.DomainModel
             Version = version;
         }
 
+        public abstract string UpScripts { get; }
+
+        public abstract string DownScripts { get; }
+
         public Version Version { get; }
 
-        public abstract void MigrationDown(Guid pluginId);
+        protected async Task SQLAsync(string sql)
+        {
+            var conn = pluginDbContext.Database.GetDbConnection();
+            if (conn.State != ConnectionState.Open)
+            {
+                await conn.OpenAsync();
+            }
+            await conn.ExecuteAsync(sql);
+        }
 
-        public abstract void MigrationUp(Guid pluginId);
+        public async Task MigrationUpAsync(Guid pluginId)
+        {
+            await SQLAsync(UpScripts);
+            await WriteMigrationScriptsAsync(pluginId);
+        }
 
+        public async Task MigrationDownAsync(Guid pluginId)
+        {
+            await SQLAsync(DownScripts);
+            await RemoveMigrationScriptsAsync(pluginId);
+        }
+        
         protected async Task RemoveMigrationScriptsAsync(Guid pluginId)
         {
             var plugins = await pluginDbContext.Plugins.Where(o => o.PluginId == pluginId).ToListAsync();
@@ -37,15 +60,15 @@ namespace Mystique.Core.DomainModel
             }
         }
 
-        protected async Task WriteMigrationScriptsAsync(Guid pluginId, string up, string down)
+        protected async Task WriteMigrationScriptsAsync(Guid pluginId)
         {
             var migration = new PluginMigrationViewModel
             {
                 PluginMigrationId = Guid.NewGuid(),
-                Plugin = await pluginDbContext.Plugins.AsNoTracking().FirstOrDefaultAsync(o => o.PluginId == pluginId),
+                Plugin = await pluginDbContext.Plugins.FirstOrDefaultAsync(o => o.PluginId == pluginId),
                 Version = Version.VersionNumber,
-                Up = up,
-                Down = down,
+                Up = UpScripts,
+                Down = DownScripts,
             };
             pluginDbContext.PluginMigrations.Add(migration);
             await unitOfWork.SaveAsync();
