@@ -1,60 +1,41 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Mystique.Core.DomainModel
 {
     public class Version : IComparable<Version>
     {
-        private const string _pattern = "^[0-9]*$";
-        private static readonly Regex _regex = new Regex(_pattern);
+        private readonly int primaryVersion;
+        private readonly int secondaryVersion;
+        private readonly int minorVersion;
 
         public Version(string versionNumber)
         {
-            if (Validate(versionNumber))
+            var versions = versionNumber?.Split('.');
+            if (!int.TryParse(versions?.ElementAtOrDefault(0), out primaryVersion)
+                || !int.TryParse(versions?.ElementAtOrDefault(1), out secondaryVersion)
+                || !int.TryParse(versions?.ElementAtOrDefault(2), out minorVersion))
             {
-                VersionNumber = versionNumber;
-            }
-            else
-            {
-                throw new ArgumentException("The version number is invalid.");
-            }
-
-        }
-
-        public int PrimaryVersion => Convert.ToInt32(VersionNumber.Split('.')[0]);
-
-        public int SecondaryVersion => Convert.ToInt32(VersionNumber.Split('.')[1]);
-
-        public int MinorVersion => Convert.ToInt32(VersionNumber.Split('.')[2]);
-
-        private bool Validate(string versionNumber)
-        {
-            if (!string.IsNullOrEmpty(versionNumber) && versionNumber.Split(".").Length == 3)
-            {
-                var primary = versionNumber.Split('.')[0];
-                var secondray = versionNumber.Split('.')[1];
-                var minor = versionNumber.Split('.')[2];
-
-                return _regex.IsMatch(primary) && _regex.IsMatch(secondray) && _regex.IsMatch(minor);
-            }
-            else
-            {
-                return false;
+                throw new ArgumentException($"The version number '{versionNumber}' is invalid.");
             }
         }
 
-        public string VersionNumber { get; set; }
+        public int PrimaryVersion => primaryVersion;
+
+        public int SecondaryVersion => secondaryVersion;
+
+        public int MinorVersion => minorVersion;
 
         public int CompareTo([AllowNull] Version other)
         {
-            if (PrimaryVersion > other.PrimaryVersion
-                || (PrimaryVersion == other.PrimaryVersion && SecondaryVersion > other.SecondaryVersion)
-                || (PrimaryVersion == other.PrimaryVersion && SecondaryVersion == other.SecondaryVersion && MinorVersion > other.MinorVersion))
+            if (PrimaryVersion > other?.PrimaryVersion
+                || (PrimaryVersion == other?.PrimaryVersion && SecondaryVersion > other?.SecondaryVersion)
+                || (PrimaryVersion == other?.PrimaryVersion && SecondaryVersion == other?.SecondaryVersion && MinorVersion > other?.MinorVersion))
             {
                 return 1;
             }
-            else if (PrimaryVersion == other.PrimaryVersion && SecondaryVersion == other.SecondaryVersion && MinorVersion == other.MinorVersion)
+            else if (PrimaryVersion == other?.PrimaryVersion && SecondaryVersion == other?.SecondaryVersion && MinorVersion == other?.MinorVersion)
             {
                 return 0;
             }
@@ -64,15 +45,11 @@ namespace Mystique.Core.DomainModel
             }
         }
 
-        public static bool operator ==(Version left, Version right)
-        {
-            if (left == null || right == null)
-            {
-                return false;
-            }
+        public override bool Equals(object obj) => obj is Version version && CompareTo(version) == 0;
 
-            return left.VersionNumber.Equals(right.VersionNumber);
-        }
+        public override int GetHashCode() => HashCode.Combine(PrimaryVersion, SecondaryVersion, MinorVersion);
+
+        public static bool operator ==(Version left, Version right) => left != null && left.Equals(right);
 
         public static bool operator !=(Version left, Version right) => !(left == right);
 

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using ZipTool = System.IO.Compression.ZipArchive;
 
 namespace Mystique.Core.DomainModel
@@ -30,7 +31,7 @@ namespace Mystique.Core.DomainModel
         public List<IMigration> GetAllMigrations()
         {
             var context = new CollectibleAssemblyLoadContext();
-            var assemblyPath = $"{tempFolderName}/{PluginConfiguration.Name}.dll";
+            var assemblyPath = Path.Combine(tempFolderName, $"{PluginConfiguration.Name}.dll");
 
             using var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);
             var assembly = context.LoadFromStream(fs);
@@ -48,13 +49,14 @@ namespace Mystique.Core.DomainModel
             return migrations.OrderBy(p => p.Version).ToList();
         }
 
-        public void Initialize(Stream stream)
+        public async Task InitializeAsync(Stream stream)
         {
             zipStream = stream;
-            tempFolderName = $"{AppDomain.CurrentDomain.BaseDirectory}{Guid.NewGuid().ToString()}";
-            ZipTool archive = new ZipTool(zipStream, ZipArchiveMode.Read);
-
-            archive.ExtractToDirectory(tempFolderName);
+            tempFolderName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString());
+            using (var archive = new ZipTool(zipStream, ZipArchiveMode.Read))
+            {
+                archive.ExtractToDirectory(tempFolderName);
+            }
 
             var folder = new DirectoryInfo(tempFolderName);
             var files = folder.GetFiles();
@@ -67,26 +69,27 @@ namespace Mystique.Core.DomainModel
             else
             {
                 using var s = configFile.OpenRead();
-                LoadConfiguration(s);
+                await LoadConfigurationAsync(s);
             }
         }
 
         public void SetupFolder()
         {
-            ZipTool archive = new ZipTool(zipStream, ZipArchiveMode.Read);
-            zipStream.Position = 0;
-            folderName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", PluginConfiguration.Name);
-
-            archive.ExtractToDirectory(folderName, true);
+            using (var archive = new ZipTool(zipStream, ZipArchiveMode.Read))
+            {
+                zipStream.Position = 0;
+                folderName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", PluginConfiguration.Name);
+                archive.ExtractToDirectory(folderName, true);
+            }
 
             var folder = new DirectoryInfo(tempFolderName);
             folder.Delete(true);
         }
 
-        private void LoadConfiguration(Stream stream)
+        private async Task LoadConfigurationAsync(Stream stream)
         {
             using var sr = new StreamReader(stream);
-            var content = sr.ReadToEnd();
+            var content = await sr.ReadToEndAsync();
             PluginConfiguration = JsonConvert.DeserializeObject<PluginConfiguration>(content);
 
             if (PluginConfiguration == null)

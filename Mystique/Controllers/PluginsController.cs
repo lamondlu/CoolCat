@@ -40,7 +40,7 @@ namespace Mystique.Controllers
         [HttpPost("Upload")]
         public async Task<IActionResult> UploadAsync()
         {
-            pluginPackage.Initialize(Request.GetPluginStream());
+            await pluginPackage.InitializeAsync(Request.GetPluginStream());
             await pluginManager.AddPluginsAsync(pluginPackage);
             return RedirectToAction("Index");
         }

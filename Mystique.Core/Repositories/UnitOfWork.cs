@@ -21,7 +21,6 @@ namespace Mystique.Core.Repositories
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(PluginDbContext).Assembly);
         }
 
-        public DbSet<PluginListItemViewModel> PluginListItems { get; set; }
         public DbSet<PluginViewModel> Plugins { get; set; }
         public DbSet<PluginMigrationViewModel> PluginMigrations { get; set; }
     }

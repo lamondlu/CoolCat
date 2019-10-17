@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
+﻿using System;
 
 namespace Mystique.Core.ViewModels
 {
@@ -12,13 +10,5 @@ namespace Mystique.Core.ViewModels
         public string DisplayName { get; set; }
         public string Version { get; set; }
         public bool IsEnable { get; set; }
-    }
-
-    public class PluginListItemViewModelConfiguration : IEntityTypeConfiguration<PluginListItemViewModel>
-    {
-        public void Configure(EntityTypeBuilder<PluginListItemViewModel> builder)
-        {
-            builder.HasKey(o => o.PluginId);
-        }
     }
 }
