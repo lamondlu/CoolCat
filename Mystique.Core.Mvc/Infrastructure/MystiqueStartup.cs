@@ -63,8 +63,8 @@ namespace Mystique.Core.Mvc.Infrastructure
                 {
                     var context = new CollectibleAssemblyLoadContext();
                     var moduleName = plugin.Name;
-                    var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
-                    var referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
+                    var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.dll");
+                    var referenceFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName);
 
                     using var fs = new FileStream(filePath, FileMode.Open);
                     var assembly = context.LoadFromStream(fs);

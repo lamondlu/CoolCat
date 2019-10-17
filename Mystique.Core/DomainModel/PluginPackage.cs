@@ -75,7 +75,7 @@ namespace Mystique.Core.DomainModel
         {
             ZipTool archive = new ZipTool(zipStream, ZipArchiveMode.Read);
             zipStream.Position = 0;
-            folderName = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{PluginConfiguration.Name}";
+            folderName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", PluginConfiguration.Name);
 
             archive.ExtractToDirectory(folderName, true);
 
