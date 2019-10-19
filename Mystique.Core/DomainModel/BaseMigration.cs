@@ -49,13 +49,13 @@ namespace Mystique.Core.DomainModel
             await SQLAsync(DownScripts);
             await RemoveMigrationScriptsAsync(pluginId);
         }
-        
+
         protected async Task RemoveMigrationScriptsAsync(Guid pluginId)
         {
             var plugins = await pluginDbContext.Plugins.Where(o => o.PluginId == pluginId).ToListAsync();
             foreach (var plugin in plugins)
             {
-                var migrations = await pluginDbContext.PluginMigrations.Where(o => o.Plugin == plugin && o.Version == Version.VersionNumber).ToArrayAsync();
+                var migrations = await pluginDbContext.PluginMigrations.Where(o => o.Plugin == plugin && o.Version == Version.ToString()).ToArrayAsync();
                 pluginDbContext.PluginMigrations.RemoveRange(migrations);
             }
         }
@@ -66,7 +66,7 @@ namespace Mystique.Core.DomainModel
             {
                 PluginMigrationId = Guid.NewGuid(),
                 Plugin = await pluginDbContext.Plugins.FirstOrDefaultAsync(o => o.PluginId == pluginId),
-                Version = Version.VersionNumber,
+                Version = Version.ToString(),
                 Up = UpScripts,
                 Down = DownScripts,
             };

@@ -49,6 +49,8 @@ namespace Mystique.Core.DomainModel
 
         public override int GetHashCode() => HashCode.Combine(PrimaryVersion, SecondaryVersion, MinorVersion);
 
+        public override string ToString() => $"{PrimaryVersion}.{SecondaryVersion}.{MinorVersion}";
+
         public static bool operator ==(Version left, Version right) => left != null && left.Equals(right);
 
         public static bool operator !=(Version left, Version right) => !(left == right);
