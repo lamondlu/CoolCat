@@ -8,7 +8,7 @@ namespace DemoPlugin2.Controllers
     {
         public IActionResult HelloWorld()
         {
-            var content = new Demo().SayHello() + "(New version.)";
+            var content = new Demo().SayHello();
             ViewBag.Content = content;
             return View();
         }
