@@ -1,53 +1,99 @@
-﻿using Mystique.Core.Configurations;
+﻿using Microsoft.Extensions.Logging;
+using Mystique.Core.Configurations;
+using Mystique.Core.Consts;
+using Mystique.Core.Contracts;
+using Mystique.Core.DomainModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 
 namespace Mystique.Core.Helpers
 {
-    public class DefaultReferenceLoader : IRefenerceLoader
+    public class DefaultReferenceLoader : IReferenceLoader
     {
-        private string _referenceContent = string.Empty;
-        private string _folderName = string.Empty;
-        private string _excludeFile = string.Empty;
+        private IReferenceContainer _referenceContainer = null;
+        private readonly ILogger<DefaultReferenceLoader> _logger = null;
+        private IDependanceLoader _dependanceLoader = null;
+        private List<DependanceItem> _depandanceItems = null;
 
-        public DefaultReferenceLoader(string folderName, string excludeFile)
+        public DefaultReferenceLoader(IReferenceContainer referenceContainer, ILogger<DefaultReferenceLoader> logger, IDependanceLoader dependanceLoader)
         {
-            _folderName = folderName;
-            _excludeFile = excludeFile;
+            _referenceContainer = referenceContainer;
+            _logger = logger;
+            _dependanceLoader = dependanceLoader;
         }
 
-        public void LoadStreamsIntoContext(CollectibleAssemblyLoadContext context)
+        public void LoadStreamsIntoContext(CollectibleAssemblyLoadContext context, string moduleFolder, Assembly assembly, string jsonFilePath)
         {
-            var streams = new List<Stream>();
-            var di = new DirectoryInfo(_folderName);
-            var allReferences = di.GetFiles("*.dll").Where(p => p.Name != _excludeFile);
+            var references = assembly.GetReferencedAssemblies();
 
-            foreach (var file in allReferences)
+            if (_depandanceItems == null)
             {
-                using (var sr = new StreamReader(file.OpenRead()))
+                _depandanceItems = _dependanceLoader.GetDependanceItems(jsonFilePath);
+            }
+
+            foreach (var item in references)
+            {
+                var name = item.Name;
+
+                //1.0.0.0 => 1.0.0
+                var version = item.Version.ToString();
+
+                //if (version.Split('.').Length == 4)
+                //{
+                //    version = version.Substring(0, item.Version.ToString().LastIndexOf("."));
+                //}
+
+                var stream = _referenceContainer.GetStream(name, version);
+
+                if (stream != null)
                 {
-                    context.LoadFromStream(sr.BaseStream);
+                    _logger.LogDebug($"Found the cached reference '{name}' v.{version}");
+                    context.LoadFromStream(stream);
+                }
+                else
+                {
+
+                    if (IsSharedFreamwork(name))
+                    {
+                        continue;
+                    }
+
+                    var package = _depandanceItems.SingleOrDefault(p => p.PackageName == name);
+                    var dllPath = package.DLLPath;
+
+                    var filePath = $"{moduleFolder}\\{package.FileName}";
+                    if (!File.Exists(filePath))
+                    {
+                        filePath = $"{moduleFolder}\\{dllPath}";
+                    }
+
+                    filePath = filePath.Replace("/", "\\");
+
+                    using (var fs = new FileStream(filePath, FileMode.Open))
+                    {
+                        var referenceAssembly = context.LoadFromStream(fs);
+
+                        var memoryStream = new MemoryStream();
+
+                        fs.Position = 0;
+                        fs.CopyTo(memoryStream);
+                        fs.Position = 0;
+                        memoryStream.Position = 0;
+                        _referenceContainer.SaveStream(name, version, memoryStream);
+
+                        LoadStreamsIntoContext(context, moduleFolder, referenceAssembly, jsonFilePath);
+                    }
                 }
             }
         }
 
-        //public List<string> GetReferences()
-        //{
-        //    var content = _dependanceConfiguration.Libraries;
-
-        //    foreach (var item in content.Descendants().ToList())
-        //    {
-        //        var itemKey = item.Path;
-        //        var type = item.Children().First().Values<DependanceConfiguration>();
-
-        //        var a = item.Children().First().Children().f().Values<string>();
-        //    }
-
-        //    return new List<string>();
-        //}
+        private bool IsSharedFreamwork(string name)
+        {
+            return SharedFrameworkConst.SharedFrameworkDLLs.Contains($"{name}.dll");
+        }
     }
 }
