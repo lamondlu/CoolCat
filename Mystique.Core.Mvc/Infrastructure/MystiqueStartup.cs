@@ -25,13 +25,13 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddOptions();
             services.Configure<ConnectionStringSetting>(configuration.GetSection("ConnectionStringSetting"));
 
-            services.AddScoped<IMvcModuleSetup, MvcModuleSetup>();
+            services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
-            services.AddScoped<IReferenceContainer, DefaultReferenceContainer>();
-            services.AddScoped<IReferenceLoader, DefaultReferenceLoader>();
-            services.AddScoped<IDependanceLoader, DefaultDependanceLoader>();
+            services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
+            services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
+            services.AddSingleton<IDependanceLoader, DefaultDependanceLoader>();
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
 
             var mvcBuilder = services.AddMvc();

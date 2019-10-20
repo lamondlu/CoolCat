@@ -12,17 +12,26 @@ namespace Mystique.Controllers
     {
         private IPluginManager _pluginManager = null;
         private ApplicationPartManager _partManager = null;
+        private IReferenceContainer _referenceContainer = null;
 
-        public PluginsController(IPluginManager pluginManager, ApplicationPartManager partManager)
+        public PluginsController(IPluginManager pluginManager, ApplicationPartManager partManager, IReferenceContainer referenceContainer)
         {
             _pluginManager = pluginManager;
             _partManager = partManager;
+            _referenceContainer = referenceContainer;
         }
 
         private void RefreshControllerAction()
         {
             MystiqueActionDescriptorChangeProvider.Instance.HasChanged = true;
             MystiqueActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+        }
+
+        public IActionResult Assemblies()
+        {
+            var items = _referenceContainer.GetAll();
+
+            return View(items);
         }
 
         // GET: /<controller>/
