@@ -19,33 +19,21 @@ namespace Mystique.Core.Helpers
         private IDependanceLoader _dependanceLoader = null;
         private List<DependanceItem> _depandanceItems = null;
 
-        public DefaultReferenceLoader(IReferenceContainer referenceContainer, ILogger<DefaultReferenceLoader> logger, IDependanceLoader dependanceLoader)
+        public DefaultReferenceLoader(IReferenceContainer referenceContainer, ILogger<DefaultReferenceLoader> logger)
         {
             _referenceContainer = referenceContainer;
             _logger = logger;
-            _dependanceLoader = dependanceLoader;
         }
 
         public void LoadStreamsIntoContext(CollectibleAssemblyLoadContext context, string moduleFolder, Assembly assembly, string jsonFilePath)
         {
             var references = assembly.GetReferencedAssemblies();
 
-            if (_depandanceItems == null)
-            {
-                _depandanceItems = _dependanceLoader.GetDependanceItems(jsonFilePath);
-            }
-
             foreach (var item in references)
             {
                 var name = item.Name;
 
-                //1.0.0.0 => 1.0.0
                 var version = item.Version.ToString();
-
-                //if (version.Split('.').Length == 4)
-                //{
-                //    version = version.Substring(0, item.Version.ToString().LastIndexOf("."));
-                //}
 
                 var stream = _referenceContainer.GetStream(name, version);
 
@@ -62,16 +50,14 @@ namespace Mystique.Core.Helpers
                         continue;
                     }
 
-                    var package = _depandanceItems.SingleOrDefault(p => p.PackageName == name);
-                    var dllPath = package.DLLPath;
+                    var dllName = $"{name}.dll";
+                    var filePath = $"{moduleFolder}\\{dllName}";
 
-                    var filePath = $"{moduleFolder}\\{package.FileName}";
                     if (!File.Exists(filePath))
                     {
-                        filePath = $"{moduleFolder}\\{dllPath}";
+                        _logger.LogWarning($"The package '{dllName}' is missing.");
+                        continue;
                     }
-
-                    filePath = filePath.Replace("/", "\\");
 
                     using (var fs = new FileStream(filePath, FileMode.Open))
                     {
