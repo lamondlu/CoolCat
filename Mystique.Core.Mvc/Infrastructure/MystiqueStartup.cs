@@ -31,7 +31,6 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
             services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
-            services.AddSingleton<IDependanceLoader, DefaultDependanceLoader>();
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
 
             var mvcBuilder = services.AddMvc();

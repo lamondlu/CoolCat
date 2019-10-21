@@ -14,12 +14,6 @@
     <ProjectReference Include="..\Mystique.Core\Mystique.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="ABC">
-      <HintPath>..\test1\bin\Debug\netstandard2.0\ABCD.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 
   <ItemGroup>
     <None Update="Views\**">
