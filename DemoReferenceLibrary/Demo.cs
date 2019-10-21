@@ -8,7 +8,7 @@ namespace DemoReferenceLibrary
     {
         public string SayHello()
         {
-            return "Hello World. Version 2";
+            return "Hello World. Version 1";
         }
     }
 }
