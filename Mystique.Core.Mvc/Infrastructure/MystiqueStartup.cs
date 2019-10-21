@@ -50,14 +50,13 @@ namespace Mystique.Core.Mvc.Infrastructure
                     var context = new CollectibleAssemblyLoadContext();
                     var moduleName = plugin.Name;
                     var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
-                    var jsonPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.deps.json";
                     var referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
 
                     _presets.Add(filePath);
                     using (var fs = new FileStream(filePath, FileMode.Open))
                     {
                         var assembly = context.LoadFromStream(fs);
-                        loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly, jsonPath);
+                        loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
 
                         var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
                         mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);

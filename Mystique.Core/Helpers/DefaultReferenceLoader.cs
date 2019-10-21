@@ -16,8 +16,6 @@ namespace Mystique.Core.Helpers
     {
         private IReferenceContainer _referenceContainer = null;
         private readonly ILogger<DefaultReferenceLoader> _logger = null;
-        private IDependanceLoader _dependanceLoader = null;
-        private List<DependanceItem> _depandanceItems = null;
 
         public DefaultReferenceLoader(IReferenceContainer referenceContainer, ILogger<DefaultReferenceLoader> logger)
         {
@@ -25,7 +23,7 @@ namespace Mystique.Core.Helpers
             _logger = logger;
         }
 
-        public void LoadStreamsIntoContext(CollectibleAssemblyLoadContext context, string moduleFolder, Assembly assembly, string jsonFilePath)
+        public void LoadStreamsIntoContext(CollectibleAssemblyLoadContext context, string moduleFolder, Assembly assembly)
         {
             var references = assembly.GetReferencedAssemblies();
 
@@ -71,7 +69,7 @@ namespace Mystique.Core.Helpers
                         memoryStream.Position = 0;
                         _referenceContainer.SaveStream(name, version, memoryStream);
 
-                        LoadStreamsIntoContext(context, moduleFolder, referenceAssembly, jsonFilePath);
+                        LoadStreamsIntoContext(context, moduleFolder, referenceAssembly);
                     }
                 }
             }
