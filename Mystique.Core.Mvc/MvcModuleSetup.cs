@@ -13,10 +13,12 @@ namespace Mystique.Core.Mvc
     public class MvcModuleSetup : IMvcModuleSetup
     {
         private readonly ApplicationPartManager partManager;
+        private readonly IReferenceLoader referenceLoader;
 
-        public MvcModuleSetup(ApplicationPartManager partManager)
+        public MvcModuleSetup(ApplicationPartManager partManager, IReferenceLoader referenceLoader)
         {
             this.partManager = partManager;
+            this.referenceLoader = referenceLoader;
         }
 
         public async Task EnableModuleAsync(string moduleName)
@@ -32,12 +34,12 @@ namespace Mystique.Core.Mvc
                 var context = new CollectibleAssemblyLoadContext();
 
                 var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.dll");
+                var jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.deps.json");
                 var referenceFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName);
                 using var fs = new FileStream(filePath, FileMode.Open);
                 var assembly = context.LoadFromStream(fs);
 
-                DefaultReferenceLoader loader = new DefaultReferenceLoader(referenceFolderPath, $"{moduleName}.dll");
-                loader.LoadStreamsIntoContext(context);
+                referenceLoader.LoadStreamsIntoContext(context, referenceFolderPath, assembly, jsonPath);
 
                 var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
 

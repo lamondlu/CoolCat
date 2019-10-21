@@ -21,10 +21,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="plugin.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

@@ -14,11 +14,12 @@ namespace Mystique.Core.DomainModel
 {
     public class PluginPackage
     {
-        private Stream zipStream;
         private string tempFolderName;
         private string folderName;
         private readonly PluginDbContext pluginDbContext;
         private readonly IUnitOfWork unitOfWork;
+
+        private Stream zipStream;
 
         public PluginConfiguration PluginConfiguration { get; private set; }
 
@@ -49,14 +50,12 @@ namespace Mystique.Core.DomainModel
             return migrations.OrderBy(p => p.Version).ToList();
         }
 
-        public async Task InitializeAsync(Stream stream)
+        public async Task InitializeAsync(Stream zipStream)
         {
-            zipStream = stream;
+            var archive = new ZipTool(this.zipStream = zipStream, ZipArchiveMode.Read);
+            zipStream.Position = 0;
             tempFolderName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString());
-            using (var archive = new ZipTool(zipStream, ZipArchiveMode.Read))
-            {
-                archive.ExtractToDirectory(tempFolderName);
-            }
+            archive.ExtractToDirectory(tempFolderName);
 
             var folder = new DirectoryInfo(tempFolderName);
             var files = folder.GetFiles();
@@ -75,12 +74,10 @@ namespace Mystique.Core.DomainModel
 
         public void SetupFolder()
         {
-            using (var archive = new ZipTool(zipStream, ZipArchiveMode.Read))
-            {
-                zipStream.Position = 0;
-                folderName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", PluginConfiguration.Name);
-                archive.ExtractToDirectory(folderName, true);
-            }
+            var archive = new ZipTool(zipStream, ZipArchiveMode.Read);
+            zipStream.Position = 0;
+            folderName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", PluginConfiguration.Name);
+            archive.ExtractToDirectory(folderName, true);
 
             var folder = new DirectoryInfo(tempFolderName);
             folder.Delete(true);

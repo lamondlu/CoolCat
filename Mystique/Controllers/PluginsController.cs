@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
 using Mystique.Core.Mvc.Extensions;
@@ -11,11 +12,15 @@ namespace Mystique.Controllers
     public class PluginsController : Controller
     {
         private readonly IPluginManager pluginManager;
+        private readonly ApplicationPartManager partManager;
+        private readonly IReferenceContainer referenceContainer;
         private readonly PluginPackage pluginPackage;
 
-        public PluginsController(IPluginManager pluginManager, PluginPackage pluginPackage)
+        public PluginsController(IPluginManager pluginManager, ApplicationPartManager partManager, IReferenceContainer referenceContainer, PluginPackage pluginPackage)
         {
             this.pluginManager = pluginManager;
+            this.partManager = partManager;
+            this.referenceContainer = referenceContainer;
             this.pluginPackage = pluginPackage;
         }
 
@@ -27,11 +32,18 @@ namespace Mystique.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        public IActionResult Assemblies()
+        {
+            var items = referenceContainer.GetAll();
+            return View(items);
+        }
+
         [HttpGet("Index")]
         public async Task<IActionResult> IndexAsync()
         {
-            var model = await pluginManager.GetAllPluginsAsync();
-            return View(model);
+            var plugins = await pluginManager.GetAllPluginsAsync();
+            return View(plugins);
         }
 
         [HttpGet]
@@ -40,8 +52,11 @@ namespace Mystique.Controllers
         [HttpPost("Upload")]
         public async Task<IActionResult> UploadAsync()
         {
-            await pluginPackage.InitializeAsync(Request.GetPluginStream());
-            await pluginManager.AddPluginsAsync(pluginPackage);
+            using (var stream = Request.GetPluginStream())
+            {
+                await pluginPackage.InitializeAsync(stream);
+                await pluginManager.AddPluginsAsync(pluginPackage);
+            }
             return RedirectToAction("Index");
         }
 
