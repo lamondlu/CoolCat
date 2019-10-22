@@ -16,36 +16,22 @@ namespace Mystique.Core.Helpers
     {
         private IReferenceContainer referenceContainer;
         private readonly ILogger<DefaultReferenceLoader> logger;
-        private IDependanceLoader dependanceLoader;
-        private List<DependanceItem> depandanceItems;
 
-        public DefaultReferenceLoader(IReferenceContainer referenceContainer, ILogger<DefaultReferenceLoader> logger, IDependanceLoader dependanceLoader)
+        public DefaultReferenceLoader(IReferenceContainer referenceContainer, ILogger<DefaultReferenceLoader> logger)
         {
             this.referenceContainer = referenceContainer;
             this.logger = logger;
-            this.dependanceLoader = dependanceLoader;
         }
 
-        public void LoadStreamsIntoContext(CollectibleAssemblyLoadContext context, string moduleFolder, Assembly assembly, string jsonFilePath)
+        public void LoadStreamsIntoContext(CollectibleAssemblyLoadContext context, string moduleFolder, Assembly assembly)
         {
             var references = assembly.GetReferencedAssemblies();
-
-            if (depandanceItems == null)
-            {
-                depandanceItems = dependanceLoader.GetDependanceItems(jsonFilePath);
-            }
 
             foreach (var item in references)
             {
                 var name = item.Name;
 
-                //1.0.0.0 => 1.0.0
                 var version = item.Version.ToString();
-
-                //if (version.Split('.').Length == 4)
-                //{
-                //    version = version.Substring(0, item.Version.ToString().LastIndexOf("."));
-                //}
 
                 var stream = referenceContainer.GetStream(name, version);
 
@@ -62,13 +48,13 @@ namespace Mystique.Core.Helpers
                         continue;
                     }
 
-                    var package = depandanceItems.SingleOrDefault(p => p.PackageName == name);
-                    var dllPath = package.DLLPath;
+                    var dllName = $"{name}.dll";
+                    var filePath = $"{moduleFolder}\\{dllName}";
 
-                    var filePath = Path.Combine(moduleFolder, package.FileName);
                     if (!File.Exists(filePath))
                     {
-                        filePath = Path.Combine(moduleFolder, dllPath);
+                        logger.LogWarning($"The package '{dllName}' is missing.");
+                        continue;
                     }
 
                     using (var fs = new FileStream(filePath, FileMode.Open))
@@ -83,7 +69,7 @@ namespace Mystique.Core.Helpers
                         memoryStream.Position = 0;
                         referenceContainer.SaveStream(name, version, memoryStream);
 
-                        LoadStreamsIntoContext(context, moduleFolder, referenceAssembly, jsonFilePath);
+                        LoadStreamsIntoContext(context, moduleFolder, referenceAssembly);
                     }
                 }
             }

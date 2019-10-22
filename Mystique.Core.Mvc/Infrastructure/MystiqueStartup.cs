@@ -39,7 +39,6 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
             services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
-            services.AddSingleton<IDependanceLoader, DefaultDependanceLoader>();
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddScoped<IPluginRepository, PluginRepository>();
             services.AddScoped<PluginPackage>();
@@ -61,17 +60,18 @@ namespace Mystique.Core.Mvc.Infrastructure
                     var context = new CollectibleAssemblyLoadContext();
                     var moduleName = plugin.Name;
                     var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.dll");
-                    var jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.deps.json");
                     var referenceFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName);
 
-                    using var fs = new FileStream(filePath, FileMode.Open);
-                    var assembly = context.LoadFromStream(fs);
-                    loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly, jsonPath);
                     presets.Add(filePath);
+                    using (var fs = new FileStream(filePath, FileMode.Open))
+                    {
+                        var assembly = context.LoadFromStream(fs);
+                        loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
 
-                    var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
-                    mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
-                    PluginsLoadContexts.AddPluginContext(plugin.Name, context);
+                        var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
+                        mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
+                        PluginsLoadContexts.AddPluginContext(plugin.Name, context);
+                    }
                 }
             }
 
