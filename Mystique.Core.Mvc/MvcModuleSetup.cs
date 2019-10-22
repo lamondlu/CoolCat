@@ -22,35 +22,35 @@ namespace Mystique.Core.Mvc
             _referenceLoader = referenceLoader;
         }
 
-        public void EnableModule(string moduleName)
+    public void EnableModule(string moduleName)
+    {
+        if (!PluginsLoadContexts.Any(moduleName))
         {
-            if (!PluginsLoadContexts.Any(moduleName))
+            var context = new CollectibleAssemblyLoadContext();
+
+            var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
+            var referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
+            using (var fs = new FileStream(filePath, FileMode.Open))
             {
-                var context = new CollectibleAssemblyLoadContext();
+                var assembly = context.LoadFromStream(fs);
+                _referenceLoader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
 
-                var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
-                var referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
-                using (var fs = new FileStream(filePath, FileMode.Open))
-                {
-                    var assembly = context.LoadFromStream(fs);
-                    _referenceLoader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
+                var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
 
-                    var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
-
-                    AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
-                    _partManager.ApplicationParts.Add(controllerAssemblyPart);
-                    PluginsLoadContexts.AddPluginContext(moduleName, context);
-                }
-            }
-            else
-            {
-                var context = PluginsLoadContexts.GetContext(moduleName);
-                var controllerAssemblyPart = new MystiqueAssemblyPart(context.Assemblies.First());
+                AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
                 _partManager.ApplicationParts.Add(controllerAssemblyPart);
+                PluginsLoadContexts.AddPluginContext(moduleName, context);
             }
-
-            ResetControllActions();
         }
+        else
+        {
+            var context = PluginsLoadContexts.GetContext(moduleName);
+            var controllerAssemblyPart = new MystiqueAssemblyPart(context.Assemblies.First());
+            _partManager.ApplicationParts.Add(controllerAssemblyPart);
+        }
+
+        ResetControllActions();
+    }
 
         public void DisableModule(string moduleName)
         {

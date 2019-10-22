@@ -19,66 +19,66 @@ namespace Mystique.Core.Mvc.Infrastructure
     {
         private static IList<string> _presets = new List<string>();
 
-        public static void MystiqueSetup(this IServiceCollection services, IConfiguration configuration)
+    public static void MystiqueSetup(this IServiceCollection services, IConfiguration configuration)
+    {
+
+        services.AddOptions();
+        services.Configure<ConnectionStringSetting>(configuration.GetSection("ConnectionStringSetting"));
+
+        services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
+        services.AddScoped<IPluginManager, PluginManager>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
+        services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
+        services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
+        services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
+
+        var mvcBuilder = services.AddMvc();
+
+        var provider = services.BuildServiceProvider();
+        using (var scope = provider.CreateScope())
         {
+            var option = scope.ServiceProvider.GetService<MvcRazorRuntimeCompilationOptions>();
 
-            services.AddOptions();
-            services.Configure<ConnectionStringSetting>(configuration.GetSection("ConnectionStringSetting"));
+            var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+            var allEnabledPlugins = unitOfWork.PluginRepository.GetAllEnabledPlugins();
+            var loader = scope.ServiceProvider.GetService<IReferenceLoader>();
 
-            services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
-            services.AddScoped<IPluginManager, PluginManager>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
-            services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
-            services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
-            services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
-
-            var mvcBuilder = services.AddMvc();
-
-            var provider = services.BuildServiceProvider();
-            using (var scope = provider.CreateScope())
+            foreach (var plugin in allEnabledPlugins)
             {
-                var option = scope.ServiceProvider.GetService<MvcRazorRuntimeCompilationOptions>();
+                var context = new CollectibleAssemblyLoadContext();
+                var moduleName = plugin.Name;
+                var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
+                var referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
 
-                var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
-                var allEnabledPlugins = unitOfWork.PluginRepository.GetAllEnabledPlugins();
-                var loader = scope.ServiceProvider.GetService<IReferenceLoader>();
-
-                foreach (var plugin in allEnabledPlugins)
+                _presets.Add(filePath);
+                using (var fs = new FileStream(filePath, FileMode.Open))
                 {
-                    var context = new CollectibleAssemblyLoadContext();
-                    var moduleName = plugin.Name;
-                    var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
-                    var referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
+                    var assembly = context.LoadFromStream(fs);
+                    loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
 
-                    _presets.Add(filePath);
-                    using (var fs = new FileStream(filePath, FileMode.Open))
-                    {
-                        var assembly = context.LoadFromStream(fs);
-                        loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
-
-                        var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
-                        mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
-                        PluginsLoadContexts.AddPluginContext(plugin.Name, context);
-                    }
+                    var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
+                    mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
+                    PluginsLoadContexts.AddPluginContext(plugin.Name, context);
                 }
             }
-
-            mvcBuilder.AddRazorRuntimeCompilation(o =>
-            {
-                foreach (var item in _presets)
-                {
-                    o.AdditionalReferencePaths.Add(item);
-                }
-
-                AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
-            });
-
-            services.Configure<RazorViewEngineOptions>(o =>
-            {
-                o.AreaViewLocationFormats.Add("/Modules/{2}/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
-                o.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
-            });
         }
+
+        mvcBuilder.AddRazorRuntimeCompilation(o =>
+        {
+            foreach (var item in _presets)
+            {
+                o.AdditionalReferencePaths.Add(item);
+            }
+
+            AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
+        });
+
+        services.Configure<RazorViewEngineOptions>(o =>
+        {
+            o.AreaViewLocationFormats.Add("/Modules/{2}/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
+            o.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
+        });
+    }
     }
 }
