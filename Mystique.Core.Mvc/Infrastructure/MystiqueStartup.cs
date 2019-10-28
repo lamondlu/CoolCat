@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mystique.Core.BusinessLogics;
@@ -48,6 +50,13 @@ namespace Mystique.Core.Mvc.Infrastructure
             var provider = services.BuildServiceProvider();
             using (var scope = provider.CreateScope())
             {
+                var db = scope.ServiceProvider.GetService<PluginDbContext>();
+                var databaseCreator = (RelationalDatabaseCreator)db.Database.GetService<IDatabaseCreator>();
+                if (!databaseCreator.HasTables())
+                {
+                    databaseCreator.CreateTables();
+                }
+
                 var option = scope.ServiceProvider.GetService<MvcRazorRuntimeCompilationOptions>();
 
                 var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
@@ -59,8 +68,8 @@ namespace Mystique.Core.Mvc.Infrastructure
                 {
                     var context = new CollectibleAssemblyLoadContext();
                     var moduleName = plugin.Name;
-                    var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.dll");
-                    var referenceFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName);
+                    var filePath = Path.Combine(Environment.CurrentDirectory, "Mystique_plugins", moduleName, $"{moduleName}.dll");
+                    var referenceFolderPath = Path.Combine(Environment.CurrentDirectory, "Mystique_plugins", moduleName);
 
                     presets.Add(filePath);
                     using (var fs = new FileStream(filePath, FileMode.Open))
