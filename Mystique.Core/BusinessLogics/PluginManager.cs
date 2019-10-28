@@ -63,25 +63,34 @@ namespace Mystique.Core.BusinessLogics
         public async Task AddPluginsAsync(PluginPackage pluginPackage)
         {
             var existedPlugin = await pluginRepository.GetPluginAsync(pluginPackage.PluginConfiguration.Name);
-            if (existedPlugin == null)
+            if (existedPlugin != null)
             {
-                await InitializePluginAsync(pluginPackage);
+                await DeletePluginAsync(existedPlugin.PluginId);
             }
-            else if (new Version(pluginPackage.PluginConfiguration.Version) > new Version(existedPlugin.Version))
+            var pluginId = await InitializePluginAsync(pluginPackage);
+
+            if (existedPlugin != null && new Version(pluginPackage.PluginConfiguration.Version) > new Version(existedPlugin.Version))
             {
                 await UpgradePluginAsync(pluginPackage, existedPlugin);
             }
-            else if (new Version(pluginPackage.PluginConfiguration.Version) == new Version(existedPlugin.Version))
-            {
-                throw new Exception("The package version is same as the current plugin version.");
-            }
-            else
+            else if (existedPlugin != null && new Version(pluginPackage.PluginConfiguration.Version) < new Version(existedPlugin.Version))
             {
                 await DegradePluginAsync(pluginPackage, existedPlugin);
             }
+            else
+            {
+                // do nothing
+            }
+
+            pluginPackage.SetupFolder();
+
+            if (existedPlugin?.IsEnable == true)
+            {
+                await EnablePluginAsync(pluginId);
+            }
         }
 
-        private async Task InitializePluginAsync(PluginPackage pluginPackage)
+        private async Task<Guid> InitializePluginAsync(PluginPackage pluginPackage)
         {
             var plugin = new DTOs.AddPluginDTO
             {
@@ -91,18 +100,15 @@ namespace Mystique.Core.BusinessLogics
                 UniqueKey = pluginPackage.PluginConfiguration.UniqueKey,
                 Version = pluginPackage.PluginConfiguration.Version
             };
-
             await pluginRepository.AddPluginAsync(plugin);
             await unitOfWork.SaveAsync();
 
-            var versions = pluginPackage.GetAllMigrations();
-
-            foreach (var version in versions)
+            foreach (var version in pluginPackage.GetAllMigrations())
             {
                 await version.MigrationUpAsync(plugin.PluginId);
             }
 
-            pluginPackage.SetupFolder();
+            return plugin.PluginId;
         }
 
         private async Task UpgradePluginAsync(PluginPackage pluginPackage, PluginViewModel oldPlugin)
@@ -110,16 +116,13 @@ namespace Mystique.Core.BusinessLogics
             await pluginRepository.UpdatePluginVersionAsync(oldPlugin.PluginId, pluginPackage.PluginConfiguration.Version);
             await unitOfWork.SaveAsync();
 
-            var migrations = pluginPackage.GetAllMigrations();
-
-            var pendingMigrations = migrations.Where(p => p.Version > oldPlugin.Version);
-
-            foreach (var migration in pendingMigrations)
+            foreach (var migration in pluginPackage.GetAllMigrations())
             {
-                await migration.MigrationUpAsync(oldPlugin.PluginId);
+                if (migration.Version > oldPlugin.Version)
+                {
+                    await migration.MigrationUpAsync(oldPlugin.PluginId);
+                }
             }
-
-            pluginPackage.SetupFolder();
         }
 
         private async Task DegradePluginAsync(PluginPackage pluginPackage, PluginViewModel oldPlugin)
