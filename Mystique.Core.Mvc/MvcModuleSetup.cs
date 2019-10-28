@@ -28,8 +28,8 @@ namespace Mystique.Core.Mvc
             {
                 var context = new CollectibleAssemblyLoadContext();
 
-                var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
-                var referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
+                var filePath = Path.Combine(Environment.CurrentDirectory, "Mystique_Plugins", moduleName, $"{moduleName}.dll");
+                var referenceFolderPath = Path.GetDirectoryName(filePath);
                 using (var fs = new FileStream(filePath, FileMode.Open))
                 {
                     var assembly = context.LoadFromStream(fs);
@@ -64,7 +64,9 @@ namespace Mystique.Core.Mvc
         {
             PluginsLoadContexts.RemovePluginContext(moduleName);
 
-            var directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}");
+            var filePath = Path.Combine(Environment.CurrentDirectory, "Mystique_Plugins", moduleName, $"{moduleName}.dll");
+            var referenceFolderPath = Path.GetDirectoryName(filePath);
+            var directory = new DirectoryInfo(referenceFolderPath);
             directory.Delete(true);
         }
 
