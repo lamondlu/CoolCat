@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Mystique.Core.DomainModel
 {
@@ -8,16 +7,7 @@ namespace Mystique.Core.DomainModel
         public DependanceItem(string packageName, string version, string assemblyVersion, string dllPath)
         {
             PackageName = packageName;
-
-            if (!string.IsNullOrEmpty(assemblyVersion))
-            {
-                Version = assemblyVersion;
-            }
-            else
-            {
-                Version = version;
-            }
-
+            Version = string.IsNullOrEmpty(assemblyVersion) ? version : assemblyVersion;
             DLLPath = dllPath;
         }
 
@@ -27,12 +17,6 @@ namespace Mystique.Core.DomainModel
 
         public string DLLPath { get; private set; }
 
-        public string FileName
-        {
-            get
-            {
-                return DLLPath.Split('/').Last();
-            }
-        }
+        public string FileName => DLLPath.Split('/').Last();
     }
 }

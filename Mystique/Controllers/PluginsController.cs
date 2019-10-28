@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
 using Mystique.Core.Mvc.Extensions;
@@ -12,14 +11,12 @@ namespace Mystique.Controllers
     public class PluginsController : Controller
     {
         private readonly IPluginManager pluginManager;
-        private readonly ApplicationPartManager partManager;
         private readonly IReferenceContainer referenceContainer;
         private readonly PluginPackage pluginPackage;
 
-        public PluginsController(IPluginManager pluginManager, ApplicationPartManager partManager, IReferenceContainer referenceContainer, PluginPackage pluginPackage)
+        public PluginsController(IPluginManager pluginManager, IReferenceContainer referenceContainer, PluginPackage pluginPackage)
         {
             this.pluginManager = pluginManager;
-            this.partManager = partManager;
             this.referenceContainer = referenceContainer;
             this.pluginPackage = pluginPackage;
         }

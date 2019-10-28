@@ -18,15 +18,16 @@ namespace Mystique.Core.DomainModel
         private string folderName;
         private readonly PluginDbContext pluginDbContext;
         private readonly IUnitOfWork unitOfWork;
-
+        private readonly IReferenceLoader referenceLoader;
         private Stream zipStream;
 
         public PluginConfiguration PluginConfiguration { get; private set; }
 
-        public PluginPackage(PluginDbContext pluginDbContext, IUnitOfWork unitOfWork)
+        public PluginPackage(PluginDbContext pluginDbContext, IUnitOfWork unitOfWork, IReferenceLoader referenceLoader)
         {
             this.pluginDbContext = pluginDbContext;
             this.unitOfWork = unitOfWork;
+            this.referenceLoader = referenceLoader;
         }
 
         public List<IMigration> GetAllMigrations()
@@ -36,6 +37,7 @@ namespace Mystique.Core.DomainModel
 
             using var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);
             var assembly = context.LoadFromStream(fs);
+            referenceLoader.LoadStreamsIntoContext(context, tempFolderName, assembly);
 
             var migrations = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration))).Select(migrationType =>
             {

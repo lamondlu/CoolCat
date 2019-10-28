@@ -105,7 +105,7 @@ namespace Mystique.Core.BusinessLogics
             pluginPackage.SetupFolder();
         }
 
-        public async Task UpgradePluginAsync(PluginPackage pluginPackage, PluginViewModel oldPlugin)
+        private async Task UpgradePluginAsync(PluginPackage pluginPackage, PluginViewModel oldPlugin)
         {
             await pluginRepository.UpdatePluginVersionAsync(oldPlugin.PluginId, pluginPackage.PluginConfiguration.Version);
             await unitOfWork.SaveAsync();
@@ -122,7 +122,7 @@ namespace Mystique.Core.BusinessLogics
             pluginPackage.SetupFolder();
         }
 
-        public async Task DegradePluginAsync(PluginPackage pluginPackage, PluginViewModel oldPlugin)
+        private async Task DegradePluginAsync(PluginPackage pluginPackage, PluginViewModel oldPlugin)
         {
             await pluginRepository.UpdatePluginVersionAsync(oldPlugin.PluginId, pluginPackage.PluginConfiguration.Version);
             await unitOfWork.SaveAsync();
