@@ -9,7 +9,7 @@ namespace Mystique.Core.Contracts
     public interface IPluginManager
     {
         Task<List<PluginListItemViewModel>> GetAllPluginsAsync();
-        Task AddPluginsAsync(PluginPackage pluginPackage);
+        Task AddPluginsAsync(PluginPackage pluginPackage, bool autoEnabled = false);
         Task<PluginViewModel> GetPluginAsync(Guid pluginId);
         Task DeletePluginAsync(Guid pluginId);
         Task EnablePluginAsync(Guid pluginId);

@@ -21,8 +21,9 @@ namespace Mystique.Core.Repositories
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(PluginDbContext).Assembly);
         }
 
-        public DbSet<PluginViewModel> Plugins { get; set; }
-        public DbSet<PluginMigrationViewModel> PluginMigrations { get; set; }
+        public virtual DbSet<PluginViewModel> Plugins { get; set; }
+        public virtual DbSet<PluginMigrationViewModel> PluginMigrations { get; set; }
+        public virtual DbSet<FtpFileDetail> FtpFileDetails { get; set; }
     }
 
     public class UnitOfWork : IUnitOfWork

@@ -20,6 +20,7 @@ namespace Mystique
         public void ConfigureServices(IServiceCollection services)
         {
             services.MystiqueSetupAsync(Configuration).Wait();
+            services.AddHostedService<Services.DownloadPluginsBackgroundService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

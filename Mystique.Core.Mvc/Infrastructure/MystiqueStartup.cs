@@ -52,6 +52,7 @@ namespace Mystique.Core.Mvc.Infrastructure
             {
                 var db = scope.ServiceProvider.GetService<PluginDbContext>();
                 var databaseCreator = (RelationalDatabaseCreator)db.Database.GetService<IDatabaseCreator>();
+                // databaseCreator.Delete();
                 if (!databaseCreator.HasTables())
                 {
                     databaseCreator.CreateTables();

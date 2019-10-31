@@ -60,7 +60,7 @@ namespace Mystique.Core.BusinessLogics
             await mvcModuleSetup.DisableModuleAsync(module.Name);
         }
 
-        public async Task AddPluginsAsync(PluginPackage pluginPackage)
+        public async Task AddPluginsAsync(PluginPackage pluginPackage, bool autoEnabled = false)
         {
             var existedPlugin = await pluginRepository.GetPluginAsync(pluginPackage.PluginConfiguration.Name);
             if (existedPlugin != null)
@@ -84,7 +84,7 @@ namespace Mystique.Core.BusinessLogics
 
             pluginPackage.SetupFolder();
 
-            if (existedPlugin?.IsEnable == true)
+            if (existedPlugin?.IsEnable == true || autoEnabled)
             {
                 await EnablePluginAsync(pluginId);
             }
