@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Mystique.Core.Contracts
+namespace Mystique.Core.Interfaces
 {
     public interface IReferenceContainer
     {

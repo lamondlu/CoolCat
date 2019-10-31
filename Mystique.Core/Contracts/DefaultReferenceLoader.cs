@@ -1,10 +1,9 @@
 using Microsoft.Extensions.Logging;
-using Mystique.Core.Consts;
-using Mystique.Core.Contracts;
+using Mystique.Core.Interfaces;
 using System.IO;
 using System.Reflection;
 
-namespace Mystique.Core.Helpers
+namespace Mystique.Core.Contracts
 {
     public class DefaultReferenceLoader : IReferenceLoader
     {

@@ -1,10 +1,10 @@
-﻿using Mystique.Core.Contracts;
-using Mystique.Core.DomainModel;
+﻿using Mystique.Core.DomainModel;
+using Mystique.Core.Interfaces;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Mystique.Core.Helpers
+namespace Mystique.Core.Contracts
 {
     public class DefaultReferenceContainer : IReferenceContainer
     {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Mystique.Core.Repositories
+namespace Mystique.Core.Interfaces
 {
     public interface IPluginRepository
     {

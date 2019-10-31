@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
-using Mystique.Core.Helpers;
+using Mystique.Core.Interfaces;
 using Mystique.Core.Repositories;
 using Mystique.Mvc.Infrastructure;
 using System;

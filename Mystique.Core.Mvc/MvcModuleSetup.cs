@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Mystique.Core.Contracts;
+using Mystique.Core.Interfaces;
 using Mystique.Core.Mvc.Infrastructure;
 using Mystique.Mvc.Infrastructure;
 using System;

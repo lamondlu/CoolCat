@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Mystique.Core.Contracts
+namespace Mystique.Core.Interfaces
 {
     public interface IReferenceLoader
     {

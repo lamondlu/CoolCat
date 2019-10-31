@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Mystique.Core.Repositories
+namespace Mystique.Core.Interfaces
 {
     public interface IUnitOfWork
     {

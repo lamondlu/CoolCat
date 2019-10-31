@@ -1,5 +1,5 @@
 ﻿using Mystique.Core.DomainModel;
-using Mystique.Core.Repositories;
+using Mystique.Core.Interfaces;
 using Mystique.Core.ViewModels;
 using System;
 using System.Collections.Generic;

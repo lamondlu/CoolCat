@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Mystique.Core.Contracts
+namespace Mystique.Core.Interfaces
 {
     public interface IPluginManager
     {

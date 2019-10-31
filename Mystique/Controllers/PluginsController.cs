@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
+using Mystique.Core.Interfaces;
 using Mystique.Core.Mvc.Extensions;
 using Mystique.Mvc.Infrastructure;
 using System;

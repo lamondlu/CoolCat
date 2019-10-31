@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Mystique.Core.Consts
+namespace Mystique.Core.Contracts
 {
     public class SharedFrameworkConst
     {
