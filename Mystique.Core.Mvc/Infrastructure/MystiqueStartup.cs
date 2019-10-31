@@ -38,11 +38,11 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
             services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
-            services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddScoped<IPluginRepository, PluginRepository>();
+            services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
+            services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddScoped<PluginPackage>();
 
             var mvcBuilder = services.AddMvc();
