@@ -19,9 +19,9 @@ namespace Mystique.Services
 {
     public class DownloadPluginsBackgroundService : BackgroundService
     {
+        private readonly IServiceScope serviceScope;
         private readonly PluginDbContext pluginDbContext;
         private readonly IUnitOfWork unitOfWork;
-        private readonly IServiceScope serviceScope;
         private readonly FtpClient.FtpClientOption ftpClientOption;
 
         public DownloadPluginsBackgroundService(IConfiguration configuration, IServiceScopeFactory serviceScopeFactory)
@@ -103,7 +103,6 @@ namespace Mystique.Services
         }
     }
 
-
     public class FtpClient
     {
         private readonly FtpClientOption option;
@@ -122,7 +121,7 @@ namespace Mystique.Services
         /// <param name="method">请求方法</param>
         /// <param name="requestAction">修改 request 参数</param>
         /// <returns>FTP请求</returns>
-        private FtpWebRequest FastCreateRequest(string file, string method, Action<FtpWebRequest> requestAction = null)
+        private FtpWebRequest FastCreateRequest(string file, string method)
         {
             var url = option.BuildAbsoluteUri(file);
             var request = (FtpWebRequest)WebRequest.Create(new Uri(url));
@@ -133,7 +132,6 @@ namespace Mystique.Services
             request.UsePassive = option.UsePassive;
             request.EnableSsl = option.EnableSsl;
             request.Method = method;
-            requestAction?.Invoke(request);
             return request;
         }
 
@@ -150,9 +148,9 @@ namespace Mystique.Services
                 var files = new List<(string name, long size, DateTime modified)>();
                 var regex = new Regex(@"^(\d+-\d+-\d+\s+\d+:\d+(?:AM|PM))\s+(<DIR>|\d+)\s+(.+)$");
                 IFormatProvider culture = CultureInfo.GetCultureInfo("en-us");
-                while (!reader.EndOfStream)
+                string line;
+                while (!string.IsNullOrEmpty(line = await reader.ReadLineAsync()))
                 {
-                    var line = await reader.ReadLineAsync();
                     var match = regex.Match(line);
                     var modified = DateTime.TryParseExact(match.Groups[1].Value, "MM-dd-yy  hh:mmtt", culture, DateTimeStyles.None, out DateTime dt) ? dt : DateTime.MaxValue;
                     var size = long.TryParse(match.Groups[2].Value, out long lg) ? lg : 0;
