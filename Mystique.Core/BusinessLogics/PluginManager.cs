@@ -21,9 +21,9 @@ namespace Mystique.Core.BusinessLogics
             this.mvcModuleSetup = mvcModuleSetup;
         }
 
-        public async Task<List<PluginListItemViewModel>> GetAllPluginsAsync() => await pluginRepository.GetAllPluginsAsync();
+        public async Task<List<PluginViewModel>> GetAllPluginsAsync() => await pluginRepository.GetAllPluginsAsync();
 
-        public async Task<List<PluginListItemViewModel>> GetAllEnabledPluginsAsync() => await pluginRepository.GetAllEnabledPluginsAsync();
+        public async Task<List<PluginViewModel>> GetAllEnabledPluginsAsync() => await pluginRepository.GetAllEnabledPluginsAsync();
 
         public async Task<PluginViewModel> GetPluginAsync(Guid pluginId) => await pluginRepository.GetPluginAsync(pluginId);
 
@@ -75,7 +75,7 @@ namespace Mystique.Core.BusinessLogics
 
         private async Task<Guid> InitializePluginAsync(PluginPackage pluginPackage)
         {
-            var plugin = new DTOs.AddPluginDTO
+            var plugin = new PluginViewModel
             {
                 Name = pluginPackage.PluginConfiguration.Name,
                 DisplayName = pluginPackage.PluginConfiguration.DisplayName,

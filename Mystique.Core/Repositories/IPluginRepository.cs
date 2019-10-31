@@ -1,5 +1,4 @@
-﻿using Mystique.Core.DTOs;
-using Mystique.Core.ViewModels;
+﻿using Mystique.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,11 +7,11 @@ namespace Mystique.Core.Repositories
 {
     public interface IPluginRepository
     {
-        Task<List<PluginListItemViewModel>> GetAllPluginsAsync();
+        Task<List<PluginViewModel>> GetAllPluginsAsync();
 
-        Task<List<PluginListItemViewModel>> GetAllEnabledPluginsAsync();
+        Task<List<PluginViewModel>> GetAllEnabledPluginsAsync();
 
-        Task AddPluginAsync(AddPluginDTO dto);
+        Task AddPluginAsync(PluginViewModel dto);
 
         Task<PluginViewModel> GetPluginAsync(Guid pluginId);
 

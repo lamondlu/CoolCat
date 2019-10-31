@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Mystique.Core.DTOs;
 using Mystique.Core.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -20,37 +19,18 @@ namespace Mystique.Core.Repositories
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<List<PluginListItemViewModel>> GetAllPluginsAsync()
+        public async Task<List<PluginViewModel>> GetAllPluginsAsync()
         {
-            var plugins = await pluginDbContext.Plugins.AsNoTracking().ToListAsync();
-            return plugins.Select(o => new PluginListItemViewModel
-            {
-                PluginId = o.PluginId,
-                Name = o.Name,
-                UniqueKey = o.UniqueKey,
-                Version = o.Version,
-                DisplayName = o.DisplayName,
-                IsEnable = o.IsEnable,
-            }).ToList();
+            return await pluginDbContext.Plugins.AsNoTracking().ToListAsync();
         }
 
-        public async Task<List<PluginListItemViewModel>> GetAllEnabledPluginsAsync()
+        public async Task<List<PluginViewModel>> GetAllEnabledPluginsAsync()
         {
-            var plugins = await GetAllPluginsAsync();
-            return plugins.Where(o => o.IsEnable).ToList();
+            return await pluginDbContext.Plugins.AsNoTracking().Where(o => o.IsEnable).ToListAsync();
         }
 
-        public async Task AddPluginAsync(AddPluginDTO dto)
+        public async Task AddPluginAsync(PluginViewModel plugin)
         {
-            var plugin = new PluginViewModel
-            {
-                PluginId = dto.PluginId,
-                Name = dto.Name,
-                UniqueKey = dto.UniqueKey,
-                Version = dto.Version,
-                DisplayName = dto.DisplayName,
-                IsEnable = false,
-            };
             pluginDbContext.Plugins.Add(plugin);
             await unitOfWork.SaveAsync();
         }
