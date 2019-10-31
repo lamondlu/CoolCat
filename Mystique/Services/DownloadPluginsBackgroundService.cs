@@ -23,7 +23,6 @@ namespace Mystique.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IServiceScope serviceScope;
         private readonly FtpClient.FtpClientOption ftpClientOption;
-        private string ZipFileFolder { get; set; }
 
         public DownloadPluginsBackgroundService(IConfiguration configuration, IServiceScopeFactory serviceScopeFactory)
         {
@@ -31,22 +30,6 @@ namespace Mystique.Services
             pluginDbContext = serviceScope.ServiceProvider.GetRequiredService<PluginDbContext>();
             unitOfWork = serviceScope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             ftpClientOption = configuration.GetSection("FtpClientOption").Get<FtpClient.FtpClientOption>();
-        }
-
-        public override Task StartAsync(CancellationToken cancellationToken)
-        {
-            var directory = ZipFileFolder = Path.Combine(Environment.CurrentDirectory, "Mystique_plugins", "_zips_");
-#if DEBUG
-            if (Directory.Exists(directory))
-            {
-                Directory.Delete(directory, true);
-            }
-#endif
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-            return base.StartAsync(cancellationToken);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -87,12 +70,8 @@ namespace Mystique.Services
                 var (name, size, modified) = ftpFiles.FirstOrDefault(x => x.name == o); // current
                 if (size != cache?.Size || modified != cache?.Modified)
                 {
-                    // 下载插件
-                    var localName = Path.Combine(ZipFileFolder, name);
-                    ftpClient.Download(name, localName);
-
-                    // 更新插件
-                    using (Stream stream = File.OpenRead(localName))
+                    // 下载并更新插件
+                    using (var stream = await ftpClient.DownloadAsync(name))
                     {
                         var pluginPackage = serviceScope.ServiceProvider.GetRequiredService<PluginPackage>();
                         var pluginManager = serviceScope.ServiceProvider.GetRequiredService<IPluginManager>();
@@ -193,30 +172,28 @@ namespace Mystique.Services
         /// <param name="serverName">服务器上的文件名称</param>
         /// <param name="localName">本地文件名称</param>
         /// <returns>返回一个值,指示是否下载成功</returns>
-        public bool Download(string serverName, string localName)
+
+        public async Task<Stream> DownloadAsync(string serverName)
         {
-            using (var fs = new FileStream(localName, FileMode.OpenOrCreate))
+            var request = FastCreateRequest(serverName, WebRequestMethods.Ftp.DownloadFile);
+            using (var response = (FtpWebResponse)request.GetResponse())
             {
-                var request = FastCreateRequest(serverName, WebRequestMethods.Ftp.DownloadFile, r => r.ContentOffset = fs.Length);
-                using (var response = (FtpWebResponse)request.GetResponse())
-                using (var stream = response.GetResponseStream())
+                var stream = response.GetResponseStream();
+                var memoryStream = new MemoryStream();
+                await CopyStreamAsync(stream, memoryStream);
+                return memoryStream;
+            }
+
+            async Task CopyStreamAsync(Stream input, Stream output)
+            {
+                var buffer = new byte[16 * 1024];
+                int read;
+                while ((read = await input.ReadAsync(buffer, 0, buffer.Length)) > 0)
                 {
-                    fs.Position = fs.Length;
-                    var buffer = new byte[4 * 1024];
-                    while (true)
-                    {
-                        var count = stream.Read(buffer, 0, buffer.Length);
-                        if (count <= 0)
-                        {
-                            break;
-                        }
-                        fs.Write(buffer, 0, count);
-                    }
+                    await output.WriteAsync(buffer, 0, read);
                 }
             }
-            return true;
         }
-
 
 
         /// <summary>
