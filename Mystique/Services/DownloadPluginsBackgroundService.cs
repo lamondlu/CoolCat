@@ -39,7 +39,7 @@ namespace Mystique.Services
         {
             if (ftpClientOption.Host?.Any() != true)
             {
-                // 未配置 ftp 地址，此服务不执行
+                logger.LogInformation(new EventId(204), "未配置 ftp 地址，此服务不执行");
                 return;
             }
 

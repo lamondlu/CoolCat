@@ -10,8 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DemoReferenceLibrary\DemoReferenceLibrary.csproj" />
     <ProjectReference Include="..\Mystique.Core\Mystique.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DemoReferenceLibrary">
+      <HintPath>dlls\DemoReferenceLibrary.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 
