@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Mystique.Core.BusinessLogics;
 using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
 using Mystique.Core.Helpers;
@@ -52,7 +51,7 @@ namespace Mystique.Core.Mvc.Infrastructure
             {
                 var db = scope.ServiceProvider.GetService<PluginDbContext>();
                 var databaseCreator = (RelationalDatabaseCreator)db.Database.GetService<IDatabaseCreator>();
-                // databaseCreator.Delete();
+                databaseCreator.Delete();
                 if (!databaseCreator.HasTables())
                 {
                     databaseCreator.CreateTables();

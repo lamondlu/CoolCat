@@ -5,7 +5,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
-using ZipTool = System.IO.Compression.ZipArchive;
 
 namespace Mystique.Core.DomainModel
 {
@@ -19,7 +18,7 @@ namespace Mystique.Core.DomainModel
 
         public async Task InitializeAsync(Stream zipStream)
         {
-            var archive = new ZipTool(this.zipStream = zipStream, ZipArchiveMode.Read);
+            var archive = new ZipArchive(this.zipStream = zipStream, ZipArchiveMode.Read);
             zipStream.Position = 0;
             tempFolderName = Path.Combine(Environment.CurrentDirectory, "Mystique_plugins", Guid.NewGuid().ToString());
             archive.ExtractToDirectory(tempFolderName);
@@ -41,7 +40,7 @@ namespace Mystique.Core.DomainModel
 
         public void SetupFolder()
         {
-            var archive = new ZipTool(zipStream, ZipArchiveMode.Read);
+            var archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
             zipStream.Position = 0;
             folderName = Path.Combine(Environment.CurrentDirectory, "Mystique_plugins", PluginConfiguration.Name);
             archive.ExtractToDirectory(folderName, true);

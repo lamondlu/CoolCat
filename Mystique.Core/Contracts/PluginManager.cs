@@ -1,12 +1,11 @@
-﻿using Mystique.Core.Contracts;
-using Mystique.Core.DomainModel;
+﻿using Mystique.Core.DomainModel;
 using Mystique.Core.Repositories;
 using Mystique.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Mystique.Core.BusinessLogics
+namespace Mystique.Core.Contracts
 {
     public class PluginManager : IPluginManager
     {
