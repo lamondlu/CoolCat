@@ -2,11 +2,8 @@
 using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Linq;
 
 namespace Mystique.Core.Helpers

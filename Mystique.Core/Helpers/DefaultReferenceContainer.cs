@@ -1,7 +1,5 @@
 ﻿using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

@@ -4,9 +4,7 @@ using Mystique.Core.Repositories;
 using Mystique.Core.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Version = Mystique.Core.DomainModel.Version;
 
 namespace Mystique.Core.BusinessLogics
 {
@@ -40,17 +38,18 @@ namespace Mystique.Core.BusinessLogics
         public async Task DeletePluginAsync(Guid pluginId)
         {
             var plugin = await pluginRepository.GetPluginAsync(pluginId);
-
-            if (plugin.IsEnable)
+            if (plugin?.IsEnable == true)
             {
                 await DisablePluginAsync(pluginId);
             }
 
-            await pluginRepository.RunDownMigrationsAsync(pluginId);
             await pluginRepository.DeletePluginAsync(pluginId);
             await unitOfWork.SaveAsync();
 
-            await mvcModuleSetup.DeleteModuleAsync(plugin.Name);
+            if (plugin != null)
+            {
+                await mvcModuleSetup.DeleteModuleAsync(plugin.Name);
+            }
         }
 
         public async Task DisablePluginAsync(Guid pluginId)
@@ -68,22 +67,6 @@ namespace Mystique.Core.BusinessLogics
                 await DeletePluginAsync(existedPlugin.PluginId);
             }
             var pluginId = await InitializePluginAsync(pluginPackage);
-
-            if (existedPlugin != null && new Version(pluginPackage.PluginConfiguration.Version) > new Version(existedPlugin.Version))
-            {
-                await UpgradePluginAsync(pluginPackage, existedPlugin);
-            }
-            else if (existedPlugin != null && new Version(pluginPackage.PluginConfiguration.Version) < new Version(existedPlugin.Version))
-            {
-                await DegradePluginAsync(pluginPackage, existedPlugin);
-            }
-            else
-            {
-                // do nothing
-            }
-
-            pluginPackage.SetupFolder();
-
             if (existedPlugin?.IsEnable == true || autoEnabled)
             {
                 await EnablePluginAsync(pluginId);
@@ -103,32 +86,8 @@ namespace Mystique.Core.BusinessLogics
             await pluginRepository.AddPluginAsync(plugin);
             await unitOfWork.SaveAsync();
 
-            foreach (var version in pluginPackage.GetAllMigrations())
-            {
-                await version.MigrationUpAsync(plugin.PluginId);
-            }
-
+            pluginPackage.SetupFolder();
             return plugin.PluginId;
-        }
-
-        private async Task UpgradePluginAsync(PluginPackage pluginPackage, PluginViewModel oldPlugin)
-        {
-            await pluginRepository.UpdatePluginVersionAsync(oldPlugin.PluginId, pluginPackage.PluginConfiguration.Version);
-            await unitOfWork.SaveAsync();
-
-            foreach (var migration in pluginPackage.GetAllMigrations())
-            {
-                if (migration.Version > oldPlugin.Version)
-                {
-                    await migration.MigrationUpAsync(oldPlugin.PluginId);
-                }
-            }
-        }
-
-        private async Task DegradePluginAsync(PluginPackage pluginPackage, PluginViewModel oldPlugin)
-        {
-            await pluginRepository.UpdatePluginVersionAsync(oldPlugin.PluginId, pluginPackage.PluginConfiguration.Version);
-            await unitOfWork.SaveAsync();
         }
     }
 }

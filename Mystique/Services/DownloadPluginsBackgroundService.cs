@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
 using Mystique.Core.Repositories;
@@ -23,13 +24,15 @@ namespace Mystique.Services
         private readonly PluginDbContext pluginDbContext;
         private readonly IUnitOfWork unitOfWork;
         private readonly FtpClient.FtpClientOption ftpClientOption;
+        private readonly ILogger<DownloadPluginsBackgroundService> logger;
 
-        public DownloadPluginsBackgroundService(IConfiguration configuration, IServiceScopeFactory serviceScopeFactory)
+        public DownloadPluginsBackgroundService(IConfiguration configuration, IServiceScopeFactory serviceScopeFactory, ILoggerFactory loggerFactory)
         {
             serviceScope = serviceScopeFactory.CreateScope();
             pluginDbContext = serviceScope.ServiceProvider.GetRequiredService<PluginDbContext>();
             unitOfWork = serviceScope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             ftpClientOption = configuration.GetSection("FtpClientOption").Get<FtpClient.FtpClientOption>();
+            logger = loggerFactory.CreateLogger<DownloadPluginsBackgroundService>();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -49,7 +52,7 @@ namespace Mystique.Services
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    logger.LogError(new EventId(500, "检查插件更新"), ex, ex.Message);
                 }
 #if DEBUG
                 await Task.Delay(12 * 1000);
@@ -70,25 +73,33 @@ namespace Mystique.Services
                 var (name, size, modified) = ftpFiles.FirstOrDefault(x => x.name == o); // current
                 if (size != cache?.Size || modified != cache?.Modified)
                 {
-                    // 下载并更新插件
-                    using (var stream = await ftpClient.DownloadAsync(name))
+                    try
                     {
-                        var pluginPackage = serviceScope.ServiceProvider.GetRequiredService<PluginPackage>();
-                        var pluginManager = serviceScope.ServiceProvider.GetRequiredService<IPluginManager>();
+                        // 下载并更新插件
+                        using (var stream = await ftpClient.DownloadAsync(name))
+                        {
+                            var pluginPackage = serviceScope.ServiceProvider.GetRequiredService<PluginPackage>();
+                            var pluginManager = serviceScope.ServiceProvider.GetRequiredService<IPluginManager>();
 
-                        await pluginPackage.InitializeAsync(stream);
-                        await pluginManager.AddPluginsAsync(pluginPackage, true);
-                    }
+                            await pluginPackage.InitializeAsync(stream);
+                            await pluginManager.AddPluginsAsync(pluginPackage, true);
+                        }
 
-                    // 记录状态
-                    if (cache == null)
-                    {
-                        pluginDbContext.Entry(new Core.ViewModels.FtpFileDetail { Name = name, Size = size, Modified = modified }).State = EntityState.Added;
+                        // 记录状态
+                        if (cache == null)
+                        {
+                            pluginDbContext.Entry(new Core.ViewModels.FtpFileDetail { Name = name, Size = size, Modified = modified }).State = EntityState.Added;
+                        }
+                        else
+                        {
+                            cache.Size = size;
+                            cache.Modified = modified;
+                        }
+                        logger.LogInformation(new EventId(200, "下载并更新插件"), $"name={name},size={size},modified={modified}");
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        cache.Size = size;
-                        cache.Modified = modified;
+                        logger.LogError(new EventId(400, "下载并更新插件"), ex, ex.Message);
                     }
                 }
             }

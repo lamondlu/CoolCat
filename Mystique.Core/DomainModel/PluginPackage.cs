@@ -1,9 +1,6 @@
-﻿using Mystique.Core.Contracts;
-using Mystique.Core.Exceptions;
-using Mystique.Core.Repositories;
+﻿using Mystique.Core.Exceptions;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -16,41 +13,9 @@ namespace Mystique.Core.DomainModel
     {
         private string tempFolderName;
         private string folderName;
-        private readonly PluginDbContext pluginDbContext;
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IReferenceLoader referenceLoader;
         private Stream zipStream;
 
         public PluginConfiguration PluginConfiguration { get; private set; }
-
-        public PluginPackage(PluginDbContext pluginDbContext, IUnitOfWork unitOfWork, IReferenceLoader referenceLoader)
-        {
-            this.pluginDbContext = pluginDbContext;
-            this.unitOfWork = unitOfWork;
-            this.referenceLoader = referenceLoader;
-        }
-
-        public List<IMigration> GetAllMigrations()
-        {
-            var context = new CollectibleAssemblyLoadContext();
-            var assemblyPath = Path.Combine(tempFolderName, $"{PluginConfiguration.Name}.dll");
-
-            using var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read);
-            var assembly = context.LoadFromStream(fs);
-            referenceLoader.LoadStreamsIntoContext(context, tempFolderName, assembly);
-
-            var migrations = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration))).Select(migrationType =>
-            {
-                return Activator.CreateInstance(migrationType, new object[] { pluginDbContext, unitOfWork }) as IMigration;
-            }).ToList();
-
-            context.Unload();
-
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            return migrations.OrderBy(p => p.Version).ToList();
-        }
 
         public async Task InitializeAsync(Stream zipStream)
         {
@@ -82,7 +47,10 @@ namespace Mystique.Core.DomainModel
             archive.ExtractToDirectory(folderName, true);
 
             var folder = new DirectoryInfo(tempFolderName);
-            folder.Delete(true);
+            if (folder.Exists)
+            {
+                folder.Delete(true);
+            }
         }
 
         private async Task LoadConfigurationAsync(Stream stream)

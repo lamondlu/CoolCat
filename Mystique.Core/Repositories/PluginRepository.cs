@@ -1,5 +1,4 @@
-﻿using Dapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Mystique.Core.DTOs;
 using Mystique.Core.ViewModels;
 using System;
@@ -21,32 +20,6 @@ namespace Mystique.Core.Repositories
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task AddPluginAsync(AddPluginDTO dto)
-        {
-            var plugin = new PluginViewModel
-            {
-                PluginId = dto.PluginId,
-                Name = dto.Name,
-                UniqueKey = dto.UniqueKey,
-                Version = dto.Version,
-                DisplayName = dto.DisplayName,
-                IsEnable = false,
-            };
-            pluginDbContext.Plugins.Add(plugin);
-            await unitOfWork.SaveAsync();
-        }
-
-        public async Task UpdatePluginVersionAsync(Guid pluginId, string version)
-        {
-            var find = await pluginDbContext.Plugins.FirstOrDefaultAsync(o => o.PluginId == pluginId);
-            if (find == null)
-            {
-                return;
-            }
-            find.Version = version;
-            await unitOfWork.SaveAsync();
-        }
-
         public async Task<List<PluginListItemViewModel>> GetAllPluginsAsync()
         {
             var plugins = await pluginDbContext.Plugins.AsNoTracking().ToListAsync();
@@ -65,6 +38,21 @@ namespace Mystique.Core.Repositories
         {
             var plugins = await GetAllPluginsAsync();
             return plugins.Where(o => o.IsEnable).ToList();
+        }
+
+        public async Task AddPluginAsync(AddPluginDTO dto)
+        {
+            var plugin = new PluginViewModel
+            {
+                PluginId = dto.PluginId,
+                Name = dto.Name,
+                UniqueKey = dto.UniqueKey,
+                Version = dto.Version,
+                DisplayName = dto.DisplayName,
+                IsEnable = false,
+            };
+            pluginDbContext.Plugins.Add(plugin);
+            await unitOfWork.SaveAsync();
         }
 
         public async Task SetPluginStatusAsync(Guid pluginId, bool enable)
@@ -99,23 +87,5 @@ namespace Mystique.Core.Repositories
             await unitOfWork.SaveAsync();
         }
 
-        public async Task RunDownMigrationsAsync(Guid pluginId)
-        {
-            var plugin = await pluginDbContext.Plugins.FirstOrDefaultAsync(o => o.PluginId == pluginId);
-            if (plugin == null)
-            {
-                return;
-            }
-            var downs = await pluginDbContext.PluginMigrations.Where(o => o.Plugin == plugin).OrderByDescending(o => o.Version).Select(o => o.Down).ToListAsync();
-            var conn = pluginDbContext.Database.GetDbConnection();
-            foreach (var down in downs)
-            {
-                if (conn.State != ConnectionState.Open)
-                {
-                    await conn.OpenAsync();
-                }
-                await conn.ExecuteAsync(down, new { pluginId, });
-            }
-        }
     }
 }

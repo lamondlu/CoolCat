@@ -14,8 +14,6 @@ namespace Mystique.Core.Repositories
 
         Task AddPluginAsync(AddPluginDTO dto);
 
-        Task UpdatePluginVersionAsync(Guid pluginId, string version);
-
         Task<PluginViewModel> GetPluginAsync(Guid pluginId);
 
         Task<PluginViewModel> GetPluginAsync(string pluginName);
@@ -23,7 +21,5 @@ namespace Mystique.Core.Repositories
         Task SetPluginStatusAsync(Guid pluginId, bool enable);
 
         Task DeletePluginAsync(Guid pluginId);
-
-        Task RunDownMigrationsAsync(Guid pluginId);
     }
 }
