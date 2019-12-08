@@ -56,7 +56,9 @@ namespace Mystique.Core.DomainModel
                 var secondray = versionNumber.Split('.')[1];
                 var minor = versionNumber.Split('.')[2];
 
-                return _regex.IsMatch(primary) && _regex.IsMatch(secondray) && _regex.IsMatch(minor);
+                return _regex.IsMatch(primary)
+                    && _regex.IsMatch(secondray)
+                    && _regex.IsMatch(minor);
             }
             else
             {
