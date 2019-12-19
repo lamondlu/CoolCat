@@ -15,58 +15,49 @@ namespace Mystique.Core.DomainModel
 {
     public class PluginPackage
     {
-        private PluginConfiguration _pluginConfiguration = null;
         private Stream _zipStream = null;
+        private readonly IReferenceLoader referenceLoader;
         private string _tempFolderName = string.Empty;
         private string _folderName = string.Empty;
 
-        public PluginConfiguration Configuration
-        {
-            get
-            {
-                return _pluginConfiguration;
-            }
-        }
+        public PluginConfiguration Configuration { get; private set; }
 
-        public PluginPackage(Stream stream)
+        public PluginPackage(IReferenceLoader referenceLoader)
         {
-            _zipStream = stream;
-            Initialize(stream);
+            this.referenceLoader = referenceLoader;
         }
 
         public List<IMigration> GetAllMigrations(string connectionString)
         {
             var context = new CollectibleAssemblyLoadContext();
-            var assemblyPath = $"{_tempFolderName}/{_pluginConfiguration.Name}.dll";
+            var assemblyPath = Path.Combine(_tempFolderName, $"{Configuration.Name}.dll");
 
+            List<IMigration> migrations = new List<IMigration>();
             using (var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read))
             {
                 var dbHelper = new DbHelper(connectionString);
                 var assembly = context.LoadFromStream(fs);
+                referenceLoader.LoadStreamsIntoContext(context, _tempFolderName, assembly);
                 var migrationTypes = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration)));
 
-                List<IMigration> migrations = new List<IMigration>();
                 foreach (var migrationType in migrationTypes)
                 {
                     var constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(DbHelper));
 
                     migrations.Add((IMigration)constructor.Invoke(new object[] { dbHelper }));
                 }
-
                 context.Unload();
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
-
-                return migrations.OrderBy(p => p.Version).ToList();
             }
+            return migrations.OrderBy(p => p.Version).ToList();
         }
 
         public void Initialize(Stream stream)
         {
-            _zipStream = stream;
-            _tempFolderName = $"{ AppDomain.CurrentDomain.BaseDirectory }{ Guid.NewGuid().ToString()}";
-            ZipTool archive = new ZipTool(_zipStream, ZipArchiveMode.Read);
+            _tempFolderName = Path.Combine(Environment.CurrentDirectory, "Mystique_Plugins", Guid.NewGuid().ToString());
+            ZipTool archive = new ZipTool(_zipStream = stream, ZipArchiveMode.Read);
 
             archive.ExtractToDirectory(_tempFolderName);
 
@@ -93,7 +84,8 @@ namespace Mystique.Core.DomainModel
         {
             ZipTool archive = new ZipTool(_zipStream, ZipArchiveMode.Read);
             _zipStream.Position = 0;
-            _folderName = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{_pluginConfiguration.Name}";
+
+            _folderName = Path.Combine(Environment.CurrentDirectory, "Mystique_Plugins", Configuration.Name);
 
             archive.ExtractToDirectory(_folderName, true);
 
@@ -106,9 +98,9 @@ namespace Mystique.Core.DomainModel
             using (var sr = new StreamReader(stream))
             {
                 var content = sr.ReadToEnd();
-                _pluginConfiguration = JsonConvert.DeserializeObject<PluginConfiguration>(content);
+                Configuration = JsonConvert.DeserializeObject<PluginConfiguration>(content);
 
-                if (_pluginConfiguration == null)
+                if (Configuration == null)
                 {
                     throw new WrongFormatConfigurationException();
                 }

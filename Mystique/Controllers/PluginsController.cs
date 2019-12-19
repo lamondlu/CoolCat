@@ -10,15 +10,15 @@ namespace Mystique.Controllers
 {
     public class PluginsController : Controller
     {
-        private IPluginManager _pluginManager = null;
-        private ApplicationPartManager _partManager = null;
-        private IReferenceContainer _referenceContainer = null;
+        private readonly IPluginManager pluginManager;
+        private readonly PluginPackage pluginPackage;
+        private readonly IReferenceContainer referenceContainer;
 
-        public PluginsController(IPluginManager pluginManager, ApplicationPartManager partManager, IReferenceContainer referenceContainer)
+        public PluginsController(IPluginManager pluginManager, PluginPackage pluginPackage, IReferenceContainer referenceContainer)
         {
-            _pluginManager = pluginManager;
-            _partManager = partManager;
-            _referenceContainer = referenceContainer;
+            this.pluginManager = pluginManager;
+            this.pluginPackage = pluginPackage;
+            this.referenceContainer = referenceContainer;
         }
 
         private void RefreshControllerAction()
@@ -29,15 +29,14 @@ namespace Mystique.Controllers
 
         public IActionResult Assemblies()
         {
-            var items = _referenceContainer.GetAll();
-
+            var items = referenceContainer.GetAll();
             return View(items);
         }
 
         // GET: /<controller>/
         public IActionResult Index()
         {
-            return View(_pluginManager.GetAllPlugins());
+            return View(pluginManager.GetAllPlugins());
         }
 
         [HttpGet]
@@ -49,27 +48,30 @@ namespace Mystique.Controllers
         [HttpPost]
         public IActionResult Upload()
         {
-            var package = new PluginPackage(Request.GetPluginStream());
-            _pluginManager.AddPlugins(package);
+            using (var stream = Request.GetPluginStream())
+            {
+                var package = this.pluginPackage;
+                package.Initialize(stream);
+                pluginManager.AddPlugins(package);
+            }
             return RedirectToAction("Index");
         }
 
         public IActionResult Enable(Guid id)
         {
-            _pluginManager.EnablePlugin(id);
+            pluginManager.EnablePlugin(id);
             return RedirectToAction("Index");
         }
 
         public IActionResult Disable(Guid id)
         {
-            _pluginManager.DisablePlugin(id);
+            pluginManager.DisablePlugin(id);
             return RedirectToAction("Index");
         }
 
         public IActionResult Delete(Guid id)
         {
-            _pluginManager.DeletePlugin(id);
-
+            pluginManager.DeletePlugin(id);
             return RedirectToAction("Index");
         }
     }
