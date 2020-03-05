@@ -16,7 +16,7 @@ namespace Mystique.Core
             return _pluginContexts.ContainsKey(pluginName);
         }
 
-        public static void RemovePluginContext(string pluginName)
+        public static void Remove(string pluginName)
         {
             if (_pluginContexts.ContainsKey(pluginName))
             {
@@ -25,12 +25,12 @@ namespace Mystique.Core
             }
         }
 
-        public static CollectibleAssemblyLoadContext GetContext(string pluginName)
+        public static CollectibleAssemblyLoadContext Get(string pluginName)
         {
             return _pluginContexts[pluginName];
         }
 
-        public static void AddPluginContext(string pluginName, CollectibleAssemblyLoadContext context)
+        public static void Add(string pluginName, CollectibleAssemblyLoadContext context)
         {
             _pluginContexts.Add(pluginName, context);
         }

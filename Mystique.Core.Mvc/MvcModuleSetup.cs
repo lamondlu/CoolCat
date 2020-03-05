@@ -39,12 +39,12 @@ namespace Mystique.Core.Mvc
 
                 AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
                 _partManager.ApplicationParts.Add(controllerAssemblyPart);
-                PluginsLoadContexts.AddPluginContext(moduleName, context);
+                PluginsLoadContexts.Add(moduleName, context);
             }
         }
         else
         {
-            var context = PluginsLoadContexts.GetContext(moduleName);
+            var context = PluginsLoadContexts.Get(moduleName);
             var controllerAssemblyPart = new MystiqueAssemblyPart(context.Assemblies.First());
             _partManager.ApplicationParts.Add(controllerAssemblyPart);
         }
@@ -62,7 +62,7 @@ namespace Mystique.Core.Mvc
 
         public void DeleteModule(string moduleName)
         {
-            PluginsLoadContexts.RemovePluginContext(moduleName);
+            PluginsLoadContexts.Remove(moduleName);
 
             var directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}");
             directory.Delete(true);

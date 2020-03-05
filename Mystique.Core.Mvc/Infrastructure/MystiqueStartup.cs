@@ -59,7 +59,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
                     var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
                     mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
-                    PluginsLoadContexts.AddPluginContext(plugin.Name, context);
+                    PluginsLoadContexts.Add(plugin.Name, context);
                 }
             }
         }
