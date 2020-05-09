@@ -71,12 +71,15 @@ namespace Mystique.Core.Mvc.Infrastructure
                     o.AdditionalReferencePaths.Add(item);
                 }
 
+
+
                 AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
             });
 
             services.Configure<RazorViewEngineOptions>(o =>
             {
                 o.AreaViewLocationFormats.Add("/Modules/{2}/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
+                //o.AreaViewLocationFormats.Add("/bin/Debug/netcoreapp3.1/Modules/{2}/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
                 o.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
             });
         }

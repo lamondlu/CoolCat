@@ -47,7 +47,7 @@ namespace Mystique.Core.Helpers
 
                     if (!File.Exists(filePath))
                     {
-                        _logger.LogWarning($"The package '{dllName}' is missing.");
+                        _logger.LogWarning($"The package '{dllName}' in '{filePath}' is missing.");
                         continue;
                     }
 
