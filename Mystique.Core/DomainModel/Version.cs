@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Mystique.Core.DomainModel
@@ -9,13 +7,13 @@ namespace Mystique.Core.DomainModel
     public class Version : IComparable<Version>
     {
         private const string _pattern = "^[0-9]*$";
-        private static Regex _regex = new Regex(_pattern);
+        private static readonly Regex _regex = new Regex(_pattern);
 
         public Version(string versionNumber)
         {
             if (Validate(versionNumber))
             {
-                this.VersionNumber = versionNumber;
+                VersionNumber = versionNumber;
             }
             else
             {
@@ -24,37 +22,19 @@ namespace Mystique.Core.DomainModel
 
         }
 
-        public int PrimaryVersion
-        {
-            get
-            {
-                return Convert.ToInt32(this.VersionNumber.Split('.')[0]);
-            }
-        }
+        public int PrimaryVersion => Convert.ToInt32(VersionNumber.Split('.')[0]);
 
-        public int SecondaryVersion
-        {
-            get
-            {
-                return Convert.ToInt32(this.VersionNumber.Split('.')[1]);
-            }
-        }
+        public int SecondaryVersion => Convert.ToInt32(VersionNumber.Split('.')[1]);
 
-        public int MinorVersion
-        {
-            get
-            {
-                return Convert.ToInt32(this.VersionNumber.Split('.')[2]);
-            }
-        }
+        public int MinorVersion => Convert.ToInt32(VersionNumber.Split('.')[2]);
 
         private bool Validate(string versionNumber)
         {
             if (!string.IsNullOrEmpty(versionNumber) && versionNumber.Split(".").Length == 3)
             {
-                var primary = versionNumber.Split('.')[0];
-                var secondray = versionNumber.Split('.')[1];
-                var minor = versionNumber.Split('.')[2];
+                string primary = versionNumber.Split('.')[0];
+                string secondray = versionNumber.Split('.')[1];
+                string minor = versionNumber.Split('.')[2];
 
                 return _regex.IsMatch(primary)
                     && _regex.IsMatch(secondray)

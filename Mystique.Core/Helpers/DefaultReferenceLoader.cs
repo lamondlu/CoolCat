@@ -1,20 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
-using Mystique.Core.Configurations;
 using Mystique.Core.Consts;
 using Mystique.Core.Contracts;
-using Mystique.Core.DomainModel;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace Mystique.Core.Helpers
 {
     public class DefaultReferenceLoader : IReferenceLoader
     {
-        private IReferenceContainer _referenceContainer = null;
+        private readonly IReferenceContainer _referenceContainer = null;
         private readonly ILogger<DefaultReferenceLoader> _logger = null;
 
         public DefaultReferenceLoader(IReferenceContainer referenceContainer, ILogger<DefaultReferenceLoader> logger)
@@ -25,15 +19,15 @@ namespace Mystique.Core.Helpers
 
         public void LoadStreamsIntoContext(CollectibleAssemblyLoadContext context, string moduleFolder, Assembly assembly)
         {
-            var references = assembly.GetReferencedAssemblies();
+            AssemblyName[] references = assembly.GetReferencedAssemblies();
 
-            foreach (var item in references)
+            foreach (AssemblyName item in references)
             {
-                var name = item.Name;
+                string name = item.Name;
 
-                var version = item.Version.ToString();
+                string version = item.Version.ToString();
 
-                var stream = _referenceContainer.GetStream(name, version);
+                Stream stream = _referenceContainer.GetStream(name, version);
 
                 if (stream != null)
                 {
@@ -48,8 +42,8 @@ namespace Mystique.Core.Helpers
                         continue;
                     }
 
-                    var dllName = $"{name}.dll";
-                    var filePath = $"{moduleFolder}\\{dllName}";
+                    string dllName = $"{name}.dll";
+                    string filePath = $"{moduleFolder}\\{dllName}";
 
                     if (!File.Exists(filePath))
                     {
@@ -57,11 +51,11 @@ namespace Mystique.Core.Helpers
                         continue;
                     }
 
-                    using (var fs = new FileStream(filePath, FileMode.Open))
+                    using (FileStream fs = new FileStream(filePath, FileMode.Open))
                     {
-                        var referenceAssembly = context.LoadFromStream(fs);
+                        Assembly referenceAssembly = context.LoadFromStream(fs);
 
-                        var memoryStream = new MemoryStream();
+                        MemoryStream memoryStream = new MemoryStream();
 
                         fs.Position = 0;
                         fs.CopyTo(memoryStream);

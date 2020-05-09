@@ -14,8 +14,8 @@ namespace Mystique.Core.BusinessLogics
     public class PluginManager : IPluginManager
     {
         private readonly IUnitOfWork _unitOfWork = null;
-        private string _connectionString = null;
-        private IMvcModuleSetup _mvcModuleSetup = null;
+        private readonly string _connectionString = null;
+        private readonly IMvcModuleSetup _mvcModuleSetup = null;
 
         public PluginManager(IUnitOfWork unitOfWork, IOptions<ConnectionStringSetting> connectionStringSettingAccessor, IMvcModuleSetup mvcModuleSetup)
         {
@@ -41,7 +41,7 @@ namespace Mystique.Core.BusinessLogics
 
         public void EnablePlugin(Guid pluginId)
         {
-            var module = _unitOfWork.PluginRepository.GetPlugin(pluginId);
+            PluginViewModel module = _unitOfWork.PluginRepository.GetPlugin(pluginId);
             _unitOfWork.PluginRepository.SetPluginStatus(pluginId, true);
 
             _mvcModuleSetup.EnableModule(module.Name);
@@ -49,7 +49,7 @@ namespace Mystique.Core.BusinessLogics
 
         public void DeletePlugin(Guid pluginId)
         {
-            var plugin = _unitOfWork.PluginRepository.GetPlugin(pluginId);
+            PluginViewModel plugin = _unitOfWork.PluginRepository.GetPlugin(pluginId);
 
             if (plugin.IsEnable)
             {
@@ -65,14 +65,14 @@ namespace Mystique.Core.BusinessLogics
 
         public void DisablePlugin(Guid pluginId)
         {
-            var module = _unitOfWork.PluginRepository.GetPlugin(pluginId);
+            PluginViewModel module = _unitOfWork.PluginRepository.GetPlugin(pluginId);
             _unitOfWork.PluginRepository.SetPluginStatus(pluginId, false);
             _mvcModuleSetup.DisableModule(module.Name);
         }
 
         public void AddPlugins(PluginPackage pluginPackage)
         {
-            var existedPlugin = _unitOfWork.PluginRepository.GetPlugin(pluginPackage.Configuration.Name);
+            PluginViewModel existedPlugin = _unitOfWork.PluginRepository.GetPlugin(pluginPackage.Configuration.Name);
 
             if (existedPlugin == null)
             {
@@ -94,7 +94,7 @@ namespace Mystique.Core.BusinessLogics
 
         private void InitializePlugin(PluginPackage pluginPackage)
         {
-            var plugin = new DTOs.AddPluginDTO
+            DTOs.AddPluginDTO plugin = new DTOs.AddPluginDTO
             {
                 Name = pluginPackage.Configuration.Name,
                 DisplayName = pluginPackage.Configuration.DisplayName,
@@ -105,9 +105,9 @@ namespace Mystique.Core.BusinessLogics
             _unitOfWork.PluginRepository.AddPlugin(plugin);
             _unitOfWork.Commit();
 
-            var versions = pluginPackage.GetAllMigrations(_connectionString);
+            List<IMigration> versions = pluginPackage.GetAllMigrations(_connectionString);
 
-            foreach (var version in versions)
+            foreach (IMigration version in versions)
             {
                 version.MigrateUp(plugin.PluginId);
             }
@@ -120,11 +120,11 @@ namespace Mystique.Core.BusinessLogics
             _unitOfWork.PluginRepository.UpdatePluginVersion(oldPlugin.PluginId, pluginPackage.Configuration.Version);
             _unitOfWork.Commit();
 
-            var migrations = pluginPackage.GetAllMigrations(_connectionString);
+            List<IMigration> migrations = pluginPackage.GetAllMigrations(_connectionString);
 
-            var pendingMigrations = migrations.Where(p => p.Version > oldPlugin.Version);
+            IEnumerable<IMigration> pendingMigrations = migrations.Where(p => p.Version > oldPlugin.Version);
 
-            foreach (var migration in pendingMigrations)
+            foreach (IMigration migration in pendingMigrations)
             {
                 migration.MigrateUp(oldPlugin.PluginId);
             }

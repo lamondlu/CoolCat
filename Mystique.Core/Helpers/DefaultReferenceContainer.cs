@@ -1,7 +1,5 @@
 ﻿using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,7 +8,7 @@ namespace Mystique.Core.Helpers
 {
     public class DefaultReferenceContainer : IReferenceContainer
     {
-        private static Dictionary<CachedReferenceItemKey, Stream> _cachedReferences = new Dictionary<CachedReferenceItemKey, Stream>();
+        private static readonly Dictionary<CachedReferenceItemKey, Stream> _cachedReferences = new Dictionary<CachedReferenceItemKey, Stream>();
 
 
         public List<CachedReferenceItemKey> GetAll()
@@ -37,7 +35,7 @@ namespace Mystique.Core.Helpers
 
         public Stream GetStream(string name, string version)
         {
-            var key = _cachedReferences.Keys.FirstOrDefault(p => p.ReferenceName == name
+            CachedReferenceItemKey key = _cachedReferences.Keys.FirstOrDefault(p => p.ReferenceName == name
                 && p.Version == version);
 
             if (key != null)

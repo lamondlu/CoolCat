@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Mystique.Core.DomainModel
 {
@@ -27,12 +26,6 @@ namespace Mystique.Core.DomainModel
 
         public string DLLPath { get; private set; }
 
-        public string FileName
-        {
-            get
-            {
-                return DLLPath.Split('/').Last();
-            }
-        }
+        public string FileName => DLLPath.Split('/').Last();
     }
 }

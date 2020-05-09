@@ -1,20 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Mystique.Core.Contracts;
-using Mystique.Core.Helpers;
 using Mystique.Core.Mvc.Infrastructure;
 using Mystique.Mvc.Infrastructure;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Mystique.Core.Mvc
 {
     public class MvcModuleSetup : IMvcModuleSetup
     {
-        private ApplicationPartManager _partManager;
-        private IReferenceLoader _referenceLoader = null;
+        private readonly ApplicationPartManager _partManager;
+        private readonly IReferenceLoader _referenceLoader = null;
 
         public MvcModuleSetup(ApplicationPartManager partManager, IReferenceLoader referenceLoader)
         {
@@ -22,39 +19,39 @@ namespace Mystique.Core.Mvc
             _referenceLoader = referenceLoader;
         }
 
-    public void EnableModule(string moduleName)
-    {
-        if (!PluginsLoadContexts.Any(moduleName))
+        public void EnableModule(string moduleName)
         {
-            var context = new CollectibleAssemblyLoadContext();
-
-            var filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
-            var referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
-            using (var fs = new FileStream(filePath, FileMode.Open))
+            if (!PluginsLoadContexts.Any(moduleName))
             {
-                var assembly = context.LoadFromStream(fs);
-                _referenceLoader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
+                CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext();
 
-                var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
+                string filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
+                string referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
+                using (FileStream fs = new FileStream(filePath, FileMode.Open))
+                {
+                    System.Reflection.Assembly assembly = context.LoadFromStream(fs);
+                    _referenceLoader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
 
-                AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
-                _partManager.ApplicationParts.Add(controllerAssemblyPart);
-                PluginsLoadContexts.Add(moduleName, context);
+                    MystiqueAssemblyPart controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
+
+                    AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
+                    _partManager.ApplicationParts.Add(controllerAssemblyPart);
+                    PluginsLoadContexts.Add(moduleName, context);
+                }
             }
-        }
-        else
-        {
-            var context = PluginsLoadContexts.Get(moduleName);
-            var controllerAssemblyPart = new MystiqueAssemblyPart(context.Assemblies.First());
-            _partManager.ApplicationParts.Add(controllerAssemblyPart);
-        }
+            else
+            {
+                CollectibleAssemblyLoadContext context = PluginsLoadContexts.Get(moduleName);
+                MystiqueAssemblyPart controllerAssemblyPart = new MystiqueAssemblyPart(context.Assemblies.First());
+                _partManager.ApplicationParts.Add(controllerAssemblyPart);
+            }
 
-        ResetControllActions();
-    }
+            ResetControllActions();
+        }
 
         public void DisableModule(string moduleName)
         {
-            var last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
+            ApplicationPart last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
             _partManager.ApplicationParts.Remove(last);
 
             ResetControllActions();
@@ -64,7 +61,7 @@ namespace Mystique.Core.Mvc
         {
             PluginsLoadContexts.Remove(moduleName);
 
-            var directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}");
+            DirectoryInfo directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}");
             directory.Delete(true);
         }
 

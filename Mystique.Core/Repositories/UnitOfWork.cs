@@ -1,20 +1,16 @@
-﻿using Mystique.Core.Helpers;
+﻿using Microsoft.Extensions.Options;
+using Mystique.Core.Helpers;
 using Mystique.Core.Models;
-using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Text;
-using System.Transactions;
 
 namespace Mystique.Core.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private DbHelper _dbHelper = null;
-        private string _connectionString = string.Empty;
+        private readonly DbHelper _dbHelper = null;
+        private readonly string _connectionString = string.Empty;
         private IPluginRepository _pluginRepository = null;
-        private List<Command> _commands;
+        private readonly List<Command> _commands;
 
         public UnitOfWork(IOptions<ConnectionStringSetting> connectionStringAccessor)
         {

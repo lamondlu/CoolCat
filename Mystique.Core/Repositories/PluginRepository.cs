@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Mystique.Core.DTOs;
 using Mystique.Core.Helpers;
 using Mystique.Core.ViewModels;
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using System.Data;
-using Mystique.Core.DTOs;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace Mystique.Core.Repositories
 {
     public class PluginRepository : IPluginRepository
     {
-        private DbHelper _dbHelper = null;
-        private List<Command> _commands = null;
+        private readonly DbHelper _dbHelper = null;
+        private readonly List<Command> _commands = null;
 
         public PluginRepository(DbHelper dbHelper, List<Command> commands)
         {
@@ -23,9 +22,11 @@ namespace Mystique.Core.Repositories
 
         public void AddPlugin(AddPluginDTO dto)
         {
-            var command = new Command();
-            command.Parameters = new List<SqlParameter>();
-            command.Sql = "INSERT INTO Plugins(PluginId, Name, UniqueKey, Version, DisplayName,Enable) values(@pluginId, @name, @uniqueKey, @version, @displayName, @enable)";
+            Command command = new Command
+            {
+                Parameters = new List<SqlParameter>(),
+                Sql = "INSERT INTO Plugins(PluginId, Name, UniqueKey, Version, DisplayName,Enable) values(@pluginId, @name, @uniqueKey, @version, @displayName, @enable)"
+            };
 
             command.Parameters.Add(new SqlParameter { ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = dto.PluginId });
             command.Parameters.Add(new SqlParameter { ParameterName = "@name", SqlDbType = SqlDbType.NVarChar, Value = dto.Name });
@@ -43,9 +44,11 @@ namespace Mystique.Core.Repositories
 
         public void UpdatePluginVersion(Guid pluginId, string version)
         {
-            var command = new Command();
-            command.Parameters = new List<SqlParameter>();
-            command.Sql = "UPDATE Plugins SET Version = @version WHERE PluginId = @pluginId";
+            Command command = new Command
+            {
+                Parameters = new List<SqlParameter>(),
+                Sql = "UPDATE Plugins SET Version = @version WHERE PluginId = @pluginId"
+            };
 
 
             command.Parameters.Add(new SqlParameter { ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value = pluginId });
@@ -56,20 +59,22 @@ namespace Mystique.Core.Repositories
 
         public List<PluginListItemViewModel> GetAllPlugins()
         {
-            var plugins = new List<PluginListItemViewModel>();
-            var sql = "SELECT * from Plugins";
+            List<PluginListItemViewModel> plugins = new List<PluginListItemViewModel>();
+            string sql = "SELECT * from Plugins";
 
-            var table = _dbHelper.ExecuteDataTable(sql);
+            DataTable table = _dbHelper.ExecuteDataTable(sql);
 
-            foreach (var row in table.Rows.Cast<DataRow>())
+            foreach (DataRow row in table.Rows.Cast<DataRow>())
             {
-                var plugin = new PluginListItemViewModel();
-                plugin.PluginId = Guid.Parse(row["PluginId"].ToString());
-                plugin.Name = row["Name"].ToString();
-                plugin.UniqueKey = row["UniqueKey"].ToString();
-                plugin.Version = row["Version"].ToString();
-                plugin.DisplayName = row["DisplayName"].ToString();
-                plugin.IsEnable = Convert.ToBoolean(row["Enable"]);
+                PluginListItemViewModel plugin = new PluginListItemViewModel
+                {
+                    PluginId = Guid.Parse(row["PluginId"].ToString()),
+                    Name = row["Name"].ToString(),
+                    UniqueKey = row["UniqueKey"].ToString(),
+                    Version = row["Version"].ToString(),
+                    DisplayName = row["DisplayName"].ToString(),
+                    IsEnable = Convert.ToBoolean(row["Enable"])
+                };
 
                 plugins.Add(plugin);
             }
@@ -84,7 +89,7 @@ namespace Mystique.Core.Repositories
 
         public void SetPluginStatus(Guid pluginId, bool enable)
         {
-            var sql = "UPDATE Plugins SET Enable=@enable WHERE PluginId = @pluginId";
+            string sql = "UPDATE Plugins SET Enable=@enable WHERE PluginId = @pluginId";
 
             _dbHelper.ExecuteNonQuery(sql, new List<SqlParameter> {
                 new SqlParameter{ParameterName = "@enable", SqlDbType = SqlDbType.Bit, Value= enable},
@@ -94,9 +99,9 @@ namespace Mystique.Core.Repositories
 
         public PluginViewModel GetPlugin(string pluginName)
         {
-            var sql = "SELECT * from Plugins where Name = @pluginName";
+            string sql = "SELECT * from Plugins where Name = @pluginName";
 
-            var table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
+            DataTable table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
             {
                 ParameterName = "@pluginName",
                 Value = pluginName,
@@ -108,24 +113,26 @@ namespace Mystique.Core.Repositories
                 return null;
             }
 
-            var row = table.Rows.Cast<DataRow>().First();
+            DataRow row = table.Rows.Cast<DataRow>().First();
 
-            var plugin = new PluginViewModel();
-            plugin.PluginId = Guid.Parse(row["PluginId"].ToString());
-            plugin.Name = row["Name"].ToString();
-            plugin.UniqueKey = row["UniqueKey"].ToString();
-            plugin.Version = row["Version"].ToString();
-            plugin.DisplayName = row["DisplayName"].ToString();
-            plugin.IsEnable = Convert.ToBoolean(row["Enable"]);
+            PluginViewModel plugin = new PluginViewModel
+            {
+                PluginId = Guid.Parse(row["PluginId"].ToString()),
+                Name = row["Name"].ToString(),
+                UniqueKey = row["UniqueKey"].ToString(),
+                Version = row["Version"].ToString(),
+                DisplayName = row["DisplayName"].ToString(),
+                IsEnable = Convert.ToBoolean(row["Enable"])
+            };
 
             return plugin;
         }
 
         public PluginViewModel GetPlugin(Guid pluginId)
         {
-            var sql = "SELECT * from Plugins where PluginId = @pluginId";
+            string sql = "SELECT * from Plugins where PluginId = @pluginId";
 
-            var table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
+            DataTable table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
             {
                 ParameterName = "@pluginId",
                 Value = pluginId,
@@ -137,15 +144,17 @@ namespace Mystique.Core.Repositories
                 throw new Exception("The plugin is missing in the system.");
             }
 
-            var row = table.Rows.Cast<DataRow>().First();
+            DataRow row = table.Rows.Cast<DataRow>().First();
 
-            var plugin = new PluginViewModel();
-            plugin.PluginId = Guid.Parse(row["PluginId"].ToString());
-            plugin.Name = row["Name"].ToString();
-            plugin.UniqueKey = row["UniqueKey"].ToString();
-            plugin.Version = row["Version"].ToString();
-            plugin.DisplayName = row["DisplayName"].ToString();
-            plugin.IsEnable = Convert.ToBoolean(row["Enable"]);
+            PluginViewModel plugin = new PluginViewModel
+            {
+                PluginId = Guid.Parse(row["PluginId"].ToString()),
+                Name = row["Name"].ToString(),
+                UniqueKey = row["UniqueKey"].ToString(),
+                Version = row["Version"].ToString(),
+                DisplayName = row["DisplayName"].ToString(),
+                IsEnable = Convert.ToBoolean(row["Enable"])
+            };
 
             return plugin;
 
@@ -153,7 +162,7 @@ namespace Mystique.Core.Repositories
 
         public void DeletePlugin(Guid pluginId)
         {
-            var sqlPluginMigrations = "DELETE PluginMigrations where PluginId = @pluginId";
+            string sqlPluginMigrations = "DELETE PluginMigrations where PluginId = @pluginId";
 
             _dbHelper.ExecuteNonQuery(sqlPluginMigrations, new List<SqlParameter>{new SqlParameter
             {
@@ -162,7 +171,7 @@ namespace Mystique.Core.Repositories
                 SqlDbType = SqlDbType.UniqueIdentifier
             } }.ToArray());
 
-            var sqlPlugins = "DELETE Plugins where PluginId = @pluginId";
+            string sqlPlugins = "DELETE Plugins where PluginId = @pluginId";
 
             _dbHelper.ExecuteNonQuery(sqlPlugins, new List<SqlParameter>{new SqlParameter
             {
@@ -174,18 +183,18 @@ namespace Mystique.Core.Repositories
 
         public void RunDownMigrations(Guid pluginId)
         {
-            var sql = "SELECT Down from PluginMigrations WHERE PluginId = @pluginId ORDER BY [Version] DESC";
+            string sql = "SELECT Down from PluginMigrations WHERE PluginId = @pluginId ORDER BY [Version] DESC";
 
-            var table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
+            DataTable table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
             {
                 ParameterName = "@pluginId",
                 Value = pluginId,
                 SqlDbType = SqlDbType.UniqueIdentifier
             });
 
-            foreach (var item in table.Rows.Cast<DataRow>())
+            foreach (DataRow item in table.Rows.Cast<DataRow>())
             {
-                var script = item[0].ToString();
+                string script = item[0].ToString();
 
                 _dbHelper.ExecuteNonQuery(script);
             }

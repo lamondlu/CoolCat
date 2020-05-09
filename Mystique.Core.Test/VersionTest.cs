@@ -10,7 +10,7 @@ namespace Mystique.Core.Test
         [TestMethod]
         public void TestValidVersion()
         {
-            var version = new Version("1.1.1");
+            Version version = new Version("1.1.1");
         }
 
         [TestMethod]
@@ -18,7 +18,7 @@ namespace Mystique.Core.Test
         {
             Assert.ThrowsException<ArgumentException>(() =>
             {
-                var version = new Version("abc");
+                Version version = new Version("abc");
             });
         }
     }

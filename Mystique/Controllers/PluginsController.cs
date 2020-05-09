@@ -3,16 +3,15 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
 using Mystique.Core.Mvc.Extensions;
-using Mystique.Mvc.Infrastructure;
 using System;
 
 namespace Mystique.Controllers
 {
     public class PluginsController : Controller
     {
-        private IPluginManager _pluginManager = null;
-        private ApplicationPartManager _partManager = null;
-        private IReferenceContainer _referenceContainer = null;
+        private readonly IPluginManager _pluginManager = null;
+        private readonly ApplicationPartManager _partManager = null;
+        private readonly IReferenceContainer _referenceContainer = null;
 
         public PluginsController(IPluginManager pluginManager, ApplicationPartManager partManager, IReferenceContainer referenceContainer)
         {
@@ -23,7 +22,7 @@ namespace Mystique.Controllers
 
         public IActionResult Assemblies()
         {
-            var items = _referenceContainer.GetAll();
+            System.Collections.Generic.List<CachedReferenceItemKey> items = _referenceContainer.GetAll();
 
             return View(items);
         }
@@ -42,7 +41,7 @@ namespace Mystique.Controllers
         [HttpPost]
         public IActionResult Upload()
         {
-            var package = new PluginPackage(Request.GetPluginStream());
+            PluginPackage package = new PluginPackage(Request.GetPluginStream());
             _pluginManager.AddPlugins(package);
             return RedirectToAction("Index");
         }

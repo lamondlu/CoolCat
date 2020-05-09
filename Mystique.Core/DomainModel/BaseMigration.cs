@@ -1,6 +1,5 @@
 ﻿using Mystique.Core.Contracts;
 using Mystique.Core.Helpers;
-using Mystique.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,22 +9,16 @@ namespace Mystique.Core.DomainModel
 {
     public abstract class BaseMigration : IMigration
     {
-        private Version _version = null;
-        private DbHelper _dbHelper = null;
+        private readonly Version _version = null;
+        private readonly DbHelper _dbHelper = null;
 
         public BaseMigration(DbHelper dbHelper, Version version)
         {
-            this._version = version;
-            this._dbHelper = dbHelper;
+            _version = version;
+            _dbHelper = dbHelper;
         }
 
-        public Version Version
-        {
-            get
-            {
-                return _version;
-            }
-        }
+        public Version Version => _version;
 
         public abstract string UpScripts
         {
@@ -56,7 +49,7 @@ namespace Mystique.Core.DomainModel
 
         private void RemoveMigrationScripts(Guid pluginId)
         {
-            var sql = "DELETE PluginMigrations WHERE PluginId = @pluginId AND Version = @version";
+            string sql = "DELETE PluginMigrations WHERE PluginId = @pluginId AND Version = @version";
 
             _dbHelper.ExecuteNonQuery(sql, new List<SqlParameter>
             {
@@ -67,7 +60,7 @@ namespace Mystique.Core.DomainModel
 
         private void WriteMigrationScripts(Guid pluginId)
         {
-            var sql = "INSERT INTO PluginMigrations(PluginMigrationId, PluginId, Version, Up, Down) VALUES(@pluginMigrationId, @pluginId, @version, @up, @down)";
+            string sql = "INSERT INTO PluginMigrations(PluginMigrationId, PluginId, Version, Up, Down) VALUES(@pluginMigrationId, @pluginId, @version, @up, @down)";
 
             _dbHelper.ExecuteNonQuery(sql, new List<SqlParameter>
             {

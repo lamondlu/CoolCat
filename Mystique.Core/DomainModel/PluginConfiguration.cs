@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Mystique.Core.DomainModel
+﻿namespace Mystique.Core.DomainModel
 {
     public class PluginConfiguration
     {

@@ -4,7 +4,7 @@ namespace Mystique.Core
 {
     public static class PluginsLoadContexts
     {
-        private static Dictionary<string, CollectibleAssemblyLoadContext> _pluginContexts = null;
+        private static readonly Dictionary<string, CollectibleAssemblyLoadContext> _pluginContexts = null;
 
         static PluginsLoadContexts()
         {

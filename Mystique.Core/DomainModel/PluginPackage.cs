@@ -1,15 +1,13 @@
-﻿using System;
+﻿using Mystique.Core.Contracts;
+using Mystique.Core.Exceptions;
+using Mystique.Core.Helpers;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Text;
-using ZipTool = System.IO.Compression.ZipArchive;
 using System.Linq;
-using Newtonsoft.Json;
-using Mystique.Core.Contracts;
-using System.Reflection;
-using Mystique.Core.Helpers;
-using Mystique.Core.Exceptions;
+using ZipTool = System.IO.Compression.ZipArchive;
 
 namespace Mystique.Core.DomainModel
 {
@@ -20,13 +18,7 @@ namespace Mystique.Core.DomainModel
         private string _tempFolderName = string.Empty;
         private string _folderName = string.Empty;
 
-        public PluginConfiguration Configuration
-        {
-            get
-            {
-                return _pluginConfiguration;
-            }
-        }
+        public PluginConfiguration Configuration => _pluginConfiguration;
 
         public PluginPackage(Stream stream)
         {
@@ -36,19 +28,19 @@ namespace Mystique.Core.DomainModel
 
         public List<IMigration> GetAllMigrations(string connectionString)
         {
-            var context = new CollectibleAssemblyLoadContext();
-            var assemblyPath = $"{_tempFolderName}/{_pluginConfiguration.Name}.dll";
+            CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext();
+            string assemblyPath = $"{_tempFolderName}/{_pluginConfiguration.Name}.dll";
 
-            using (var fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read))
+            using (FileStream fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read))
             {
-                var dbHelper = new DbHelper(connectionString);
-                var assembly = context.LoadFromStream(fs);
-                var migrationTypes = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration)));
+                DbHelper dbHelper = new DbHelper(connectionString);
+                System.Reflection.Assembly assembly = context.LoadFromStream(fs);
+                IEnumerable<Type> migrationTypes = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration)));
 
                 List<IMigration> migrations = new List<IMigration>();
-                foreach (var migrationType in migrationTypes)
+                foreach (Type migrationType in migrationTypes)
                 {
-                    var constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(DbHelper));
+                    System.Reflection.ConstructorInfo constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(DbHelper));
 
                     migrations.Add((IMigration)constructor.Invoke(new object[] { dbHelper }));
                 }
@@ -70,11 +62,11 @@ namespace Mystique.Core.DomainModel
 
             archive.ExtractToDirectory(_tempFolderName);
 
-            var folder = new DirectoryInfo(_tempFolderName);
+            DirectoryInfo folder = new DirectoryInfo(_tempFolderName);
 
-            var files = folder.GetFiles();
+            FileInfo[] files = folder.GetFiles();
 
-            var configFile = files.SingleOrDefault(p => p.Name == "plugin.json");
+            FileInfo configFile = files.SingleOrDefault(p => p.Name == "plugin.json");
 
             if (configFile == null)
             {
@@ -82,7 +74,7 @@ namespace Mystique.Core.DomainModel
             }
             else
             {
-                using (var s = configFile.OpenRead())
+                using (FileStream s = configFile.OpenRead())
                 {
                     LoadConfiguration(s);
                 }
@@ -97,15 +89,15 @@ namespace Mystique.Core.DomainModel
 
             archive.ExtractToDirectory(_folderName, true);
 
-            var folder = new DirectoryInfo(_tempFolderName);
+            DirectoryInfo folder = new DirectoryInfo(_tempFolderName);
             folder.Delete(true);
         }
 
         private void LoadConfiguration(Stream stream)
         {
-            using (var sr = new StreamReader(stream))
+            using (StreamReader sr = new StreamReader(stream))
             {
-                var content = sr.ReadToEnd();
+                string content = sr.ReadToEnd();
                 _pluginConfiguration = JsonConvert.DeserializeObject<PluginConfiguration>(content);
 
                 if (_pluginConfiguration == null)

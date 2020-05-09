@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace Mystique.Core.Mvc.Infrastructure
 {
@@ -10,6 +9,9 @@ namespace Mystique.Core.Mvc.Infrastructure
     {
         public MystiqueAssemblyPart(Assembly assembly) : base(assembly) { }
 
-        public IEnumerable<string> GetReferencePaths() => Array.Empty<string>();
+        public IEnumerable<string> GetReferencePaths()
+        {
+            return Array.Empty<string>();
+        }
     }
 }
