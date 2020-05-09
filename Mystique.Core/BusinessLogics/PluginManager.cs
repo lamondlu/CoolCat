@@ -98,7 +98,6 @@ namespace Mystique.Core.BusinessLogics
             {
                 Name = pluginPackage.Configuration.Name,
                 DisplayName = pluginPackage.Configuration.DisplayName,
-                PluginId = Guid.NewGuid(),
                 UniqueKey = pluginPackage.Configuration.UniqueKey,
                 Version = pluginPackage.Configuration.Version
             };

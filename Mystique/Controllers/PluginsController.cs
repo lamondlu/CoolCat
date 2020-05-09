@@ -21,12 +21,6 @@ namespace Mystique.Controllers
             _referenceContainer = referenceContainer;
         }
 
-        private void RefreshControllerAction()
-        {
-            MystiqueActionDescriptorChangeProvider.Instance.HasChanged = true;
-            MystiqueActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
-        }
-
         public IActionResult Assemblies()
         {
             var items = _referenceContainer.GetAll();
@@ -34,7 +28,6 @@ namespace Mystique.Controllers
             return View(items);
         }
 
-        // GET: /<controller>/
         public IActionResult Index()
         {
             return View(_pluginManager.GetAllPlugins());
