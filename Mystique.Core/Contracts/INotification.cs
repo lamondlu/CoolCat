@@ -7,6 +7,6 @@ namespace Mystique.Core.Contracts
 {
     public interface INotification<T> where T : EventBase
     {
-        void Handle<T>(T eventObj);
+        void Handle(T eventObj);
     }
 }
