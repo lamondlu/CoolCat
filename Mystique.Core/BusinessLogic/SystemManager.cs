@@ -1,4 +1,4 @@
-﻿namespace Mystique.Core.BusinessLogics
+﻿namespace Mystique.Core.BusinessLogic
 {
     public class SystemManager
     {

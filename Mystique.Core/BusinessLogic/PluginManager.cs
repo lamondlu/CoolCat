@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Version = Mystique.Core.DomainModel.Version;
 
-namespace Mystique.Core.BusinessLogics
+namespace Mystique.Core.BusinessLogic
 {
     public class PluginManager : IPluginManager
     {

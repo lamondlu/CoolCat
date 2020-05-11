@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Mystique.Core.BusinessLogics;
+using Mystique.Core.BusinessLogic;
 using Mystique.Core.Contracts;
 using Mystique.Core.Helpers;
 using Mystique.Core.Models;
