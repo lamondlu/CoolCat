@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Mystique.Core.Contracts
 {
-    public interface INotification<out T> where T : EventBase
+    public interface INotificationProvider
     {
-        void Handle(EventBase eventObj);
+        Dictionary<string, List<INotification<EventBase>>> GetNotifications();
     }
 }
