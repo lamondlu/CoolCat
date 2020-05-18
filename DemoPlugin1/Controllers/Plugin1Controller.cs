@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Mystique.Core.Contracts;
 using Mystique.Core.Models;
+using Newtonsoft.Json;
 
 namespace DemoPlugin1.Controllers
 {
@@ -20,7 +21,7 @@ namespace DemoPlugin1.Controllers
             string content = new Demo().SayHello();
             ViewBag.Content = content;
 
-            _notificationRegister.Publish(new LoadHelloWorldEvent());
+            _notificationRegister.Publish("LoadHelloWorldEvent", JsonConvert.SerializeObject(new LoadHelloWorldEvent() { Str = "Hello World" }));
 
             return View();
         }
@@ -28,6 +29,8 @@ namespace DemoPlugin1.Controllers
 
     public class LoadHelloWorldEvent : EventBase
     {
+        public string Str { get; set; }
+
         public LoadHelloWorldEvent() : base("LoadHelloWorldEvent")
         {
 

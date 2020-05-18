@@ -9,10 +9,14 @@ namespace DemoPlugin2
 {
     public class NotificationProvider : INotificationProvider
     {
-        public Dictionary<string, List<INotification<EventBase>>> GetNotifications()
+        public Dictionary<string, List<INotification>> GetNotifications()
         {
-            throw new NotImplementedException();
-            //return new Dictionary<string, List<INotification<EventBase>>> { "", };
+            var handlers = new List<INotification> { new LoadHelloWorldEventHandler() };
+            var result = new Dictionary<string, List<INotification>>();
+
+            result.Add("LoadHelloWorldEvent", handlers);
+
+            return result;
         }
     }
 }

@@ -37,13 +37,13 @@ namespace Mystique.Core.Helpers
                 else
                 {
 
-                    if (IsSharedFreamwork(name))
+                    if (IsSharedFreamwork(name) || name.Contains("Mystique.Core"))
                     {
                         continue;
                     }
 
                     string dllName = $"{name}.dll";
-                    string filePath = $"{moduleFolder}\\{dllName}";
+                    string filePath = $"{moduleFolder}/{dllName}";
 
                     if (!File.Exists(filePath))
                     {

@@ -12,6 +12,7 @@ using Mystique.Mvc.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Mystique.Core.Mvc.Infrastructure
 {
@@ -28,6 +29,7 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<INotificationRegister, NotificationRegister>();
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
             services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
@@ -48,8 +50,8 @@ namespace Mystique.Core.Mvc.Infrastructure
                 {
                     CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext();
                     string moduleName = plugin.Name;
-                    string filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
-                    string referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
+                    string filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules/{moduleName}/{moduleName}.dll";
+                    string referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules/{moduleName}";
 
                     _presets.Add(filePath);
                     using (FileStream fs = new FileStream(filePath, FileMode.Open))
@@ -60,6 +62,29 @@ namespace Mystique.Core.Mvc.Infrastructure
                         MystiqueAssemblyPart controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
                         mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
                         PluginsLoadContexts.Add(plugin.Name, context);
+
+
+                        var providers = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x.Name == "INotificationProvider"));
+
+                        if (providers != null && providers.Count() > 0)
+                        {
+                            var register = scope.ServiceProvider.GetService<INotificationRegister>();
+
+                            foreach (var p in providers)
+                            {
+                                var obj = assembly.CreateInstance(p.FullName);
+                                var method = p.GetMethod("GetNotifications");
+                                var result = (Dictionary<string, List<INotification>>)method.Invoke(obj, null);
+
+                                foreach (var item in result)
+                                {
+                                    foreach (var i in item.Value)
+                                    {
+                                        register.Subscribe(item.Key, i);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -70,8 +95,6 @@ namespace Mystique.Core.Mvc.Infrastructure
                 {
                     o.AdditionalReferencePaths.Add(item);
                 }
-
-
 
                 AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
             });

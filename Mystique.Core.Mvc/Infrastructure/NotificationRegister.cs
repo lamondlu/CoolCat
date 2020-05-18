@@ -9,30 +9,28 @@ namespace Mystique.Core.Mvc.Infrastructure
 {
     public class NotificationRegister : INotificationRegister
     {
-        private Dictionary<Type, List<INotification<EventBase>>> _containers = new Dictionary<Type, List<INotification<EventBase>>>();
+        private static Dictionary<string, List<INotification>> _containers = new Dictionary<string, List<INotification>>();
 
-        public void Publish<T>(T e) where T : EventBase
+        public void Publish(string eventName, string data)
         {
-            if (_containers[e.GetType()] != null)
+            if (_containers.ContainsKey(eventName))
             {
-                foreach (var item in _containers[e.GetType()])
+                foreach (var item in _containers[eventName])
                 {
-                    item.Handle(e);
+                    item.Handle(data);
                 }
             }
         }
 
-        public void Subscribe<T>(T e, INotification<T> handler) where T : EventBase
+        public void Subscribe(string eventName, INotification handler)
         {
-            var type = e.GetType();
-
-            if (_containers.ContainsKey(type))
+            if (_containers.ContainsKey(eventName))
             {
-                _containers[type].Add(handler);
+                _containers[eventName].Add(handler);
             }
             else
             {
-                _containers[type] = new List<INotification<EventBase>>() { handler };
+                _containers[eventName] = new List<INotification>() { handler };
             }
         }
     }
