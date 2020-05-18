@@ -1,5 +1,6 @@
 ﻿using DemoReferenceLibrary;
 using Microsoft.AspNetCore.Mvc;
+using Mystique.Core.Attributes;
 using Mystique.Core.Contracts;
 using Mystique.Core.Models;
 using Newtonsoft.Json;
@@ -16,6 +17,8 @@ namespace DemoPlugin1.Controllers
             _notificationRegister = notificationRegister;
         }
 
+        [Page("Plugin One")]
+        [Route("HelloWorld")]
         public IActionResult HelloWorld()
         {
             string content = new Demo().SayHello();
