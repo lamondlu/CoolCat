@@ -48,7 +48,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
                 foreach (ViewModels.PluginListItemViewModel plugin in allEnabledPlugins)
                 {
-                    CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext();
+                    CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(plugin.Name);
                     string moduleName = plugin.Name;
                     string filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules/{moduleName}/{moduleName}.dll";
                     string referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules/{moduleName}";
@@ -57,6 +57,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                     using (FileStream fs = new FileStream(filePath, FileMode.Open))
                     {
                         System.Reflection.Assembly assembly = context.LoadFromStream(fs);
+                        context.SetEntryPoint(assembly);
                         loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
 
                         MystiqueAssemblyPart controllerAssemblyPart = new MystiqueAssemblyPart(assembly);

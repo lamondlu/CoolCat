@@ -18,5 +18,7 @@ namespace Mystique.Core.Contracts
         void EnablePlugin(Guid pluginId);
 
         void DisablePlugin(Guid pluginId);
+
+        List<CollectibleAssemblyLoadContext> GetAllContexts();
     }
 }

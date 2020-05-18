@@ -28,7 +28,7 @@ namespace Mystique.Core.DomainModel
 
         public List<IMigration> GetAllMigrations(string connectionString)
         {
-            CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext();
+            CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(_pluginConfiguration.Name);
             string assemblyPath = $"{_tempFolderName}/{_pluginConfiguration.Name}.dll";
 
             using (FileStream fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read))

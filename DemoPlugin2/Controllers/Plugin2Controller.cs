@@ -9,7 +9,7 @@ namespace DemoPlugin2.Controllers
     {
 
         [Page("Plugin Two")]
-        [Route("HelloWorld")]
+        [HttpGet]
         public IActionResult HelloWorld()
         {
             string content = new Demo().SayHello() + "Version";

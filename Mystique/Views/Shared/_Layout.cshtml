@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Mystique.Core.Mvc.Extensions;
+@{
+    var contexts = Mystique.Core.PluginsLoadContexts.All();
+    var menus = contexts.SelectMany(p => p.GetPages()).ToList();
+
+}
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -40,6 +46,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Plugins" asp-action="Assemblies">Assemblies</a>
                         </li>
+                        @foreach (var item in menus)
+                        {
+                           
+                    <li class="nav-item">
+                       <a class="nav-link text-dark" href="/Modules/@item.Url">@item.PageName</a>
+                    </li>
+                        }
                     </ul>
                 </div>
             </div>

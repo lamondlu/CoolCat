@@ -23,7 +23,7 @@ namespace Mystique.Core.Mvc
         {
             if (!PluginsLoadContexts.Any(moduleName))
             {
-                CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext();
+                CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(moduleName);
 
                 string filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
                 string referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";

@@ -18,11 +18,11 @@ namespace DemoPlugin1.Controllers
         }
 
         [Page("Plugin One")]
-        [Route("HelloWorld")]
+        [HttpGet]
         public IActionResult HelloWorld()
         {
             string content = new Demo().SayHello();
-            ViewBag.Content = content;
+            ViewBag.Content = content + "; Plugin2 triggered";
 
             _notificationRegister.Publish("LoadHelloWorldEvent", JsonConvert.SerializeObject(new LoadHelloWorldEvent() { Str = "Hello World" }));
 

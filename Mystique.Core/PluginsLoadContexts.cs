@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Mystique.Core
 {
@@ -9,6 +10,11 @@ namespace Mystique.Core
         static PluginsLoadContexts()
         {
             _pluginContexts = new Dictionary<string, CollectibleAssemblyLoadContext>();
+        }
+
+        public static List<CollectibleAssemblyLoadContext> All()
+        {
+            return _pluginContexts.Select(p => p.Value).ToList();
         }
 
         public static bool Any(string pluginName)

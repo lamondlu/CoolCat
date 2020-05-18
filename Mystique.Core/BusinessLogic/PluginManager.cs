@@ -137,5 +137,10 @@ namespace Mystique.Core.BusinessLogic
             _unitOfWork.PluginRepository.UpdatePluginVersion(oldPlugin.PluginId, pluginPackage.Configuration.Version);
             _unitOfWork.Commit();
         }
+
+        public List<CollectibleAssemblyLoadContext> GetAllContexts()
+        {
+            return PluginsLoadContexts.All();
+        }
     }
 }
