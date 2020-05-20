@@ -73,9 +73,8 @@ namespace Mystique.Core.Mvc.Infrastructure
 
                             foreach (var p in providers)
                             {
-                                var obj = assembly.CreateInstance(p.FullName);
-                                var method = p.GetMethod("GetNotifications");
-                                var result = (Dictionary<string, List<INotification>>)method.Invoke(obj, null);
+                                var obj = (INotificationProvider)assembly.CreateInstance(p.FullName);
+                                var result = obj.GetNotifications();
 
                                 foreach (var item in result)
                                 {
