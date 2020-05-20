@@ -36,17 +36,17 @@ namespace Mystique
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            if (env.IsDevelopment())
+#if DEBUG
+            app.UseStaticFiles(new StaticFileOptions
             {
-                app.UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider = new PhysicalFileProvider(@"G:\D1\Mystique\Mystique\wwwroot")
-                });
-            }
-            else
-            {
-                app.UseStaticFiles();
-            }
+                FileProvider = new PhysicalFileProvider(@"G:\D1\Mystique\Mystique\wwwroot")
+            });
+#endif
+
+#if !DEBUG
+
+            app.UseStaticFiles();
+#endif
 
             app.MystiqueRoute();
         }

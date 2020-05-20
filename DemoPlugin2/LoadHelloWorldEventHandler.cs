@@ -15,13 +15,8 @@ namespace DemoPlugin2
         }
     }
 
-    public class LoadHelloWorldEvent : EventBase
+    public class LoadHelloWorldEvent
     {
         public string Str { get; set; }
-
-        public LoadHelloWorldEvent() : base("LoadHelloWorldEvent")
-        {
-
-        }
     }
 }
