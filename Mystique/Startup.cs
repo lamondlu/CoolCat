@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Mystique.Core.Mvc.Infrastructure;
+using System;
+using System.Threading;
 
 namespace Mystique
 {
@@ -33,9 +36,21 @@ namespace Mystique
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseStaticFiles();
+            if (env.IsDevelopment())
+            {
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(@"G:\D1\Mystique\Mystique\wwwroot")
+                });
+            }
+            else
+            {
+                app.UseStaticFiles();
+            }
 
             app.MystiqueRoute();
         }
     }
 }
+
+
