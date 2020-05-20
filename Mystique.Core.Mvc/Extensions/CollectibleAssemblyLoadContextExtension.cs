@@ -12,17 +12,17 @@ namespace Mystique.Core.Mvc.Extensions
     {
         public static List<PageRouteViewModel> GetPages(this CollectibleAssemblyLoadContext context)
         {
-            var entryPoint = context.GetEntryPoint();
+            var entryPointAssembly = context.GetEntryPoint();
             var result = new List<PageRouteViewModel>();
 
-            if (entryPoint == null)
+            if (entryPointAssembly == null)
             {
                 return result;
             }
 
             var areaName = context.PluginName;
 
-            var types = entryPoint.GetExportedTypes().Where(p => p.BaseType == typeof(Controller));
+            var types = entryPointAssembly.GetExportedTypes().Where(p => p.BaseType == typeof(Controller));
 
             if (types.Any())
             {
