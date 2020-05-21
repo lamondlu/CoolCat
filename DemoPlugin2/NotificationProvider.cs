@@ -9,10 +9,10 @@ namespace DemoPlugin2
 {
     public class NotificationProvider : INotificationProvider
     {
-        public Dictionary<string, List<INotification>> GetNotifications()
+        public Dictionary<string, List<INotificationHandler>> GetNotifications()
         {
-            var handlers = new List<INotification> { new LoadHelloWorldEventHandler() };
-            var result = new Dictionary<string, List<INotification>>();
+            var handlers = new List<INotificationHandler> { new LoadHelloWorldEventHandler() };
+            var result = new Dictionary<string, List<INotificationHandler>>();
 
             result.Add("LoadHelloWorldEvent", handlers);
 

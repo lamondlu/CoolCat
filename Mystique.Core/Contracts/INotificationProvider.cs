@@ -7,6 +7,6 @@ namespace Mystique.Core.Contracts
 {
     public interface INotificationProvider
     {
-        Dictionary<string, List<INotification>> GetNotifications();
+        Dictionary<string, List<INotificationHandler>> GetNotifications();
     }
 }

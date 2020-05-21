@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DemoPlugin2
 {
-    public class LoadHelloWorldEventHandler : INotification
+    public class LoadHelloWorldEventHandler : INotificationHandler
     {
         public void Handle(string data)
         {

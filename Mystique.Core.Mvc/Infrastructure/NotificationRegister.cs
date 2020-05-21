@@ -9,7 +9,8 @@ namespace Mystique.Core.Mvc.Infrastructure
 {
     public class NotificationRegister : INotificationRegister
     {
-        private static Dictionary<string, List<INotification>> _containers = new Dictionary<string, List<INotification>>();
+        private static Dictionary<string, List<INotificationHandler>>
+            _containers = new Dictionary<string, List<INotificationHandler>>();
 
         public void Publish(string eventName, string data)
         {
@@ -22,7 +23,7 @@ namespace Mystique.Core.Mvc.Infrastructure
             }
         }
 
-        public void Subscribe(string eventName, INotification handler)
+        public void Subscribe(string eventName, INotificationHandler handler)
         {
             if (_containers.ContainsKey(eventName))
             {
@@ -30,10 +31,8 @@ namespace Mystique.Core.Mvc.Infrastructure
             }
             else
             {
-                _containers[eventName] = new List<INotification>() { handler };
+                _containers[eventName] = new List<INotificationHandler>() { handler };
             }
         }
     }
-
-
 }

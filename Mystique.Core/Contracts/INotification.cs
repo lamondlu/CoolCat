@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Mystique.Core.Contracts
 {
-    public interface INotification
+    public interface INotificationHandler
     {
         void Handle(string data);
     }
