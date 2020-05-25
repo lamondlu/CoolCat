@@ -10,13 +10,11 @@ namespace Mystique.Controllers
     public class PluginsController : Controller
     {
         private readonly IPluginManager _pluginManager = null;
-        private readonly ApplicationPartManager _partManager = null;
         private readonly IReferenceContainer _referenceContainer = null;
 
-        public PluginsController(IPluginManager pluginManager, ApplicationPartManager partManager, IReferenceContainer referenceContainer)
+        public PluginsController(IPluginManager pluginManager, IReferenceContainer referenceContainer)
         {
             _pluginManager = pluginManager;
-            _partManager = partManager;
             _referenceContainer = referenceContainer;
         }
 
