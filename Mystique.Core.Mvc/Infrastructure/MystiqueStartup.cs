@@ -64,10 +64,9 @@ namespace Mystique.Core.Mvc.Infrastructure
                         mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
                         PluginsLoadContexts.Add(plugin.Name, context);
 
-
                         var providers = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x.Name == "INotificationProvider"));
 
-                        if (providers != null && providers.Count() > 0)
+                        if (providers.Any())
                         {
                             var register = scope.ServiceProvider.GetService<INotificationRegister>();
 
@@ -102,7 +101,6 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.Configure<RazorViewEngineOptions>(o =>
             {
                 o.AreaViewLocationFormats.Add("/Modules/{2}/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
-                //o.AreaViewLocationFormats.Add("/bin/Debug/netcoreapp3.1/Modules/{2}/Views/{1}/{0}" + RazorViewEngine.ViewExtension);
                 o.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
             });
         }
