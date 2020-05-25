@@ -12,7 +12,7 @@ namespace Mystique.Core.Mvc.Extensions
     {
         public static List<PageRouteViewModel> GetPages(this CollectibleAssemblyLoadContext context)
         {
-            var entryPointAssembly = context.GetEntryPoint();
+            var entryPointAssembly = context.GetEntryPointAssembly();
             var result = new List<PageRouteViewModel>();
 
             if (entryPointAssembly == null)

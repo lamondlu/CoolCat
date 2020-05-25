@@ -30,12 +30,10 @@ namespace Mystique.Core
             _entryPoint = entryPoint;
         }
 
-        public Assembly GetEntryPoint()
+        public Assembly GetEntryPointAssembly()
         {
             return _entryPoint;
         }
-
-
 
         protected override Assembly Load(AssemblyName name)
         {
