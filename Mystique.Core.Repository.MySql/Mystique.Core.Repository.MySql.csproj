@@ -5,6 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentMigrator" Version="3.2.6" />
+    <PackageReference Include="FluentMigrator.Runner" Version="3.2.6" />
+    <PackageReference Include="FluentMigrator.Runner.MySql" Version="3.2.6" />
     <PackageReference Include="MySql.Data" Version="8.0.20" />
   </ItemGroup>
 
