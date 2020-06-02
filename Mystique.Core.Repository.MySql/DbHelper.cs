@@ -27,10 +27,12 @@ namespace Mystique.Core.Repository.MySql
                 {
                     foreach (Command query in commands)
                     {
+
                         MySqlCommand cmd = new MySqlCommand(query.Sql, Connection)
                         {
                             Transaction = trans
                         };
+                        
                         cmd.Parameters.AddRange(query.Parameters.ToArray());
                         if (Connection.State != ConnectionState.Open)
                         {

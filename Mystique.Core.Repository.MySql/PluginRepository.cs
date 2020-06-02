@@ -45,6 +45,9 @@ namespace Mystique.Core.Repository.MySql
 
         public void UpdatePluginVersion(Guid pluginId, string version)
         {
+            Command comand =new Command();
+            
+
             Command command = new Command
             {
                 Parameters = new List<MySqlParameter>(),
