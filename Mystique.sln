@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoPlugin1", "DemoPlugin1\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core", "Mystique.Core\Mystique.Core.csproj", "{51262BFE-1E31-4317-A920-9F127C111712}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Mystique.Database", "Mystique.Database\Mystique.Database.sqlproj", "{6E246A60-A973-4C51-AC97-FF607D7CEC1B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{93F71C5A-FEB8-4BDC-89C5-2382DE5B079E}"
 	ProjectSection(SolutionItems) = preProject
 		Nuget.Config = Nuget.Config
@@ -77,24 +75,6 @@ Global
 		{51262BFE-1E31-4317-A920-9F127C111712}.Release|x64.Build.0 = Release|Any CPU
 		{51262BFE-1E31-4317-A920-9F127C111712}.Release|x86.ActiveCfg = Release|Any CPU
 		{51262BFE-1E31-4317-A920-9F127C111712}.Release|x86.Build.0 = Release|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|x64.Build.0 = Debug|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|x64.Deploy.0 = Debug|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|x86.Build.0 = Debug|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Debug|x86.Deploy.0 = Debug|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|x64.ActiveCfg = Release|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|x64.Build.0 = Release|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|x64.Deploy.0 = Release|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|x86.ActiveCfg = Release|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|x86.Build.0 = Release|Any CPU
-		{6E246A60-A973-4C51-AC97-FF607D7CEC1B}.Release|x86.Deploy.0 = Release|Any CPU
 		{A4377E85-5F8B-4A2E-AE94-19616C646BA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A4377E85-5F8B-4A2E-AE94-19616C646BA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4377E85-5F8B-4A2E-AE94-19616C646BA4}.Debug|x64.ActiveCfg = Debug|Any CPU

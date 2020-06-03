@@ -7,7 +7,7 @@ using Mystique.Core.BusinessLogic;
 using Mystique.Core.Contracts;
 using Mystique.Core.Helpers;
 using Mystique.Core.Models;
-using Mystique.Core.Repositories;
+using Mystique.Core.Repository.MySql;
 using Mystique.Mvc.Infrastructure;
 using System;
 using System.Collections.Generic;
