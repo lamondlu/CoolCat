@@ -61,7 +61,7 @@ namespace Mystique
 #if DEBUG
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(@"G:\D1\Mystique\Mystique\wwwroot")
+                FileProvider = new PhysicalFileProvider(@"/home/lamond/myApp/Mystique/Mystique/Mystique/wwwroot")
             });
 #endif
 
