@@ -12,6 +12,7 @@ namespace Mystique.Core.Repository.MySql.Migrations
               .WithColumn("PluginId").AsGuid().PrimaryKey()
               .WithColumn("UniqueKey").AsString().NotNullable()
               .WithColumn("Name").AsString().NotNullable()
+              .WithColumn("DisplayName").AsString().NotNullable()
               .WithColumn("Version").AsString().NotNullable()
               .WithColumn("Enable").AsInt16().NotNullable();
 
