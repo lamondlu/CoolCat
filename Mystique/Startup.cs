@@ -39,7 +39,7 @@ namespace Mystique
 #if DEBUG
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(@"G:\D1\Mystique\Mystique\wwwroot")
+                FileProvider = new PhysicalFileProvider(@"F:\D1\Mystique\Mystique\wwwroot")
             });
 #endif
 

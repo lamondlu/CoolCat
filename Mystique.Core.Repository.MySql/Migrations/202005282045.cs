@@ -16,20 +16,20 @@ namespace Mystique.Core.Repository.MySql.Migrations
               .WithColumn("Enable").AsInt16().NotNullable();
 
             Create.Table("PluginMigrations")
-                .WithColumn("PluginId").AsGuid().PrimaryKey().ForeignKey("FK_PluginMigrations_PluginId_Plugins_PluginId","Plugins", "PluginId")
+                .WithColumn("PluginId").AsGuid().PrimaryKey().ForeignKey("FK_PluginMigrations_PluginId_Plugins_PluginId", "Plugins", "PluginId")
                 .WithColumn("Version").AsString().NotNullable()
                 .WithColumn("Up").AsCustom("text")
                 .WithColumn("Down").AsCustom("text");
 
-            
+
         }
 
         public override void Down()
         {
-             Delete.Table("PluginMigrations");
-             Delete.ForeignKey("FK_PluginMigrations_PluginId_Plugins_PluginId");
+            Delete.Table("PluginMigrations");
+            Delete.ForeignKey("FK_PluginMigrations_PluginId_Plugins_PluginId");
             Delete.Table("Plugins");
-           
+
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DemoReferenceLibrary;
+﻿using DemoPlugin1.Models;
+using DemoReferenceLibrary;
 using Microsoft.AspNetCore.Mvc;
 using Mystique.Core.Attributes;
 using Mystique.Core.Contracts;
@@ -24,9 +25,12 @@ namespace DemoPlugin1.Controllers
             string content = new Demo().SayHello();
             ViewBag.Content = content + "; Plugin2 triggered";
 
+            TestClass testClass = new TestClass();
+            testClass.Message = "Hello World";
+
             _notificationRegister.Publish("LoadHelloWorldEvent", JsonConvert.SerializeObject(new LoadHelloWorldEvent() { Str = "Hello World" }));
 
-            return View();
+            return View(testClass);
         }
     }
 

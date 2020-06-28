@@ -4,7 +4,7 @@
     {
         public string SayHello()
         {
-            return "Hello World. Version 1";
+            return "Hello World. Version 2";
         }
     }
 }
