@@ -48,7 +48,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
             services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
             services.AddScoped<IPluginManager, PluginManager>();
-            services.AddScoped<IUnitOfWork, Repository.MySql.UnitOfWork>();
+            services.AddScoped<IUnitOfWork, Repositories.UnitOfWork>();
             services.AddSingleton<INotificationRegister, NotificationRegister>();
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
@@ -120,21 +120,21 @@ namespace Mystique.Core.Mvc.Infrastructure
                 AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
             });
 
-            AssemblyLoadContext.Default.Resolving += (context, assembly) =>
-            {
-                Func<CollectibleAssemblyLoadContext, bool> filter = p => p.Assemblies.Any(p => p.GetName().Name == assembly.Name
-                                                        && p.GetName().Version == assembly.Version);
+            //AssemblyLoadContext.Default.Resolving += (context, assembly) =>
+            //{
+            //    Func<CollectibleAssemblyLoadContext, bool> filter = p => p.Assemblies.Any(p => p.GetName().Name == assembly.Name
+            //                                            && p.GetName().Version == assembly.Version);
 
-                if (PluginsLoadContexts.All().Any(filter))
-                {
-                    var ass = PluginsLoadContexts.All().First(filter)
-                        .Assemblies.First(p => p.GetName().Name == assembly.Name
-                        && p.GetName().Version == assembly.Version);
-                    return ass;
-                }
+            //    if (PluginsLoadContexts.All().Any(filter))
+            //    {
+            //        var ass = PluginsLoadContexts.All().First(filter)
+            //            .Assemblies.First(p => p.GetName().Name == assembly.Name
+            //            && p.GetName().Version == assembly.Version);
+            //        return ass;
+            //    }
 
-                return null;
-            };
+            //    return null;
+            //};
 
             services.Configure<RazorViewEngineOptions>(o =>
             {
@@ -173,10 +173,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                     relativePath = relativePath.Substring(1);
                 }
 
-
                 var compileTask = Compiler.CompileAsync(relativePath);
-
-
 
                 var viewDescriptor = compileTask.GetAwaiter().GetResult();
 
