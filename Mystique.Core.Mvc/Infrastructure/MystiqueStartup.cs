@@ -16,6 +16,7 @@ using Mystique.Core.BusinessLogic;
 using Mystique.Core.Contracts;
 using Mystique.Core.Helpers;
 using Mystique.Core.Models;
+using Mystique.Core.Repository.MySql;
 using Mystique.Core.Repositories;
 using Mystique.Mvc.Infrastructure;
 using System;
@@ -47,7 +48,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
             services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
             services.AddScoped<IPluginManager, PluginManager>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUnitOfWork, Repository.MySql.UnitOfWork>();
             services.AddSingleton<INotificationRegister, NotificationRegister>();
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();

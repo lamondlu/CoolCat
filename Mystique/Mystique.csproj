@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentMigrator.Runner" Version="3.2.6" />
+    <PackageReference Include="FluentMigrator.Runner.MySql" Version="3.2.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0">
@@ -21,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Mystique.Core.Mvc\Mystique.Core.Mvc.csproj" />
     <ProjectReference Include="..\Mystique.Core\Mystique.Core.csproj" />
+    <ProjectReference Include="..\Mystique.Core.Repository.MySql\Mystique.Core.Repository.MySql.csproj" />
   </ItemGroup>
 
   <ItemGroup>
