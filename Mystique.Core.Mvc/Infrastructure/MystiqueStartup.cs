@@ -54,7 +54,6 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
             services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
-            services.AddSingleton<IRazorPageFactoryProvider, RazorPageFactory>();
 
             IMvcBuilder mvcBuilder = services.AddMvc();
 
@@ -106,6 +105,8 @@ namespace Mystique.Core.Mvc.Infrastructure
                             }
                         }
                     }
+
+                    context.Enable();
                 }
             }
 
@@ -120,21 +121,21 @@ namespace Mystique.Core.Mvc.Infrastructure
                 AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
             });
 
-            //AssemblyLoadContext.Default.Resolving += (context, assembly) =>
-            //{
-            //    Func<CollectibleAssemblyLoadContext, bool> filter = p => p.Assemblies.Any(p => p.GetName().Name == assembly.Name
-            //                                            && p.GetName().Version == assembly.Version);
+            AssemblyLoadContext.Default.Resolving += (context, assembly) =>
+            {
+                Func<CollectibleAssemblyLoadContext, bool> filter = p => p.Assemblies.Any(p => p.GetName().Name == assembly.Name
+                                                        && p.GetName().Version == assembly.Version);
 
-            //    if (PluginsLoadContexts.All().Any(filter))
-            //    {
-            //        var ass = PluginsLoadContexts.All().First(filter)
-            //            .Assemblies.First(p => p.GetName().Name == assembly.Name
-            //            && p.GetName().Version == assembly.Version);
-            //        return ass;
-            //    }
+                if (PluginsLoadContexts.All().Any(filter))
+                {
+                    var ass = PluginsLoadContexts.All().First(filter)
+                        .Assemblies.First(p => p.GetName().Name == assembly.Name
+                        && p.GetName().Version == assembly.Version);
+                    return ass;
+                }
 
-            //    return null;
-            //};
+                return null;
+            };
 
             services.Configure<RazorViewEngineOptions>(o =>
             {
@@ -143,60 +144,5 @@ namespace Mystique.Core.Mvc.Infrastructure
             });
         }
 
-
-        public class RazorPageFactory : IRazorPageFactoryProvider
-        {
-            private readonly IViewCompilerProvider _viewCompilerProvider;
-
-            /// <summary>
-            /// Initializes a new instance of <see cref="DefaultRazorPageFactoryProvider"/>.
-            /// </summary>
-            /// <param name="viewCompilerProvider">The <see cref="IViewCompilerProvider"/>.</param>
-            public RazorPageFactory(IViewCompilerProvider viewCompilerProvider)
-            {
-                _viewCompilerProvider = viewCompilerProvider;
-            }
-
-            private IViewCompiler Compiler => _viewCompilerProvider.GetCompiler();
-
-            /// <inheritdoc />
-            public RazorPageFactoryResult CreateFactory(string relativePath)
-            {
-                if (relativePath == null)
-                {
-                    throw new ArgumentNullException(nameof(relativePath));
-                }
-
-                if (relativePath.StartsWith("~/", StringComparison.Ordinal))
-                {
-                    // For tilde slash paths, drop the leading ~ to make it work with the underlying IFileProvider.
-                    relativePath = relativePath.Substring(1);
-                }
-
-                var compileTask = Compiler.CompileAsync(relativePath);
-
-                var viewDescriptor = compileTask.GetAwaiter().GetResult();
-
-                var viewType = viewDescriptor.Type;
-                if (viewType != null)
-                {
-                    var newExpression = Expression.New(viewType);
-                    var pathProperty = viewType.GetTypeInfo().GetProperty(nameof(IRazorPage.Path));
-
-                    // Generate: page.Path = relativePath;
-                    // Use the normalized path specified from the result.
-                    var propertyBindExpression = Expression.Bind(pathProperty, Expression.Constant(viewDescriptor.RelativePath));
-                    var objectInitializeExpression = Expression.MemberInit(newExpression, propertyBindExpression);
-                    var pageFactory = Expression
-                        .Lambda<Func<IRazorPage>>(objectInitializeExpression)
-                        .Compile();
-                    return new RazorPageFactoryResult(viewDescriptor, pageFactory);
-                }
-                else
-                {
-                    return new RazorPageFactoryResult(viewDescriptor, razorPageFactory: null);
-                }
-            }
-        }
     }
 }

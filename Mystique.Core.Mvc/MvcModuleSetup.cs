@@ -32,11 +32,14 @@ namespace Mystique.Core.Mvc
                     System.Reflection.Assembly assembly = context.LoadFromStream(fs);
                     _referenceLoader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
 
+                    context.SetEntryPoint(assembly);
+
                     MystiqueAssemblyPart controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
 
                     AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
                     _partManager.ApplicationParts.Add(controllerAssemblyPart);
                     PluginsLoadContexts.Add(moduleName, context);
+                    context.Enable();
                 }
             }
             else
@@ -44,6 +47,7 @@ namespace Mystique.Core.Mvc
                 CollectibleAssemblyLoadContext context = PluginsLoadContexts.Get(moduleName);
                 MystiqueAssemblyPart controllerAssemblyPart = new MystiqueAssemblyPart(context.Assemblies.First());
                 _partManager.ApplicationParts.Add(controllerAssemblyPart);
+                context.Enable();
             }
 
             ResetControllActions();
@@ -53,6 +57,9 @@ namespace Mystique.Core.Mvc
         {
             ApplicationPart last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
             _partManager.ApplicationParts.Remove(last);
+
+            CollectibleAssemblyLoadContext context = PluginsLoadContexts.Get(moduleName);
+            context.Disable();
 
             ResetControllActions();
         }

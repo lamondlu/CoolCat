@@ -15,7 +15,7 @@ namespace Mystique.Core.Mvc.Extensions
             var entryPointAssembly = context.GetEntryPointAssembly();
             var result = new List<PageRouteViewModel>();
 
-            if (entryPointAssembly == null)
+            if (entryPointAssembly == null || !context.IsEnabled)
             {
                 return result;
             }

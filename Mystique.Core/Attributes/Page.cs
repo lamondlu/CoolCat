@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Mystique.Core.Attributes
 {
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class Page : Attribute
     {
         public Page(string name)

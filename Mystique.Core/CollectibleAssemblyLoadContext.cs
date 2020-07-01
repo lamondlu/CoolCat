@@ -10,6 +10,7 @@ namespace Mystique.Core
     public class CollectibleAssemblyLoadContext : AssemblyLoadContext
     {
         private Assembly _entryPoint = null;
+        private bool _isEnabled = false;
         private string _pluginName = string.Empty;
 
         public CollectibleAssemblyLoadContext(string pluginName) : base(isCollectible: true)
@@ -23,6 +24,24 @@ namespace Mystique.Core
             {
                 return _pluginName;
             }
+        }
+
+        public bool IsEnabled
+        {
+            get
+            {
+                return _isEnabled;
+            }
+        }
+
+        public void Enable()
+        {
+            _isEnabled = true;
+        }
+
+        public void Disable()
+        {
+            _isEnabled = false;
         }
 
         public void SetEntryPoint(Assembly entryPoint)
