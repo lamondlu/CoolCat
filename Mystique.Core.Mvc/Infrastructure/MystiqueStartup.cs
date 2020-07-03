@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Loader;
 
 namespace Mystique.Core.Mvc.Infrastructure
@@ -29,7 +30,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
             services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
             services.AddScoped<IPluginManager, PluginManager>();
-            services.AddScoped<IUnitOfWork, Repositories.UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<INotificationRegister, NotificationRegister>();
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
@@ -57,7 +58,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                     _presets.Add(filePath);
                     using (FileStream fs = new FileStream(filePath, FileMode.Open))
                     {
-                        System.Reflection.Assembly assembly = context.LoadFromStream(fs);
+                        Assembly assembly = context.LoadFromStream(fs);
                         context.SetEntryPoint(assembly);
                         loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
 
@@ -65,26 +66,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                         mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
                         PluginsLoadContexts.Add(plugin.Name, context);
 
-                        IEnumerable<Type> providers = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x.Name == "INotificationProvider"));
-
-                        if (providers.Any())
-                        {
-                            INotificationRegister register = scope.ServiceProvider.GetService<INotificationRegister>();
-
-                            foreach (Type p in providers)
-                            {
-                                INotificationProvider obj = (INotificationProvider)assembly.CreateInstance(p.FullName);
-                                Dictionary<string, List<INotificationHandler>> result = obj.GetNotifications();
-
-                                foreach (KeyValuePair<string, List<INotificationHandler>> item in result)
-                                {
-                                    foreach (INotificationHandler i in item.Value)
-                                    {
-                                        register.Subscribe(item.Key, i);
-                                    }
-                                }
-                            }
-                        }
+                        BuildNotificationProvider(assembly, scope);
                     }
 
                     context.Enable();
@@ -98,25 +80,10 @@ namespace Mystique.Core.Mvc.Infrastructure
                     o.AdditionalReferencePaths.Add(item);
                 }
 
-
                 AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
             });
 
-            AssemblyLoadContext.Default.Resolving += (context, assembly) =>
-            {
-                Func<CollectibleAssemblyLoadContext, bool> filter = p => p.Assemblies.Any(p => p.GetName().Name == assembly.Name
-                                                        && p.GetName().Version == assembly.Version);
-
-                if (PluginsLoadContexts.All().Any(filter))
-                {
-                    System.Reflection.Assembly ass = PluginsLoadContexts.All().First(filter)
-                        .Assemblies.First(p => p.GetName().Name == assembly.Name
-                        && p.GetName().Version == assembly.Version);
-                    return ass;
-                }
-
-                return null;
-            };
+            AssemblyLoadContextResoving();
 
             services.Configure<RazorViewEngineOptions>(o =>
             {
@@ -125,5 +92,47 @@ namespace Mystique.Core.Mvc.Infrastructure
             });
         }
 
+        private static void AssemblyLoadContextResoving()
+        {
+            AssemblyLoadContext.Default.Resolving += (context, assembly) =>
+            {
+                Func<CollectibleAssemblyLoadContext, bool> filter = p => p.Assemblies.Any(p => p.GetName().Name == assembly.Name
+                                                        && p.GetName().Version == assembly.Version);
+
+                if (PluginsLoadContexts.All().Any(filter))
+                {
+                    Assembly ass = PluginsLoadContexts.All().First(filter)
+                        .Assemblies.First(p => p.GetName().Name == assembly.Name
+                        && p.GetName().Version == assembly.Version);
+                    return ass;
+                }
+
+                return null;
+            };
+        }
+
+        private static void BuildNotificationProvider(Assembly assembly, IServiceScope scope)
+        {
+            IEnumerable<Type> providers = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x.Name == "INotificationProvider"));
+
+            if (providers.Any())
+            {
+                INotificationRegister register = scope.ServiceProvider.GetService<INotificationRegister>();
+
+                foreach (Type p in providers)
+                {
+                    INotificationProvider obj = (INotificationProvider)assembly.CreateInstance(p.FullName);
+                    Dictionary<string, List<INotificationHandler>> result = obj.GetNotifications();
+
+                    foreach (KeyValuePair<string, List<INotificationHandler>> item in result)
+                    {
+                        foreach (INotificationHandler i in item.Value)
+                        {
+                            register.Subscribe(item.Key, i);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
