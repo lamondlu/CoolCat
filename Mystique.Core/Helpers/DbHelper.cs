@@ -15,6 +15,23 @@ namespace Mystique.Core.Helpers
             this.connectionString = connectionString;
         }
 
+        public bool TryToConnect()
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public void ExecuteNonQuery(List<Command> commands)
         {
             using (SqlConnection Connection = new SqlConnection(connectionString))

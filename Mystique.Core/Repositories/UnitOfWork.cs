@@ -32,6 +32,11 @@ namespace Mystique.Core.Repositories
             }
         }
 
+        public bool CheckDatabase()
+        {
+            return _dbHelper.TryToConnect();
+        }
+
         public void Commit()
         {
             _dbHelper.ExecuteNonQuery(_commands);

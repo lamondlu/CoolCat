@@ -4,6 +4,9 @@
     {
         IPluginRepository PluginRepository { get; }
 
+
+        bool CheckDatabase();
+
         void Commit();
     }
 }
