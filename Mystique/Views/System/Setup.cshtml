@@ -7,26 +7,48 @@
 
 
 <p>
-    Welcome to use Mystique.
+    Welcome to use Mystique. The following step will help you to install the framework.
 </p>
 
 <div class="container">
     <div class="row">
-        <div class="span6">
+        <div class="span12">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Database</a>
+                    <a class="nav-link active" href="#profile" aria-controls="profile" data-toggle="tab" aria-selected="true">Database</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Account</a>
+                    <a class="nav-link" href="#account" aria-controls="account" data-toggle="tab" aria-selected="true">Account</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Modules</a>
+                    <a class="nav-link" href="#modules" aria-controls="modules"  data-toggle="tab"aria-selected="true">Modules</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Summary</a>
+                    <a class="nav-link" href="#summary" aria-controls="summary"  data-toggle="tab"aria-selected="true">Summary</a>
                 </li>
             </ul>
+            <div class="tab-content border border-top-0" id="myTabContent">
+                <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="database-tab">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Add Database</li>
+                    </ul>
+                </div>
+                <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Add Account</li>
+                    </ul>
+                </div>
+                <div class="tab-pane fade" id="modules" role="tabpanel" aria-labelledby="modules-tab">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Modules</li>
+                    </ul>
+                </div>
+                <div class="tab-pane fade" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Summary</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>
