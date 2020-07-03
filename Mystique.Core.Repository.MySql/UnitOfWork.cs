@@ -36,5 +36,10 @@ namespace Mystique.Core.Repository.MySql
         {
             _dbHelper.ExecuteNonQuery(_commands);
         }
+
+        public bool CheckDatabase()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
