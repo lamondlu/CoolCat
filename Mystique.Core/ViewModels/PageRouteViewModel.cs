@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Mystique.Core.ViewModels
+﻿namespace Mystique.Core.ViewModels
 {
     public class PageRouteViewModel
     {
@@ -22,12 +18,6 @@ namespace Mystique.Core.ViewModels
 
         public string Action { get; set; }
 
-        public string Url
-        {
-            get
-            {
-                return $"{Area}/{Controller}/{Action}";
-            }
-        }
+        public string Url => $"{Area}/{Controller}/{Action}";
     }
 }

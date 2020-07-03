@@ -1,14 +1,10 @@
-﻿using FluentMigrator.Runner;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Mystique.Core.Mvc.Infrastructure;
-using Mystique.Core.Repository.MySql.Migrations;
-using System;
-using System.Threading;
 
 namespace Mystique
 {
@@ -27,7 +23,7 @@ namespace Mystique
 
             services.MystiqueSetup(Configuration);
 
-            
+
         }
 
         //private static IServiceProvider CreateServices()

@@ -3,7 +3,6 @@ using DemoReferenceLibrary;
 using Microsoft.AspNetCore.Mvc;
 using Mystique.Core.Attributes;
 using Mystique.Core.Contracts;
-using Mystique.Core.Models;
 using Newtonsoft.Json;
 
 namespace DemoPlugin1.Controllers
@@ -11,7 +10,7 @@ namespace DemoPlugin1.Controllers
     [Area("DemoPlugin1")]
     public class Plugin1Controller : Controller
     {
-        private INotificationRegister _notificationRegister;
+        private readonly INotificationRegister _notificationRegister;
 
         public Plugin1Controller(INotificationRegister notificationRegister)
         {
@@ -25,8 +24,10 @@ namespace DemoPlugin1.Controllers
             string content = new Demo().SayHello();
             ViewBag.Content = content + "; Plugin2 triggered";
 
-            TestClass testClass = new TestClass();
-            testClass.Message = "Hello World";
+            TestClass testClass = new TestClass
+            {
+                Message = "Hello World"
+            };
 
             _notificationRegister.Publish("LoadHelloWorldEvent", JsonConvert.SerializeObject(new LoadHelloWorldEvent() { Str = "Hello World" }));
 

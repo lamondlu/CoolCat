@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Mystique.Core.BusinessLogic;
 using Mystique.Core.Contracts;
 using Mystique.Core.Mvc.Extensions;
 using Mystique.Models;
@@ -19,7 +18,7 @@ namespace Mystique.Controllers
 
         public IActionResult Index()
         {
-            var types = _pluginManager.GetAllContexts().SelectMany(p => p.GetPages()).ToList();
+            System.Collections.Generic.List<Core.ViewModels.PageRouteViewModel> types = _pluginManager.GetAllContexts().SelectMany(p => p.GetPages()).ToList();
 
             return View(types);
         }

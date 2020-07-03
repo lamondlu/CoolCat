@@ -1,38 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Microsoft.AspNetCore.Razor.Hosting;
-using Microsoft.AspNetCore.Razor.Language;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Emit;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 using Mystique.Core.BusinessLogic;
 using Mystique.Core.Contracts;
 using Mystique.Core.Helpers;
 using Mystique.Core.Models;
-using Mystique.Core.Repository.MySql;
 using Mystique.Core.Repositories;
 using Mystique.Mvc.Infrastructure;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Runtime.Loader;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Text;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 
 namespace Mystique.Core.Mvc.Infrastructure
 {
@@ -84,20 +65,20 @@ namespace Mystique.Core.Mvc.Infrastructure
                         mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
                         PluginsLoadContexts.Add(plugin.Name, context);
 
-                        var providers = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x.Name == "INotificationProvider"));
+                        IEnumerable<Type> providers = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x.Name == "INotificationProvider"));
 
                         if (providers.Any())
                         {
-                            var register = scope.ServiceProvider.GetService<INotificationRegister>();
+                            INotificationRegister register = scope.ServiceProvider.GetService<INotificationRegister>();
 
-                            foreach (var p in providers)
+                            foreach (Type p in providers)
                             {
-                                var obj = (INotificationProvider)assembly.CreateInstance(p.FullName);
-                                var result = obj.GetNotifications();
+                                INotificationProvider obj = (INotificationProvider)assembly.CreateInstance(p.FullName);
+                                Dictionary<string, List<INotificationHandler>> result = obj.GetNotifications();
 
-                                foreach (var item in result)
+                                foreach (KeyValuePair<string, List<INotificationHandler>> item in result)
                                 {
-                                    foreach (var i in item.Value)
+                                    foreach (INotificationHandler i in item.Value)
                                     {
                                         register.Subscribe(item.Key, i);
                                     }
@@ -128,7 +109,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
                 if (PluginsLoadContexts.All().Any(filter))
                 {
-                    var ass = PluginsLoadContexts.All().First(filter)
+                    System.Reflection.Assembly ass = PluginsLoadContexts.All().First(filter)
                         .Assemblies.First(p => p.GetName().Name == assembly.Name
                         && p.GetName().Version == assembly.Version);
                     return ass;

@@ -1,9 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
-using Mystique.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 
 namespace Mystique.Core.Repository.MySql
 {
@@ -32,7 +30,7 @@ namespace Mystique.Core.Repository.MySql
                         {
                             Transaction = trans
                         };
-                        
+
                         cmd.Parameters.AddRange(query.Parameters.ToArray());
                         if (Connection.State != ConnectionState.Open)
                         {

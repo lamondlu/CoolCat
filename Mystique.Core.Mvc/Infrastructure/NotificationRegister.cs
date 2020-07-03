@@ -1,22 +1,18 @@
 ﻿using Mystique.Core.Contracts;
-using Mystique.Core.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 
 namespace Mystique.Core.Mvc.Infrastructure
 {
     public class NotificationRegister : INotificationRegister
     {
-        private static Dictionary<string, List<INotificationHandler>>
+        private static readonly Dictionary<string, List<INotificationHandler>>
             _containers = new Dictionary<string, List<INotificationHandler>>();
 
         public void Publish(string eventName, string data)
         {
             if (_containers.ContainsKey(eventName))
             {
-                foreach (var item in _containers[eventName])
+                foreach (INotificationHandler item in _containers[eventName])
                 {
                     item.Handle(data);
                 }

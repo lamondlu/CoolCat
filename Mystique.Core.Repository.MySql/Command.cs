@@ -7,7 +7,7 @@ namespace Mystique.Core.Repository.MySql
     {
         public Command()
         {
-            
+
         }
 
         public Command(string sql, List<MySqlParameter> parameters)

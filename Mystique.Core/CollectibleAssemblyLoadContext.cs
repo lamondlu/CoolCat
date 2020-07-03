@@ -1,9 +1,5 @@
-﻿using Mystique.Core.ViewModels;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.Loader;
-using System.Linq;
-using System;
 
 namespace Mystique.Core
 {
@@ -11,28 +7,16 @@ namespace Mystique.Core
     {
         private Assembly _entryPoint = null;
         private bool _isEnabled = false;
-        private string _pluginName = string.Empty;
+        private readonly string _pluginName = string.Empty;
 
         public CollectibleAssemblyLoadContext(string pluginName) : base(isCollectible: true)
         {
             _pluginName = pluginName;
         }
 
-        public string PluginName
-        {
-            get
-            {
-                return _pluginName;
-            }
-        }
+        public string PluginName => _pluginName;
 
-        public bool IsEnabled
-        {
-            get
-            {
-                return _isEnabled;
-            }
-        }
+        public bool IsEnabled => _isEnabled;
 
         public void Enable()
         {

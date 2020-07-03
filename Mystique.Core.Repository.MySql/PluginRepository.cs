@@ -1,6 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
 using Mystique.Core.DTOs;
-using Mystique.Core.Helpers;
 using Mystique.Core.Repositories;
 using Mystique.Core.ViewModels;
 using System;
@@ -45,8 +44,8 @@ namespace Mystique.Core.Repository.MySql
 
         public void UpdatePluginVersion(Guid pluginId, string version)
         {
-            Command comand =new Command();
-            
+            Command comand = new Command();
+
 
             Command command = new Command
             {
