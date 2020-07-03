@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoReferenceLibrary", "Dem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoPlugin2", "DemoPlugin2\DemoPlugin2.csproj", "{0E46F881-151E-4F33-9D98-C4CE5DC08385}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mystique.Core.Repository.MySql", "Mystique.Core.Repository.MySql\Mystique.Core.Repository.MySql.csproj", "{CDDDC11F-81B6-475C-85E2-FC7C32BC5909}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core.Repository.MySql", "Mystique.Core.Repository.MySql\Mystique.Core.Repository.MySql.csproj", "{CDDDC11F-81B6-475C-85E2-FC7C32BC5909}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
