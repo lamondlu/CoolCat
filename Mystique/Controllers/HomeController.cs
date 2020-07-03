@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Mystique.Core.Contracts;
 using Mystique.Core.Mvc.Extensions;
+using Mystique.Core.ViewModels;
 using Mystique.Models;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -10,17 +12,25 @@ namespace Mystique.Controllers
     public class HomeController : Controller
     {
         private readonly IPluginManager _pluginManager = null;
+        private readonly ISystemManager _systemManager = null;
 
-        public HomeController(IPluginManager pluginManager)
+        public HomeController(IPluginManager pluginManager, ISystemManager systemManager)
         {
             _pluginManager = pluginManager;
+            _systemManager = systemManager;
         }
 
         public IActionResult Index()
         {
-            System.Collections.Generic.List<Core.ViewModels.PageRouteViewModel> types = _pluginManager.GetAllContexts().SelectMany(p => p.GetPages()).ToList();
+            if (_systemManager.CheckInstall())
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Setup", "System");
+            }
 
-            return View(types);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

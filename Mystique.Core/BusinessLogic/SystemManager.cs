@@ -1,8 +1,9 @@
-﻿using Mystique.Core.Repositories;
+﻿using Mystique.Core.Contracts;
+using Mystique.Core.Repositories;
 
 namespace Mystique.Core.BusinessLogic
 {
-    public class SystemManager
+    public class SystemManager : ISystemManager
     {
         private readonly IUnitOfWork _unitOfWork = null;
 
