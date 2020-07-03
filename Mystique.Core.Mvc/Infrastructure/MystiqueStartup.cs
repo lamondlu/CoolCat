@@ -30,6 +30,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
             services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
             services.AddScoped<IPluginManager, PluginManager>();
+            services.AddScoped<ISystemManager, SystemManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<INotificationRegister, NotificationRegister>();
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
@@ -45,31 +46,35 @@ namespace Mystique.Core.Mvc.Infrastructure
                 MvcRazorRuntimeCompilationOptions option = scope.ServiceProvider.GetService<MvcRazorRuntimeCompilationOptions>();
 
                 IUnitOfWork unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
-                List<ViewModels.PluginListItemViewModel> allEnabledPlugins = unitOfWork.PluginRepository.GetAllEnabledPlugins();
-                IReferenceLoader loader = scope.ServiceProvider.GetService<IReferenceLoader>();
 
-                foreach (ViewModels.PluginListItemViewModel plugin in allEnabledPlugins)
+                if (unitOfWork.CheckDatabase())
                 {
-                    CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(plugin.Name);
-                    string moduleName = plugin.Name;
-                    string filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules/{moduleName}/{moduleName}.dll";
-                    string referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules/{moduleName}";
+                    List<ViewModels.PluginListItemViewModel> allEnabledPlugins = unitOfWork.PluginRepository.GetAllEnabledPlugins();
+                    IReferenceLoader loader = scope.ServiceProvider.GetService<IReferenceLoader>();
 
-                    _presets.Add(filePath);
-                    using (FileStream fs = new FileStream(filePath, FileMode.Open))
+                    foreach (ViewModels.PluginListItemViewModel plugin in allEnabledPlugins)
                     {
-                        Assembly assembly = context.LoadFromStream(fs);
-                        context.SetEntryPoint(assembly);
-                        loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
+                        CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(plugin.Name);
+                        string moduleName = plugin.Name;
+                        string filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules/{moduleName}/{moduleName}.dll";
+                        string referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules/{moduleName}";
 
-                        MystiqueAssemblyPart controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
-                        mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
-                        PluginsLoadContexts.Add(plugin.Name, context);
+                        _presets.Add(filePath);
+                        using (FileStream fs = new FileStream(filePath, FileMode.Open))
+                        {
+                            Assembly assembly = context.LoadFromStream(fs);
+                            context.SetEntryPoint(assembly);
+                            loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
 
-                        BuildNotificationProvider(assembly, scope);
+                            MystiqueAssemblyPart controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
+                            mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
+                            PluginsLoadContexts.Add(plugin.Name, context);
+
+                            BuildNotificationProvider(assembly, scope);
+                        }
+
+                        context.Enable();
                     }
-
-                    context.Enable();
                 }
             }
 

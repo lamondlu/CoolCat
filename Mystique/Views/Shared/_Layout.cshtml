@@ -1,4 +1,5 @@
-﻿@using Mystique.Core.Mvc.Extensions;
+﻿@inject Mystique.Core.Contracts.ISystemManager SystemManager
+@using Mystique.Core.Mvc.Extensions;
 @{
     var contexts = Mystique.Core.PluginsLoadContexts.All();
     var menus = contexts.SelectMany(p => p.GetPages()).ToList();
@@ -37,28 +38,31 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="dropdown">
-                            <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Management<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
-                                </li>
-                                <li>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Roles</a>
-                                </li>
-                                <li>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Plugins" asp-action="Index">Plugins</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Plugins" asp-action="Assemblies">Assemblies</a>
-                        </li>
-                        @foreach (var item in menus)
+                        @if (SystemManager.CheckInstall())
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="/Modules/@item.Url">@item.PageName</a>
+                            <li class="dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Management<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Roles</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Plugins" asp-action="Index">Plugins</a>
+                                    </li>
+                                </ul>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Plugins" asp-action="Assemblies">Assemblies</a>
+                            </li>
+                            foreach (var item in menus)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="/Modules/@item.Url">@item.PageName</a>
+                                </li>
+                            }
                         }
                     </ul>
                 </div>
