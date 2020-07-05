@@ -21,4 +21,11 @@
     </None>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Update="Content\module.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
