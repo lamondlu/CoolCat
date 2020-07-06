@@ -29,7 +29,7 @@ namespace Mystique.Core.DomainModel
         public List<IMigration> GetAllMigrations(string connectionString)
         {
             CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(_pluginConfiguration.Name);
-            string assemblyPath = $"{_tempFolderName}/{_pluginConfiguration.Name}.dll";
+            string assemblyPath = Path.Combine(_tempFolderName, $"{_pluginConfiguration.Name}.dll");
 
             using (FileStream fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read))
             {
@@ -57,7 +57,7 @@ namespace Mystique.Core.DomainModel
         public void Initialize(Stream stream)
         {
             _zipStream = stream;
-            _tempFolderName = $"{ AppDomain.CurrentDomain.BaseDirectory }{ Guid.NewGuid().ToString()}";
+            _tempFolderName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{ Guid.NewGuid().ToString()}");
             ZipTool archive = new ZipTool(_zipStream, ZipArchiveMode.Read);
 
             archive.ExtractToDirectory(_tempFolderName);
@@ -85,7 +85,7 @@ namespace Mystique.Core.DomainModel
         {
             ZipTool archive = new ZipTool(_zipStream, ZipArchiveMode.Read);
             _zipStream.Position = 0;
-            _folderName = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{_pluginConfiguration.Name}";
+            _folderName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", $"{_pluginConfiguration.Name}");
 
             archive.ExtractToDirectory(_folderName, true);
 
