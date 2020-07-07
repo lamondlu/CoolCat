@@ -53,7 +53,8 @@ namespace Mystique
 #if DEBUG
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot"))
+                FileProvider = new PhysicalFileProvider(@"F:\D1\Mystique\Mystique\wwwroot")
+                //FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot"))
             });
 #endif
 
