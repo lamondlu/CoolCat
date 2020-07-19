@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DemoReferenceLibrary\DemoReferenceLibrary.csproj" />
+    <ProjectReference Include="..\Mystique.Core.Mvc\Mystique.Core.Mvc.csproj" />
     <ProjectReference Include="..\Mystique.Core\Mystique.Core.csproj" />
   </ItemGroup>
 

@@ -3,7 +3,10 @@ using DemoReferenceLibrary;
 using Microsoft.AspNetCore.Mvc;
 using Mystique.Core.Attributes;
 using Mystique.Core.Contracts;
+using Mystique.Core.Mvc.Infrastructure;
 using Newtonsoft.Json;
+using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DemoPlugin1.Controllers
 {
@@ -32,6 +35,38 @@ namespace DemoPlugin1.Controllers
             _notificationRegister.Publish("LoadHelloWorldEvent", JsonConvert.SerializeObject(new LoadHelloWorldEvent() { Str = "Hello World" }));
 
             return View(testClass);
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            MystiqueStartup.Services.AddScoped<IHandler, MyHandler>();
+            return Content("OK");
+        }
+
+        [HttpGet]
+        public IActionResult Show()
+        {
+            ServiceProvider provider = MystiqueStartup.Services.BuildServiceProvider();
+            using (var scope = provider.CreateScope())
+            {
+                var handler = scope.ServiceProvider.GetService<IHandler>();
+                return Content(handler.Work());
+            }
+
+        }
+    }
+
+    public interface IHandler
+    {
+        string Work();
+    }
+
+    public class MyHandler : IHandler
+    {
+        public string Work()
+        {
+            return "My Handler Work";
         }
     }
 

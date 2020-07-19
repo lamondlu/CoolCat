@@ -16,15 +16,25 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 
+
 namespace Mystique.Core.Mvc.Infrastructure
 {
     public static class MystiqueStartup
     {
         private static readonly IList<string> _presets = new List<string>();
+        private static IServiceCollection _serviceCollection;
+
+        public static IServiceCollection Services
+        {
+            get
+            {
+                return _serviceCollection;
+            }
+        }
 
         public static void MystiqueSetup(this IServiceCollection services, IConfiguration configuration)
         {
-
+            _serviceCollection = services;
             services.AddOptions();
             services.Configure<ConnectionStringSetting>(configuration.GetSection("ConnectionStringSetting"));
 
