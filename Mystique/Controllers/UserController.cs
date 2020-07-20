@@ -12,7 +12,5 @@ namespace Mystique.Controllers
         {
             return View();
         }
-
-
     }
 }

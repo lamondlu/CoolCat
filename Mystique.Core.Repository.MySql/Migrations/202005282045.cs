@@ -20,8 +20,6 @@ namespace Mystique.Core.Repository.MySql.Migrations
                 .WithColumn("Version").AsString().NotNullable()
                 .WithColumn("Up").AsCustom("text")
                 .WithColumn("Down").AsCustom("text");
-
-
         }
 
         public override void Down()
@@ -29,7 +27,6 @@ namespace Mystique.Core.Repository.MySql.Migrations
             Delete.Table("PluginMigrations");
             Delete.ForeignKey("FK_PluginMigrations_PluginId_Plugins_PluginId");
             Delete.Table("Plugins");
-
         }
     }
 }

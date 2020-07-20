@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -6,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Mystique.Core.Mvc.Infrastructure;
+using Mystique.Core.Repository.MySql.Migrations;
+using Mystique.Models;
 
 namespace Mystique
 {
@@ -21,23 +25,30 @@ namespace Mystique
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var siteSettings = new SiteSettings();
+
+            Configuration.Bind("SiteSettings", siteSettings);
+
+            using (var scope = CreateServices(siteSettings).CreateScope())
+            {
+                var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+                runner.MigrateUp();
+            }
 
             services.MystiqueSetup(Configuration);
-
-
         }
 
-        //private static IServiceProvider CreateServices()
-        //{
-        //    return new ServiceCollection().AddFluentMigratorCore().ConfigureRunner(rb =>
-        //     rb.AddMySql5()
-        //         .WithGlobalConnectionString("server=localhost;port=3306;Database=pluginDB;UID=root;PWD=123456")
-        //         .ScanIn(typeof(InitialDB).Assembly)
-        //         .For
-        //         .Migrations())
-        //         .AddLogging(lb => lb.AddFluentMigratorConsole())
-        //         .BuildServiceProvider(false);
-        //}
+        private static IServiceProvider CreateServices(SiteSettings settings)
+        {
+            return new ServiceCollection().AddFluentMigratorCore().ConfigureRunner(rb =>
+             rb.AddMySql5()
+                 .WithGlobalConnectionString(settings.MySQLConnection)
+                 .ScanIn(typeof(InitialDB).Assembly)
+                 .For
+                 .Migrations())
+                 .AddLogging(lb => lb.AddFluentMigratorConsole())
+                 .BuildServiceProvider(false);
+        }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
