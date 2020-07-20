@@ -182,6 +182,21 @@ namespace Mystique.Core.Repository.MySql
             }
         }
 
+        public object ExecuteScalarWithObjReturn(string sql, MySqlParameter[] values)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                MySqlCommand cmd = new MySqlCommand(sql, connection);
+                cmd.Parameters.AddRange(values);
+                return cmd.ExecuteScalar();
+            }
+        }
+
         public MySqlDataReader ExecuteReader(string safeSql, MySqlConnection Connection)
         {
             if (Connection.State != ConnectionState.Open)

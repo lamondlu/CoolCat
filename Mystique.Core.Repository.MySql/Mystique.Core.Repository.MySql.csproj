@@ -16,8 +16,4 @@
     <ProjectReference Include="..\Mystique.Core\Mystique.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

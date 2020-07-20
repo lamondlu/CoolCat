@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Mystique.Core.Models;
 using Mystique.Core.Mvc.Infrastructure;
 using Mystique.Core.Repository.MySql.Migrations;
 using Mystique.Models;
@@ -25,9 +26,12 @@ namespace Mystique
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var siteSettings = new SiteSettings();
+            services.AddOptions();
+            services.Configure<ConnectionStringSetting>(Configuration.GetSection("ConnectionStringSetting"));
 
-            Configuration.Bind("SiteSettings", siteSettings);
+            var siteSettings = new ConnectionStringSetting();
+
+            Configuration.Bind("ConnectionStringSetting", siteSettings);
 
             using (var scope = CreateServices(siteSettings).CreateScope())
             {
@@ -38,11 +42,11 @@ namespace Mystique
             services.MystiqueSetup(Configuration);
         }
 
-        private static IServiceProvider CreateServices(SiteSettings settings)
+        private static IServiceProvider CreateServices(ConnectionStringSetting settings)
         {
             return new ServiceCollection().AddFluentMigratorCore().ConfigureRunner(rb =>
              rb.AddMySql5()
-                 .WithGlobalConnectionString(settings.MySQLConnection)
+                 .WithGlobalConnectionString(settings.ConnectionString)
                  .ScanIn(typeof(InitialDB).Assembly)
                  .For
                  .Migrations())

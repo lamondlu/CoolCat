@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using Mystique.Core.Models;
 using Mystique.Core.Repositories;
+using System;
 using System.Collections.Generic;
+using MySqlClient = MySql.Data.MySqlClient;
 
 namespace Mystique.Core.Repository.MySql
 {
@@ -39,7 +41,11 @@ namespace Mystique.Core.Repository.MySql
 
         public bool CheckDatabase()
         {
-            throw new System.NotImplementedException();
+            var o = _dbHelper.ExecuteScalarWithObjReturn("SELECT `Value` FROM GlobalSettings WHERE `Key` = @key", new List<MySqlClient.MySqlParameter> {
+               new MySqlClient.MySqlParameter { ParameterName = "@key", Value = "SYSTEM_INSTALLED"}
+            }.ToArray());
+
+            return (o != null && o.ToString() == "0");
         }
     }
 }

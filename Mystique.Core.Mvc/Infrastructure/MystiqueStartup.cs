@@ -35,13 +35,11 @@ namespace Mystique.Core.Mvc.Infrastructure
         public static void MystiqueSetup(this IServiceCollection services, IConfiguration configuration)
         {
             _serviceCollection = services;
-            services.AddOptions();
-            services.Configure<ConnectionStringSetting>(configuration.GetSection("ConnectionStringSetting"));
 
             services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<ISystemManager, SystemManager>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUnitOfWork, Repository.MySql.UnitOfWork>();
             services.AddSingleton<INotificationRegister, NotificationRegister>();
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
