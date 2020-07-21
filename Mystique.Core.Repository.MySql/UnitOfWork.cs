@@ -45,7 +45,7 @@ namespace Mystique.Core.Repository.MySql
                new MySqlClient.MySqlParameter { ParameterName = "@key", Value = "SYSTEM_INSTALLED"}
             }.ToArray());
 
-            return (o != null && o.ToString() == "0");
+            return (o != null && o.ToString() == "1");
         }
     }
 }
