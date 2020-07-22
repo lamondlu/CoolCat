@@ -12,5 +12,11 @@ namespace Mystique.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult Install()
+        {
+            return Ok();
+        }
     }
 }

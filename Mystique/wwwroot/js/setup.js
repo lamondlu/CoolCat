@@ -24,6 +24,16 @@
         prevTab(active);
 
     });
+
+    $('#btnInstall').click(function () {
+        $.ajax({
+            url: '/System/Install',
+            type: 'POST',
+            success: function () {
+                console.log('start to install');
+            }
+        });
+    });
 });
 
 function nextTab(elem) {
@@ -38,3 +48,4 @@ $('.nav-tabs').on('click', 'li', function () {
     $('.nav-tabs li.active').removeClass('active');
     $(this).addClass('active');
 });
+
