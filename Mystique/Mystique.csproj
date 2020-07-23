@@ -26,7 +26,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="PresetModules\" />
     <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="PresetModules\DemoPlugin1.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="PresetModules\DemoPlugin2.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 
