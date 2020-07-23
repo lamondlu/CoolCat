@@ -43,9 +43,8 @@
             type: 'POST',
             data: JSON.stringify({ "modules": data }),
             contentType: "application/json",
-            dataType: "json",
             success: function () {
-                window.location.reload();
+                window.location = '/Home/Index';
             }
         });
     });
