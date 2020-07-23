@@ -7,6 +7,8 @@
 
         bool CheckDatabase();
 
+        void MarkAsInstalled();
+
         void Commit();
     }
 }

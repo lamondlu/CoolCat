@@ -26,12 +26,36 @@
     });
 
     $('#btnInstall').click(function () {
+
+        var data = [];
+
+        if ($('#presetModules').val()) {
+            
+
+            var modules = $('#presetModules').val();
+            modules.forEach((o) => {
+                data.push(o);
+            });
+        }
+
         $.ajax({
             url: '/System/Install',
             type: 'POST',
+            data: JSON.stringify({ "modules": data }),
+            contentType: "application/json",
+            dataType: "json",
             success: function () {
-                console.log('start to install');
+                window.location.reload();
             }
+        });
+    });
+
+    $('#btnChoosePlugin').click(function () {
+        var modules = $('#presetModules').val();
+
+        modules.forEach(function (o) {
+
+            $('#summaryPanel').append("<div class='list-content'><a href='#listone' aria-expanded='false' aria-controls='listone'>" + o + "<i class='fa fa-chevron-down'></i></a></div>");
         });
     });
 });

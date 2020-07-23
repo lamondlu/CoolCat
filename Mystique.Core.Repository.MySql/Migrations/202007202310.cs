@@ -2,6 +2,7 @@ using FluentMigrator;
 
 namespace Mystique.Core.Repository.MySql.Migrations
 {
+    [Tags("System")]
     [Migration(202007202310)]
     public class AddGlobalSettings : Migration
     {

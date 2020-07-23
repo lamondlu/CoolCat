@@ -47,5 +47,12 @@ namespace Mystique.Core.Repository.MySql
 
             return (o != null && o.ToString() == "1");
         }
+
+        public void MarkAsInstalled()
+        {
+            _dbHelper.ExecuteNonQuery("UPDATE GlobalSettings SET `Value`='1' WHERE `Key`=@key", new List<MySqlClient.MySqlParameter> {
+               new MySqlClient.MySqlParameter { ParameterName = "@key", Value = "SYSTEM_INSTALLED"}
+            }.ToArray());
+        }
     }
 }

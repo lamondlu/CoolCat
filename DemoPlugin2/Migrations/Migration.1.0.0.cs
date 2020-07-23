@@ -12,10 +12,11 @@ namespace DemoPlugin2.Migrations
 
         }
 
-        public override string UpScripts => @"CREATE TABLE [dbo].[Test3](
-                        TestId[uniqueidentifier] NOT NULL,
-                    );";
+        public override string UpScripts => @"CREATE TABLE `test3`  (
+  `TestId` char(36) NOT NULL,
+  PRIMARY KEY (`TestId`) 
+) ENGINE = InnoDB";
 
-        public override string DownScripts => @"DROP TABLE [dbo].[Test3]";
+        public override string DownScripts => @"DROP TABLE `test3`";
     }
 }

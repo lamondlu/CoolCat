@@ -1,4 +1,5 @@
-﻿using Mystique.Core.DTOs;
+﻿using MySql.Data.MySqlClient;
+using Mystique.Core.DTOs;
 using Mystique.Core.Helpers;
 using Mystique.Core.ViewModels;
 using System;
@@ -91,9 +92,9 @@ namespace Mystique.Core.Repositories
         {
             string sql = "UPDATE Plugins SET Enable=@enable WHERE PluginId = @pluginId";
 
-            _dbHelper.ExecuteNonQuery(sql, new List<SqlParameter> {
-                new SqlParameter{ParameterName = "@enable", SqlDbType = SqlDbType.Bit, Value= enable},
-                new SqlParameter{ParameterName = "@pluginId", SqlDbType = SqlDbType.UniqueIdentifier, Value= pluginId}
+            _dbHelper.ExecuteNonQuery(sql, new List<MySqlParameter> {
+                new MySqlParameter{ParameterName = "@enable", MySqlDbType = MySqlDbType.Bit, Value= enable},
+                new MySqlParameter{ParameterName = "@pluginId", MySqlDbType = MySqlDbType.Guid, Value= pluginId}
              }.ToArray());
         }
 
@@ -101,11 +102,11 @@ namespace Mystique.Core.Repositories
         {
             string sql = "SELECT * from Plugins where Name = @pluginName";
 
-            DataTable table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
+            DataTable table = _dbHelper.ExecuteDataTable(sql, new MySqlParameter
             {
                 ParameterName = "@pluginName",
                 Value = pluginName,
-                SqlDbType = SqlDbType.NVarChar
+                MySqlDbType = MySqlDbType.VarChar
             });
 
             if (table.Rows.Cast<DataRow>().Count() == 0)
@@ -132,11 +133,11 @@ namespace Mystique.Core.Repositories
         {
             string sql = "SELECT * from Plugins where PluginId = @pluginId";
 
-            DataTable table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
+            DataTable table = _dbHelper.ExecuteDataTable(sql, new MySqlParameter
             {
                 ParameterName = "@pluginId",
                 Value = pluginId,
-                SqlDbType = SqlDbType.UniqueIdentifier
+                MySqlDbType = MySqlDbType.Guid
             });
 
             if (table.Rows.Cast<DataRow>().Count() == 0)
@@ -164,32 +165,32 @@ namespace Mystique.Core.Repositories
         {
             string sqlPluginMigrations = "DELETE PluginMigrations where PluginId = @pluginId";
 
-            _dbHelper.ExecuteNonQuery(sqlPluginMigrations, new List<SqlParameter>{new SqlParameter
+            _dbHelper.ExecuteNonQuery(sqlPluginMigrations, new List<MySqlParameter>{new MySqlParameter
             {
                 ParameterName = "@pluginId",
                 Value = pluginId,
-                SqlDbType = SqlDbType.UniqueIdentifier
+                MySqlDbType = MySqlDbType.Guid
             } }.ToArray());
 
             string sqlPlugins = "DELETE Plugins where PluginId = @pluginId";
 
-            _dbHelper.ExecuteNonQuery(sqlPlugins, new List<SqlParameter>{new SqlParameter
+            _dbHelper.ExecuteNonQuery(sqlPlugins, new List<MySqlParameter>{new MySqlParameter
             {
                 ParameterName = "@pluginId",
                 Value = pluginId,
-                SqlDbType = SqlDbType.UniqueIdentifier
+                MySqlDbType = MySqlDbType.Guid
             } }.ToArray());
         }
 
         public void RunDownMigrations(Guid pluginId)
         {
-            string sql = "SELECT Down from PluginMigrations WHERE PluginId = @pluginId ORDER BY [Version] DESC";
+            string sql = "SELECT Down from PluginMigrations WHERE PluginId = @pluginId ORDER BY `Version` DESC";
 
-            DataTable table = _dbHelper.ExecuteDataTable(sql, new SqlParameter
+            DataTable table = _dbHelper.ExecuteDataTable(sql, new MySqlParameter
             {
                 ParameterName = "@pluginId",
                 Value = pluginId,
-                SqlDbType = SqlDbType.UniqueIdentifier
+                MySqlDbType = MySqlDbType.Guid
             });
 
             foreach (DataRow item in table.Rows.Cast<DataRow>())

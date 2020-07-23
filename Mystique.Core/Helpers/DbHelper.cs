@@ -1,4 +1,5 @@
-﻿using Mystique.Core.Repositories;
+﻿using MySql.Data.MySqlClient;
+using Mystique.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,38 +16,23 @@ namespace Mystique.Core.Helpers
             this.connectionString = connectionString;
         }
 
-        public bool TryToConnect()
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
         public void ExecuteNonQuery(List<Command> commands)
         {
-            using (SqlConnection Connection = new SqlConnection(connectionString))
+            using (MySqlConnection Connection = new MySqlConnection(connectionString))
             {
                 Connection.Open();
-                SqlTransaction trans = Connection.BeginTransaction();
+                MySqlTransaction trans = Connection.BeginTransaction();
 
                 try
                 {
                     foreach (Command query in commands)
                     {
-                        SqlCommand cmd = new SqlCommand(query.Sql, Connection)
+
+                        MySqlCommand cmd = new MySqlCommand(query.Sql, Connection)
                         {
                             Transaction = trans
                         };
+
                         cmd.Parameters.AddRange(query.Parameters.ToArray());
                         if (Connection.State != ConnectionState.Open)
                         {
@@ -68,25 +54,41 @@ namespace Mystique.Core.Helpers
             }
         }
 
-        public void ExecuteNonQuery(Dictionary<string, List<SqlParameter>> queries)
+        internal bool TryToConnect()
         {
-            using (SqlConnection Connection = new SqlConnection(connectionString))
+            try
             {
-                Connection.Open();
-                SqlTransaction trans = Connection.BeginTransaction();
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public void ExecuteNonQuery(Dictionary<string, List<MySqlParameter>> queries)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                MySqlTransaction trans = connection.BeginTransaction();
 
                 try
                 {
-                    foreach (KeyValuePair<string, List<SqlParameter>> query in queries)
+                    foreach (KeyValuePair<string, List<MySqlParameter>> query in queries)
                     {
-                        SqlCommand cmd = new SqlCommand(query.Key, Connection)
+                        MySqlCommand cmd = new MySqlCommand(query.Key, connection)
                         {
                             Transaction = trans
                         };
                         cmd.Parameters.AddRange(query.Value.ToArray());
-                        if (Connection.State != ConnectionState.Open)
+                        if (connection.State != ConnectionState.Open)
                         {
-                            Connection.Open();
+                            connection.Open();
                         }
 
                         cmd.ExecuteNonQuery();
@@ -109,20 +111,20 @@ namespace Mystique.Core.Helpers
 
         public int ExecuteNonQuery(string safeSql)
         {
-            using (SqlConnection Connection = new SqlConnection(connectionString))
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
-                Connection.Open();
-                SqlTransaction trans = Connection.BeginTransaction();
+                connection.Open();
+                MySqlTransaction trans = connection.BeginTransaction();
                 try
                 {
-                    SqlCommand cmd = new SqlCommand(safeSql, Connection)
+                    MySqlCommand cmd = new MySqlCommand(safeSql, connection)
                     {
                         Transaction = trans
                     };
 
-                    if (Connection.State != ConnectionState.Open)
+                    if (connection.State != ConnectionState.Open)
                     {
-                        Connection.Open();
+                        connection.Open();
                     }
                     int result = cmd.ExecuteNonQuery();
                     trans.Commit();
@@ -137,15 +139,15 @@ namespace Mystique.Core.Helpers
             }
         }
 
-        public int ExecuteNonQuery(string sql, SqlParameter[] values)
+        public int ExecuteNonQuery(string sql, MySqlParameter[] values)
         {
-            using (SqlConnection Connection = new SqlConnection(connectionString))
+            using (MySqlConnection Connection = new MySqlConnection(connectionString))
             {
                 Connection.Open();
-                SqlTransaction trans = Connection.BeginTransaction();
+                MySqlTransaction trans = Connection.BeginTransaction();
                 try
                 {
-                    SqlCommand cmd = new SqlCommand(sql, Connection)
+                    MySqlCommand cmd = new MySqlCommand(sql, Connection)
                     {
                         Transaction = trans
                     };
@@ -169,63 +171,78 @@ namespace Mystique.Core.Helpers
 
         public int ExecuteScalar(string safeSql)
         {
-            using (SqlConnection Connection = new SqlConnection(connectionString))
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
-                if (Connection.State != ConnectionState.Open)
+                if (connection.State != ConnectionState.Open)
                 {
-                    Connection.Open();
+                    connection.Open();
                 }
 
-                SqlCommand cmd = new SqlCommand(safeSql, Connection);
+                MySqlCommand cmd = new MySqlCommand(safeSql, connection);
                 int result = Convert.ToInt32(cmd.ExecuteScalar());
                 return result;
             }
         }
 
-        public int ExecuteScalar(string sql, SqlParameter[] values)
+        public int ExecuteScalar(string sql, MySqlParameter[] values)
         {
-            using (SqlConnection Connection = new SqlConnection(connectionString))
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
-                if (Connection.State != ConnectionState.Open)
+                if (connection.State != ConnectionState.Open)
                 {
-                    Connection.Open();
+                    connection.Open();
                 }
 
-                SqlCommand cmd = new SqlCommand(sql, Connection);
+                MySqlCommand cmd = new MySqlCommand(sql, connection);
                 cmd.Parameters.AddRange(values);
                 int result = Convert.ToInt32(cmd.ExecuteScalar());
                 return result;
             }
         }
 
-        public SqlDataReader ExecuteReader(string safeSql, SqlConnection Connection)
+        public object ExecuteScalarWithObjReturn(string sql, MySqlParameter[] values)
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                MySqlCommand cmd = new MySqlCommand(sql, connection);
+                cmd.Parameters.AddRange(values);
+                return cmd.ExecuteScalar();
+            }
+        }
+
+        public MySqlDataReader ExecuteReader(string safeSql, MySqlConnection Connection)
         {
             if (Connection.State != ConnectionState.Open)
             {
                 Connection.Open();
             }
 
-            SqlCommand cmd = new SqlCommand(safeSql, Connection);
-            SqlDataReader reader = cmd.ExecuteReader();
+            MySqlCommand cmd = new MySqlCommand(safeSql, Connection);
+            MySqlDataReader reader = cmd.ExecuteReader();
             return reader;
         }
 
-        public SqlDataReader ExecuteReader(string sql, SqlParameter[] values, SqlConnection Connection)
+        public MySqlDataReader ExecuteReader(string sql, MySqlParameter[] values, MySqlConnection Connection)
         {
             if (Connection.State != ConnectionState.Open)
             {
                 Connection.Open();
             }
 
-            SqlCommand cmd = new SqlCommand(sql, Connection);
+            MySqlCommand cmd = new MySqlCommand(sql, Connection);
             cmd.Parameters.AddRange(values);
-            SqlDataReader reader = cmd.ExecuteReader();
+            MySqlDataReader reader = cmd.ExecuteReader();
             return reader;
         }
 
-        public DataTable ExecuteDataTable(CommandType type, string safeSql, params SqlParameter[] values)
+        public DataTable ExecuteDataTable(CommandType type, string safeSql, params MySqlParameter[] values)
         {
-            using (SqlConnection Connection = new SqlConnection(connectionString))
+            using (MySqlConnection Connection = new MySqlConnection(connectionString))
             {
                 if (Connection.State != ConnectionState.Open)
                 {
@@ -233,11 +250,11 @@ namespace Mystique.Core.Helpers
                 }
 
                 DataSet ds = new DataSet();
-                SqlCommand cmd = new SqlCommand(safeSql, Connection)
+                MySqlCommand cmd = new MySqlCommand(safeSql, Connection)
                 {
                     CommandType = type
                 };
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
                 da.Fill(ds);
                 return ds.Tables[0];
             }
@@ -245,7 +262,7 @@ namespace Mystique.Core.Helpers
 
         public DataTable ExecuteDataTable(string safeSql)
         {
-            using (SqlConnection Connection = new SqlConnection(connectionString))
+            using (MySqlConnection Connection = new MySqlConnection(connectionString))
             {
                 if (Connection.State != ConnectionState.Open)
                 {
@@ -253,8 +270,8 @@ namespace Mystique.Core.Helpers
                 }
 
                 DataSet ds = new DataSet();
-                SqlCommand cmd = new SqlCommand(safeSql, Connection);
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                MySqlCommand cmd = new MySqlCommand(safeSql, Connection);
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
                 try
                 {
                     da.Fill(ds);
@@ -267,9 +284,9 @@ namespace Mystique.Core.Helpers
             }
         }
 
-        public DataTable ExecuteDataTable(string sql, params SqlParameter[] values)
+        public DataTable ExecuteDataTable(string sql, params MySqlParameter[] values)
         {
-            using (SqlConnection Connection = new SqlConnection(connectionString))
+            using (MySqlConnection Connection = new MySqlConnection(connectionString))
             {
                 if (Connection.State != ConnectionState.Open)
                 {
@@ -277,20 +294,20 @@ namespace Mystique.Core.Helpers
                 }
 
                 DataSet ds = new DataSet();
-                SqlCommand cmd = new SqlCommand(sql, Connection)
+                MySqlCommand cmd = new MySqlCommand(sql, Connection)
                 {
                     CommandTimeout = 0
                 };
                 cmd.Parameters.AddRange(values);
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
                 da.Fill(ds);
                 return ds.Tables[0];
             }
         }
 
-        public DataSet GetDataSet(string safeSql, string tabName, params SqlParameter[] values)
+        public DataSet GetDataSet(string safeSql, string tabName, params MySqlParameter[] values)
         {
-            using (SqlConnection Connection = new SqlConnection(connectionString))
+            using (MySqlConnection Connection = new MySqlConnection(connectionString))
             {
                 if (Connection.State != ConnectionState.Open)
                 {
@@ -298,14 +315,14 @@ namespace Mystique.Core.Helpers
                 }
 
                 DataSet ds = new DataSet();
-                SqlCommand cmd = new SqlCommand(safeSql, Connection);
+                MySqlCommand cmd = new MySqlCommand(safeSql, Connection);
 
                 if (values != null)
                 {
                     cmd.Parameters.AddRange(values);
                 }
 
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
                 try
                 {
                     da.Fill(ds, tabName);

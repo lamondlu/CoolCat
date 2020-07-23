@@ -41,5 +41,10 @@ namespace Mystique.Core.Repositories
         {
             _dbHelper.ExecuteNonQuery(_commands);
         }
+
+        public void MarkAsInstalled()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

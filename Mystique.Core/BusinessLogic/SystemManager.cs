@@ -16,5 +16,11 @@ namespace Mystique.Core.BusinessLogic
         {
             return _unitOfWork.CheckDatabase();
         }
+
+        public void MarkAsInstalled()
+        {
+            _unitOfWork.MarkAsInstalled();
+            _unitOfWork.Commit();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using FluentMigrator.Runner;
+using FluentMigrator.Runner.Initialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -50,6 +51,10 @@ namespace Mystique
                  .ScanIn(typeof(InitialDB).Assembly)
                  .For
                  .Migrations())
+                .Configure<RunnerOptions>(opt =>
+                {
+                    opt.Tags = new[] { "System" };
+                })
                  .AddLogging(lb => lb.AddFluentMigratorConsole())
                  .BuildServiceProvider(false);
         }

@@ -2,6 +2,7 @@ using FluentMigrator;
 
 namespace Mystique.Core.Repository.MySql.Migrations
 {
+    [Tags("System")]
     [Migration(202005282045)]
     public class InitialDB : Migration
     {
@@ -16,7 +17,8 @@ namespace Mystique.Core.Repository.MySql.Migrations
               .WithColumn("Enable").AsInt16().NotNullable();
 
             Create.Table("PluginMigrations")
-                .WithColumn("PluginId").AsGuid().PrimaryKey().ForeignKey("FK_PluginMigrations_PluginId_Plugins_PluginId", "Plugins", "PluginId")
+                .WithColumn("PluginMigrationId").AsGuid().PrimaryKey()
+                .WithColumn("PluginId").AsGuid().ForeignKey("FK_PluginMigrations_PluginId_Plugins_PluginId", "Plugins", "PluginId")
                 .WithColumn("Version").AsString().NotNullable()
                 .WithColumn("Up").AsCustom("text")
                 .WithColumn("Down").AsCustom("text");
