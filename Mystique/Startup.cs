@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using FluentMigrator.Runner;
+﻿using FluentMigrator.Runner;
 using FluentMigrator.Runner.Initialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,7 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Mystique.Core.Models;
 using Mystique.Core.Mvc.Infrastructure;
 using Mystique.Core.Repository.MySql.Migrations;
-using Mystique.Models;
+using System;
 
 namespace Mystique
 {
@@ -30,13 +28,13 @@ namespace Mystique
             services.AddOptions();
             services.Configure<ConnectionStringSetting>(Configuration.GetSection("ConnectionStringSetting"));
 
-            var siteSettings = new ConnectionStringSetting();
+            ConnectionStringSetting siteSettings = new ConnectionStringSetting();
 
             Configuration.Bind("ConnectionStringSetting", siteSettings);
 
-            using (var scope = CreateServices(siteSettings).CreateScope())
+            using (IServiceScope scope = CreateServices(siteSettings).CreateScope())
             {
-                var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+                IMigrationRunner runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
                 runner.MigrateUp();
             }
 

@@ -1,12 +1,11 @@
 ﻿using DemoPlugin1.Models;
 using DemoReferenceLibrary;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Mystique.Core.Attributes;
 using Mystique.Core.Contracts;
 using Mystique.Core.Mvc.Infrastructure;
 using Newtonsoft.Json;
-using System;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DemoPlugin1.Controllers
 {
@@ -48,9 +47,9 @@ namespace DemoPlugin1.Controllers
         public IActionResult Show()
         {
             ServiceProvider provider = MystiqueStartup.Services.BuildServiceProvider();
-            using (var scope = provider.CreateScope())
+            using (IServiceScope scope = provider.CreateScope())
             {
-                var handler = scope.ServiceProvider.GetService<IHandler>();
+                IHandler handler = scope.ServiceProvider.GetService<IHandler>();
                 return Content(handler.Work());
             }
 

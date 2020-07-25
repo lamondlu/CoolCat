@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Mystique.Utilities
 {
@@ -10,9 +9,9 @@ namespace Mystique.Utilities
     {
         public List<string> LoadPlugins()
         {
-            var di = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PresetModules"));
+            DirectoryInfo di = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PresetModules"));
 
-            var files = di.GetFiles("*.zip");
+            FileInfo[] files = di.GetFiles("*.zip");
 
             return files.Select(p => p.Name).ToList();
         }

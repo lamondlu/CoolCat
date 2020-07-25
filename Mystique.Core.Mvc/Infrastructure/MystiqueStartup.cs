@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Mystique.Core.BusinessLogic;
 using Mystique.Core.Contracts;
 using Mystique.Core.Helpers;
-using Mystique.Core.Models;
 using Mystique.Core.Repositories;
 using Mystique.Mvc.Infrastructure;
 using System;
@@ -24,13 +23,7 @@ namespace Mystique.Core.Mvc.Infrastructure
         private static readonly IList<string> _presets = new List<string>();
         private static IServiceCollection _serviceCollection;
 
-        public static IServiceCollection Services
-        {
-            get
-            {
-                return _serviceCollection;
-            }
-        }
+        public static IServiceCollection Services => _serviceCollection;
 
         public static void MystiqueSetup(this IServiceCollection services, IConfiguration configuration)
         {

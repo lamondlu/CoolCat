@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Mystique.Core.Contracts;
-using Mystique.Core.Mvc.Extensions;
-using Mystique.Core.ViewModels;
 using Mystique.Models;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Mystique.Controllers
 {

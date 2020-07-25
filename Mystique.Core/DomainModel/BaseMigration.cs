@@ -3,8 +3,6 @@ using Mystique.Core.Contracts;
 using Mystique.Core.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace Mystique.Core.DomainModel
 {
@@ -58,7 +56,7 @@ namespace Mystique.Core.DomainModel
                 new MySqlParameter{ ParameterName = "@version", MySqlDbType = MySqlDbType.VarChar, Value = _version.VersionNumber }
             }.ToArray());
 
-            
+
         }
 
         private void WriteMigrationScripts(Guid pluginId)
