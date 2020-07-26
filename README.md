@@ -11,8 +11,9 @@ I will build a plugin mechanism to load plugins at runtime. Each plugin will be 
 ## How to run the application
  - Clone the source code
  - Run `docker-compose up`
--  Install the pre-set modules
-
+ - Install the pre-set modules
+![](./doc/images/20200726215825.png)
+ - Start to use the system 
 
 ## Pain spot and solutions
 I just list down all the pain spot when i approach this feature, If you are good at Chinese, you can reference my cnblog (https://www.cnblogs.com/lwqlun/p/13208980.html). I have list down all of these in my blog. I will translate a English version later.

@@ -49,7 +49,7 @@ namespace Mystique
 
         private void TryToConnect(ConnectionStringSetting siteSettings)
         {
-            while (ErrorCount < 3)
+            while (ErrorCount < 10)
             {
                 try
                 {

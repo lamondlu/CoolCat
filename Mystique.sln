@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		init\init.sql = init\init.sql
 		Nuget.Config = Nuget.Config
 		TestPlugins\DemoPlugin1\plugin.json = TestPlugins\DemoPlugin1\plugin.json
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core.Mvc", "Mystique.Core.Mvc\Mystique.Core.Mvc.csproj", "{A4377E85-5F8B-4A2E-AE94-19616C646BA4}"
@@ -31,8 +32,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoPlugin2", "DemoPlugin2\DemoPlugin2.csproj", "{0E46F881-151E-4F33-9D98-C4CE5DC08385}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core.Repository.MySql", "Mystique.Core.Repository.MySql\Mystique.Core.Repository.MySql.csproj", "{CDDDC11F-81B6-475C-85E2-FC7C32BC5909}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{644559CA-60CD-45F6-913A-278F658214E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -149,7 +148,6 @@ Global
 		{EE6B3EED-B413-4632-A68D-94C4045EC213} = {57DD977D-2DD6-4E55-A534-761CEAE9E723}
 		{769D3886-1411-4DA4-BB5C-A4A2B5A37645} = {28305C7A-F6FE-4EE4-AD0C-9C1BA1B5AC87}
 		{0E46F881-151E-4F33-9D98-C4CE5DC08385} = {28305C7A-F6FE-4EE4-AD0C-9C1BA1B5AC87}
-		{644559CA-60CD-45F6-913A-278F658214E5} = {93F71C5A-FEB8-4BDC-89C5-2382DE5B079E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {01E2A57E-2BFE-40F9-9501-D2AA53FC1170}
