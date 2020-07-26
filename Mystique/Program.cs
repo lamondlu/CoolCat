@@ -9,7 +9,7 @@ namespace Mystique
     {
         public static void Main(string[] args)
         {
-            Thread.Sleep(10000);
+            
 
             CreateHostBuilder(args).Build().Run();
         }

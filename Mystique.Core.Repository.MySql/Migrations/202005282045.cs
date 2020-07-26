@@ -8,6 +8,8 @@ namespace Mystique.Core.Repository.MySql.Migrations
     {
         public override void Up()
         {
+            Execute.Sql("CREATE DATABASE IF NOT EXISTS plugindb");
+
             Create.Table("Plugins")
               .WithColumn("PluginId").AsGuid().PrimaryKey()
               .WithColumn("UniqueKey").AsString().NotNullable()
