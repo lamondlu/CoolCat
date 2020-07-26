@@ -34,7 +34,7 @@ namespace Mystique
 
             Configuration.Bind("ConnectionStringSetting", siteSettings);
 
-            TryToConnect();
+            TryToConnect(siteSettings);
 
             using (IServiceScope scope = CreateServices(siteSettings).CreateScope())
             {
