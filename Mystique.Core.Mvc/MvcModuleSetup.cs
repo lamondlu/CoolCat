@@ -25,8 +25,8 @@ namespace Mystique.Core.Mvc
             {
                 CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(moduleName);
 
-                string filePath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}\\{moduleName}.dll";
-                string referenceFolderPath = $"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}";
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Modules", moduleName, $"{moduleName}.dll" );
+                string referenceFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Modules", moduleName);
                 using (FileStream fs = new FileStream(filePath, FileMode.Open))
                 {
                     System.Reflection.Assembly assembly = context.LoadFromStream(fs);
