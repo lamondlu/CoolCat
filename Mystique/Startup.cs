@@ -6,10 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using MySql.Data.MySqlClient;
 using Mystique.Core.Models;
 using Mystique.Core.Mvc.Infrastructure;
 using Mystique.Core.Repository.MySql.Migrations;
 using System;
+using System.Threading;
 
 namespace Mystique
 {
@@ -32,6 +34,8 @@ namespace Mystique
 
             Configuration.Bind("ConnectionStringSetting", siteSettings);
 
+            TryToConnect();
+
             using (IServiceScope scope = CreateServices(siteSettings).CreateScope())
             {
                 IMigrationRunner runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
@@ -39,6 +43,31 @@ namespace Mystique
             }
 
             services.MystiqueSetup(Configuration);
+        }
+
+        private static int ErrorCount = 0;
+
+        private void TryToConnect(ConnectionStringSetting siteSettings)
+        {
+            while (ErrorCount < 3)
+            {
+                try
+                {
+                    using (var connection = new MySqlConnection(siteSettings.ConnectionString))
+                    {
+                        connection.Open();
+                        Console.WriteLine("The target database connected.");
+                        return;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("The target database hasn't been prepared.");
+                    ErrorCount++;
+                }
+
+                Thread.Sleep(10000);
+            }
         }
 
         private static IServiceProvider CreateServices(ConnectionStringSetting settings)
