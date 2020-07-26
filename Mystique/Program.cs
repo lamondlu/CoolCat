@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using MySql.Data;
+using System.Threading;
 
 namespace Mystique
 {
@@ -7,6 +9,8 @@ namespace Mystique
     {
         public static void Main(string[] args)
         {
+            Thread.Sleep(10000);
+
             CreateHostBuilder(args).Build().Run();
         }
 

@@ -1,0 +1,27 @@
+version: "3"
+services:
+  myapp:
+    image: "lamondlu/mystique:v1"
+    container_name: app
+    ports:
+      - "5000:5000"
+    hostname: myapp,
+    links:
+      - db
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: dockerfile
+  db:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    hostname: myapp_db
+    container_name: myapp_db
+    environment:
+      MYSQL_ROOT_PASSWORD: a@12345
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - ./data:/var/lib/mysql
+      - ./conf/my.cnf:/etc/my.cnf

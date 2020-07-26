@@ -1,0 +1,32 @@
+version: "3"
+services:
+  myapp:
+    image: "lamondlu/mystique:v1"
+    container_name: app
+    ports:
+      - "5000:5000"
+    hostname: myapp,
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    links:
+      - db
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: dockerfile
+  db:
+    image: mysql:latest
+    hostname: myapp_db
+    container_name: myapp_db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: a@12345
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - ./data:/var/lib/mysql
+      - ./conf/my.cnf:/etc/my.cnf
