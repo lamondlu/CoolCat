@@ -48,9 +48,18 @@ namespace Mystique.Controllers
                 }
             }
 
+
+
             _systemManager.MarkAsInstalled();
 
             return Ok();
         }
+
+        [HttpGet("SiteSettings")]
+        public IActionResult SiteSettings(){
+            return View();
+        }
+
+        
     }
 }
