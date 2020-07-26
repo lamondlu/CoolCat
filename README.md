@@ -11,14 +11,14 @@ I will build a plugin mechanism to load plugins at runtime. Each plugin will be 
 ## How to run the application
  - Clone the source code
  - Run `docker-compose up`
--  Installation the pre-set modules
+-  Install the pre-set modules
 
 
 ## Pain spot and solutions
 I just list down all the pain spot when i approach this feature, If you are good at Chinese, you can reference my cnblog (https://www.cnblogs.com/lwqlun/p/13208980.html). I have list down all of these in my blog. I will translate a English version later.
 
 ### How to unload plugin at runtime?
-Although a new method called Unload imported in the .net core 3.0, but when you unload the AssemblyLoadContext, it would still show the error message about the file is using, you could not remove them. 
+Although a new method called Unload imported in the .net core 3.0, but when you unload the AssemblyLoadContext, it would still show the error message that the file is using, you could not remove them. 
 
 So my solution is that my app use the `LoadFromStream` method to load plugin assembly instead of `LoadFromAssemblyPath`.
 
