@@ -23,9 +23,7 @@ Although a new method called Unload imported in the .net core 3.0, but when you 
 
 So my solution is that my app use the `LoadFromStream` method to load plugin assembly instead of `LoadFromAssemblyPath`.
 
-The another benifit for this is that you can cache and reuse the library stream. So if pluginA is using Newtonsoft.Json v11.0.0 and plugin B is using the same. After pluginA loaded, system will not load the same library when load the PluginB. 
-
-
+The another benifit for this is that you can cache and reuse the library stream. So if pluginA reference Newtonsoft.Json v11.0.0 and plugin B reference the same. After pluginA loaded, system will not load the same library when loading the PluginB. 
 
 ### How to enable controller/action at runtime?
 Coming soon..
