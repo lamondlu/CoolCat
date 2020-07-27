@@ -31,7 +31,7 @@ namespace Mystique.Core.BusinessLogic
         }
 
         public void SaveSiteSettings(SiteSettingsDTO dto)
-        {A
+        {
             _unitOfWork.SiteRepository.SaveSiteSettings(dto);
             _unitOfWork.Commit();
         }
