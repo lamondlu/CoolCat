@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoPlugin2", "DemoPlugin2\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core.Repository.MySql", "Mystique.Core.Repository.MySql\Mystique.Core.Repository.MySql.csproj", "{CDDDC11F-81B6-475C-85E2-FC7C32BC5909}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{0B7BD338-03F6-466B-8E48-606D42F27D55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

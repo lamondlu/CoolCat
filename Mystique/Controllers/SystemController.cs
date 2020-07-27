@@ -56,10 +56,11 @@ namespace Mystique.Controllers
         }
 
         [HttpGet("SiteSettings")]
-        public IActionResult SiteSettings(){
+        public IActionResult SiteSettings()
+        {
             return View();
         }
 
-        
+
     }
 }
