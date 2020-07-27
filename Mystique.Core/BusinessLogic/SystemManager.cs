@@ -1,5 +1,7 @@
 ﻿using Mystique.Core.Contracts;
+using Mystique.Core.DTOs;
 using Mystique.Core.Repositories;
+using Mystique.Core.ViewModels;
 
 namespace Mystique.Core.BusinessLogic
 {
@@ -20,6 +22,17 @@ namespace Mystique.Core.BusinessLogic
         public void MarkAsInstalled()
         {
             _unitOfWork.MarkAsInstalled();
+            _unitOfWork.Commit();
+        }
+
+        public SiteSettingsViewModel GetSiteSettings()
+        {
+            return _unitOfWork.SiteRepository.GetSiteSettings();
+        }
+
+        public void SaveSiteSettings(SiteSettingsDTO dto)
+        {A
+            _unitOfWork.SiteRepository.SaveSiteSettings(dto);
             _unitOfWork.Commit();
         }
     }

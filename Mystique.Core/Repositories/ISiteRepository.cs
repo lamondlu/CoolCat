@@ -1,14 +1,13 @@
 ﻿using Mystique.Core.DTOs;
 using Mystique.Core.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Mystique.Core.Contracts
+namespace Mystique.Core.Repositories
 {
-    public interface ISystemManager
+    public interface ISiteRepository
     {
-        bool CheckInstall();
-
-        void MarkAsInstalled();
-
         SiteSettingsViewModel GetSiteSettings();
 
         void SaveSiteSettings(SiteSettingsDTO dto);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace Mystique.Core.Repositories
@@ -10,7 +11,7 @@ namespace Mystique.Core.Repositories
 
         }
 
-        public Command(string sql, List<SqlParameter> parameters)
+        public Command(string sql, List<MySqlParameter> parameters)
         {
             Sql = sql;
             Parameters = parameters;
@@ -18,6 +19,6 @@ namespace Mystique.Core.Repositories
 
         public string Sql { get; set; }
 
-        public List<SqlParameter> Parameters { get; set; } = new List<SqlParameter>();
+        public List<MySqlParameter> Parameters { get; set; } = new List<MySqlParameter>();
     }
 }

@@ -7,14 +7,14 @@ namespace Mystique.Core.Repository.MySql.Migrations
     {
         public override void Up()
         {
-            Insert.IntoTable("GlobalSettings").Row(new { Key = "SiteCSS", Value = "" });
-            Insert.IntoTable("GlobalSettings").Row(new { Key = "SiteTemplateId", Value = "" });
+            Insert.IntoTable("SiteSettings").Row(new { Key = "SiteCSS", Value = "" });
+            Insert.IntoTable("SiteSettings").Row(new { Key = "SiteTemplateId", Value = "" });
         }
 
         public override void Down()
         {
-            Delete.FromTable("GlobalSettings").Row(new {Key = "SiteCSS"});
-            Delete.FromTable("GlobalSettings").Row(new {Key = "SiteTemplateId"});
+            Delete.FromTable("SiteSettings").Row(new {Key = "SiteCSS"});
+            Delete.FromTable("SiteSettings").Row(new {Key = "SiteTemplateId"});
         }
     }
 }

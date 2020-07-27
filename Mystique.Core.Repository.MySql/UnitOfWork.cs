@@ -11,6 +11,7 @@ namespace Mystique.Core.Repository.MySql
         private readonly DbHelper _dbHelper = null;
         private readonly string _connectionString = string.Empty;
         private IPluginRepository _pluginRepository = null;
+        private ISiteRepository _siteRepository = null;
         private readonly List<Command> _commands;
 
         public UnitOfWork(IOptions<ConnectionStringSetting> connectionStringAccessor)
@@ -33,6 +34,19 @@ namespace Mystique.Core.Repository.MySql
             }
         }
 
+        public ISiteRepository SiteRepository
+        {
+            get
+            {
+                if (_siteRepository == null)
+                {
+                    _siteRepository = new SiteRepository(_dbHelper, _commands);
+                }
+
+                return _siteRepository;
+            }
+        }
+
         public void Commit()
         {
             _dbHelper.ExecuteNonQuery(_commands);
@@ -40,7 +54,7 @@ namespace Mystique.Core.Repository.MySql
 
         public bool CheckDatabase()
         {
-            object o = _dbHelper.ExecuteScalarWithObjReturn("SELECT `Value` FROM GlobalSettings WHERE `Key` = @key", new List<MySqlClient.MySqlParameter> {
+            object o = _dbHelper.ExecuteScalarWithObjReturn("SELECT `Value` FROM SiteSettings WHERE `Key` = @key", new List<MySqlClient.MySqlParameter> {
                new MySqlClient.MySqlParameter { ParameterName = "@key", Value = "SYSTEM_INSTALLED"}
             }.ToArray());
 
@@ -49,7 +63,7 @@ namespace Mystique.Core.Repository.MySql
 
         public void MarkAsInstalled()
         {
-            _dbHelper.ExecuteNonQuery("UPDATE GlobalSettings SET `Value`='1' WHERE `Key`=@key", new List<MySqlClient.MySqlParameter> {
+            _dbHelper.ExecuteNonQuery("UPDATE SiteSettings SET `Value`='1' WHERE `Key`=@key", new List<MySqlClient.MySqlParameter> {
                new MySqlClient.MySqlParameter { ParameterName = "@key", Value = "SYSTEM_INSTALLED"}
             }.ToArray());
         }

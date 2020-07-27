@@ -8,16 +8,16 @@ namespace Mystique.Core.Repository.MySql.Migrations
     {
         public override void Up()
         {
-            Create.Table("GlobalSettings")
+            Create.Table("SiteSettings")
               .WithColumn("Key").AsString().PrimaryKey()
-              .WithColumn("Value").AsString().NotNullable();
+              .WithColumn("Value").AsCustom("text").NotNullable();
 
-            Insert.IntoTable("GlobalSettings").Row(new { Key = "SYSTEM_INSTALLED", Value = "0" });
+            Insert.IntoTable("SiteSettings").Row(new { Key = "SYSTEM_INSTALLED", Value = "0" });
         }
 
         public override void Down()
         {
-            Delete.Table("GlobalSettings");
+            Delete.Table("SiteSettings");
         }
     }
 }

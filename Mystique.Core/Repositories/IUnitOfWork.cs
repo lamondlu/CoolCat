@@ -4,6 +4,8 @@
     {
         IPluginRepository PluginRepository { get; }
 
+        ISiteRepository SiteRepository { get; }
+
 
         bool CheckDatabase();
 

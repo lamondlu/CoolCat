@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Mystique.Core.Contracts;
+using Mystique.Core.DTOs;
 using Mystique.Models;
 using Mystique.Utilities;
 using System;
@@ -18,6 +19,18 @@ namespace Mystique.Controllers
         {
             _systemManager = systemManager;
             _pluginManager = pluginManager;
+        }
+
+        public IActionResult GetSiteCSS()
+        {
+            var settings = _systemManager.GetSiteSettings();
+
+            if (!string.IsNullOrEmpty(settings.SiteCSS))
+            {
+                return Content(settings.SiteCSS, "text/css");
+            }
+
+            return null;
         }
 
         public IActionResult Setup()
@@ -48,8 +61,6 @@ namespace Mystique.Controllers
                 }
             }
 
-
-
             _systemManager.MarkAsInstalled();
 
             return Ok();
@@ -58,9 +69,17 @@ namespace Mystique.Controllers
         [HttpGet("SiteSettings")]
         public IActionResult SiteSettings()
         {
-            return View();
+            var settings = _systemManager.GetSiteSettings();
+            return View(settings);
         }
 
+        [HttpPost("SiteSettings")]
+        public IActionResult SiteSettings(SiteSettingsDTO dto)
+        {
+            _systemManager.SaveSiteSettings(dto);
 
+            var settings = _systemManager.GetSiteSettings();
+            return View(settings);
+        }
     }
 }
