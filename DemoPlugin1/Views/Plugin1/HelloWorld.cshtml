@@ -4,6 +4,11 @@
 
 }
 
+@section Header{
+
+    <link rel="stylesheet" href="@Url.Action("GetModuleCSS", "System", new { moduleName = DemoPlugin1.DemoPlugin1Definiation.MODULE_NAME, fileName="module.css" })" />
+}
+
 <h1>@ViewBag.Content</h1>
 <h2>@Model.Message</h2>
 <p class="helloWorld">Test style container</p>

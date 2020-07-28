@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace DemoPlugin1.Controllers
 {
-    [Area("DemoPlugin1")]
+    [Area(DemoPlugin1Definiation.MODULE_NAME)]
     public class Plugin1Controller : Controller
     {
         private readonly INotificationRegister _notificationRegister;

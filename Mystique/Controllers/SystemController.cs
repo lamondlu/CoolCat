@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Mystique.Core.Consts;
 using Mystique.Core.Contracts;
 using Mystique.Core.DTOs;
 using Mystique.Models;
@@ -33,6 +34,11 @@ namespace Mystique.Controllers
             return null;
         }
 
+        public IActionResult GetModuleCSS(string moduleName, string fileName)
+        {
+            return PhysicalFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, "Content", fileName), "text/css");
+        }
+
         public IActionResult Setup()
         {
             PresetPluginLoader presetPluginLoader = new PresetPluginLoader();
@@ -54,7 +60,7 @@ namespace Mystique.Controllers
             {
                 foreach (string module in model.Modules)
                 {
-                    using (FileStream fs = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PresetModules", module), FileMode.Open))
+                    using (FileStream fs = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, GlobalConst.PresetFolder, module), FileMode.Open))
                     {
                         _pluginManager.AddPlugins(new Core.DomainModel.PluginPackage(fs));
                     }
@@ -81,5 +87,7 @@ namespace Mystique.Controllers
             var settings = _systemManager.GetSiteSettings();
             return View(settings);
         }
+
+
     }
 }
