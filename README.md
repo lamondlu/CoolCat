@@ -8,7 +8,7 @@ I will build a plugin mechanism to load plugins at runtime. Each plugin will be 
 
 ![](./doc/images/load_way.png)
 
-## How to run the application
+## Getting Started
  - Clone the source code
  - Run `docker-compose up`
  - Install the pre-set modules
