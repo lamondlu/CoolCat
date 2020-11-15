@@ -261,16 +261,12 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
             services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
-            
-            
 
             IMvcBuilder mvcBuilder = services.AddMvc();
 
             ServiceProvider provider = services.BuildServiceProvider();
             using (IServiceScope scope = provider.CreateScope())
             {
-                //MvcRazorRuntimeCompilationOptions option = scope.ServiceProvider.GetService<MvcRazorRuntimeCompilationOptions>();
-
                 IUnitOfWork unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
 
                 if (unitOfWork.CheckDatabase())
@@ -299,36 +295,22 @@ namespace Mystique.Core.Mvc.Infrastructure
                             mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
                             PluginsLoadContexts.Add(plugin.Name, context);
 
-
-
-
                             BuildNotificationProvider(assembly, scope);
                         }
 
-                        using (FileStream fs1 = new FileStream(viewFilePath, FileMode.Open))
+                        using (FileStream fsView = new FileStream(viewFilePath, FileMode.Open))
                         {
-                            Assembly view = context.LoadFromStream(fs1);
-                            loader.LoadStreamsIntoContext(context, referenceFolderPath, view);
+                            Assembly viewAssembly = context.LoadFromStream(fsView);
+                            loader.LoadStreamsIntoContext(context, referenceFolderPath, viewAssembly);
 
-
-                            MystiqueRazorAssemblyPart ap = new MystiqueRazorAssemblyPart(view, moduleName);
-                            mvcBuilder.PartManager.ApplicationParts.Add(ap);
+                            MystiqueRazorAssemblyPart moduleView = new MystiqueRazorAssemblyPart(viewAssembly, moduleName);
+                            mvcBuilder.PartManager.ApplicationParts.Add(moduleView);
                         }
 
                         context.Enable();
                     }
                 }
             }
-
-            //mvcBuilder.AddRazorRuntimeCompilation(o =>
-            //{
-            //    foreach (string item in _presets)
-            //    {
-            //        o.AdditionalReferencePaths.Add(item);
-            //    }
-
-            //    AdditionalReferencePathHolder.AdditionalReferencePaths = o.AdditionalReferencePaths;
-            //});
 
             AssemblyLoadContextResoving();
 
