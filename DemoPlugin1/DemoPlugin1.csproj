@@ -17,7 +17,7 @@
 
 
   <ItemGroup>
-    <None Update="Views\**">
+    <None Update="Areas\DemoPlugin1\Views\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
