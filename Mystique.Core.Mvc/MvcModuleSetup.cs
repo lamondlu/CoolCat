@@ -88,8 +88,8 @@ namespace Mystique.Core.Mvc
 
         private void ResetControllActions()
         {
-            var a = _context.HttpContext.RequestServices.GetService(typeof(IViewCompilerProvider)) as MyViewCompilerProvider;
-            a.Modify();
+            var provider = _context.HttpContext.RequestServices.GetService(typeof(IViewCompilerProvider)) as MyViewCompilerProvider;
+            provider.Refresh();
             MystiqueActionDescriptorChangeProvider.Instance.HasChanged = true;
             MystiqueActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
         }

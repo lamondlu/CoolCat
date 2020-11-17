@@ -86,8 +86,8 @@ namespace Mystique.Core.Mvc.Infrastructure
     public class MyViewCompilerProvider : IViewCompilerProvider
     {
         private MyViewCompiler _compiler;
-        private readonly ApplicationPartManager _applicationPartManager;
-        private readonly ILoggerFactory _loggerFactory;
+        private ApplicationPartManager _applicationPartManager;
+        private ILoggerFactory _loggerFactory;
 
         public MyViewCompilerProvider(
             ApplicationPartManager applicationPartManager,
@@ -95,10 +95,10 @@ namespace Mystique.Core.Mvc.Infrastructure
         {
             _applicationPartManager = applicationPartManager;
             _loggerFactory = loggerFactory;
-            Modify();
+            Refresh();
         }
 
-        public void Modify()
+        public void Refresh()
         {
             var feature = new ViewsFeature();
             _applicationPartManager.PopulateFeature(feature);
