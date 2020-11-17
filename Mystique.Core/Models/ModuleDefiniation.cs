@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Mystique.Core.Models
+﻿namespace Mystique.Core.Models
 {
     public abstract class ModuleDefiniation
     {

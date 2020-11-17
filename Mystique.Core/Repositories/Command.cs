@@ -1,6 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 
 namespace Mystique.Core.Repositories
 {

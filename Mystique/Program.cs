@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using MySql.Data;
-using System.Threading;
 
 namespace Mystique
 {

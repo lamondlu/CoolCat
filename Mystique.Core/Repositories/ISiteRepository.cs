@@ -1,8 +1,5 @@
 ﻿using Mystique.Core.DTOs;
 using Mystique.Core.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Mystique.Core.Repositories
 {

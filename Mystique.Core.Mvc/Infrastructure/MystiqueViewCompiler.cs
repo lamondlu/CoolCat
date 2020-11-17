@@ -5,8 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Mystique.Core.Mvc.Infrastructure
@@ -34,10 +32,6 @@ namespace Mystique.Core.Mvc.Infrastructure
             _logger = logger;
             _normalizedPathCache = new ConcurrentDictionary<string, string>(StringComparer.Ordinal);
 
-            // We need to validate that the all of the precompiled views are unique by path (case-insensitive).
-            // We do this because there's no good way to canonicalize paths on windows, and it will create
-            // problems when deploying to linux. Rather than deal with these issues, we just don't support
-            // views that differ only by case.
             _compiledViews = new Dictionary<string, Task<CompiledViewDescriptor>>(
                 compiledViews.Count,
                 StringComparer.OrdinalIgnoreCase);
@@ -47,8 +41,6 @@ namespace Mystique.Core.Mvc.Infrastructure
 
                 if (!_compiledViews.ContainsKey(compiledView.RelativePath))
                 {
-                    // View ordering has precedence semantics, a view with a higher precedence was not
-                    // already added to the list.
                     _compiledViews.Add(compiledView.RelativePath, Task.FromResult(compiledView));
                 }
             }
@@ -59,7 +51,6 @@ namespace Mystique.Core.Mvc.Infrastructure
             }
         }
 
-        /// <inheritdoc />
         public Task<CompiledViewDescriptor> CompileAsync(string relativePath)
         {
             if (relativePath == null)
@@ -67,11 +58,8 @@ namespace Mystique.Core.Mvc.Infrastructure
                 throw new ArgumentNullException(nameof(relativePath));
             }
 
-            // Attempt to lookup the cache entry using the passed in path. This will succeed if the path is already
-            // normalized and a cache entry exists.
             if (_compiledViews.TryGetValue(relativePath, out var cachedResult))
             {
-
                 return cachedResult;
             }
 
@@ -81,8 +69,6 @@ namespace Mystique.Core.Mvc.Infrastructure
 
                 return cachedResult;
             }
-
-            // Entry does not exist. Attempt to create one.
 
             return Task.FromResult(new CompiledViewDescriptor
             {

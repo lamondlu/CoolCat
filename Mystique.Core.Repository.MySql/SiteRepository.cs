@@ -1,13 +1,12 @@
-﻿using Mystique.Core.DTOs;
+﻿using MySql.Data.MySqlClient;
+using Mystique.Core.Consts;
+using Mystique.Core.DTOs;
 using Mystique.Core.Repositories;
 using Mystique.Core.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using Mystique.Core.Consts;
 using System.Data;
-using MySql.Data.MySqlClient;
+using System.Linq;
 
 namespace Mystique.Core.Repository.MySql
 {
