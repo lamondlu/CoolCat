@@ -15,10 +15,4 @@
   </ItemGroup>
 
 
-  <ItemGroup>
-    <None Update="Views\**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
