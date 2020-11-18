@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Views\" />
   </ItemGroup>
 
 </Project>
