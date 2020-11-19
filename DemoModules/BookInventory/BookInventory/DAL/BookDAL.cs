@@ -1,21 +1,33 @@
 ﻿using BookInventory.ViewModels;
+using Mystique.Core.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BookInventory.DAL
 {
     public class BookDAL
     {
-        public BookDAL()
+        private DbHelper _dbHelper = null;
+
+        public BookDAL(DbHelper dbHelper)
         {
-            
+            _dbHelper = dbHelper;
         }
 
         public List<BookListViewModel> GetBooks()
         {
-            throw new NotImplementedException();        
+            var sql = "SELECT * FROM book";
+
+            var dataTable = _dbHelper.ExecuteDataTable(sql);
+
+            return dataTable.Rows.Cast<DataRow>().Select(p => new BookListViewModel {
+             BookId = Guid.Parse(p["BookId"].ToString()),
+             BookName = p["BookName"].ToString(),
+             ISBN = p["ISBN"].ToString(),
+             DateIssued = Convert.ToDateTime(p["DateIssued"])
+            }).ToList();
         }
     }
 }

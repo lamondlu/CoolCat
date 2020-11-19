@@ -1,23 +1,30 @@
-﻿using BookInventory.Dtos;
+﻿using BookInventory.DAL;
+using BookInventory.Dtos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Mystique.Core.Helpers;
+using Mystique.Core.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BookInventory.Controllers
 {
     public class BookInventoryController : Controller
     {
-        public BookInventoryController()
-        {
+        private BookDAL _bookDAL = null;
+        private DbHelper _dbHelper = null;
 
+        public BookInventoryController(IOptions<ConnectionStringSetting> connectionStringAccessor)
+        {
+            _dbHelper = new DbHelper(connectionStringAccessor.Value.ConnectionString);
+            _bookDAL = new BookDAL(_dbHelper);
         }
 
         [HttpGet]
         public IActionResult Books()
         {
-            return View();
+            var result = _bookDAL.GetBooks();
+
+            return View(result);
         }
 
         [HttpGet]
