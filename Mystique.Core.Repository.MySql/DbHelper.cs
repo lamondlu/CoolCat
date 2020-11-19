@@ -197,7 +197,7 @@ namespace Mystique.Core.Repository.MySql
             }
         }
 
-        public MySqlDataReader ExecuteReader(string safeSql, MySqlConnection Connection)
+        public MySqlDataReader ExecuteReader(string safeSql, MySqlConnection Connection)    
         {
             if (Connection.State != ConnectionState.Open)
             {

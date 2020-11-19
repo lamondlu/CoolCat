@@ -9,6 +9,11 @@ namespace BookInventory.Controllers
 {
     public class BookInventoryController : Controller
     {
+        public BookInventoryController()
+        {
+
+        }
+
         [HttpGet]
         public IActionResult Books()
         {
