@@ -2,12 +2,14 @@
 using BookInventory.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Mystique.Core.Attributes;
 using Mystique.Core.Helpers;
 using Mystique.Core.Models;
 using System;
 
 namespace BookInventory.Controllers
 {
+    [Area(ModuleDefiniation.MODULE_NAME)]
     public class BookInventoryController : Controller
     {
         private BookDAL _bookDAL = null;
@@ -19,6 +21,7 @@ namespace BookInventory.Controllers
             _bookDAL = new BookDAL(_dbHelper);
         }
 
+        [Page("Book Inventory")]
         [HttpGet]
         public IActionResult Books()
         {

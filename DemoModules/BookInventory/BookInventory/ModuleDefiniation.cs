@@ -1,6 +1,6 @@
 ﻿using Mystique.Core.Models;
 
-namespace DemoPlugin1
+namespace BookInventory
 {
     public class ModuleDefiniation : Mystique.Core.Models.ModuleDefiniation
     {
