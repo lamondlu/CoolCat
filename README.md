@@ -1,7 +1,7 @@
 # Mystique
 A sample about how to create a dynamic plugins mechanism with ASP.NET Core Mvc based on the AssemblyLoadContext.
 
-This whole project is built under .NET Core 3.1. 
+This whole project is built under .NET Core 3.1 and .NET 5. 
 
 ## What i will do and what i will not do
 I will build a plugin mechanism to load plugins at runtime. Each plugin will be isolated by custom AssemlyLoadContext. So the framework allow you to reference same library with different version.
