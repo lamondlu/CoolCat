@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
@@ -74,7 +75,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
                             loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
 
-                            MystiqueAssemblyPart controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
+                            AssemblyPart controllerAssemblyPart = new AssemblyPart(assembly);
                             mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
                             PluginsLoadContexts.Add(plugin.Name, context);
 

@@ -39,7 +39,7 @@ namespace Mystique.Core.Mvc
 
                     context.SetEntryPoint(assembly);
 
-                    var controllerAssemblyPart = new MystiqueAssemblyPart(assembly);
+                    var controllerAssemblyPart = new AssemblyPart(assembly);
 
                     AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
                     _partManager.ApplicationParts.Add(controllerAssemblyPart);
