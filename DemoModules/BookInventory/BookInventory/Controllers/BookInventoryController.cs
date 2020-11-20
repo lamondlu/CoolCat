@@ -39,7 +39,12 @@ namespace BookInventory.Controllers
         [HttpPost]
         public IActionResult Add(AddBookDto dto)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                return View();
+            }
+
+            return RedirectToAction("Books");
         }
 
         [HttpDelete]

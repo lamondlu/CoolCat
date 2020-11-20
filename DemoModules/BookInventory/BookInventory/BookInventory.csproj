@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath></OutputPath>
+    <OutputPath>F:\D1\Mystique\Mystique\bin\Debug\net5.0\Modules\BookInventory\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

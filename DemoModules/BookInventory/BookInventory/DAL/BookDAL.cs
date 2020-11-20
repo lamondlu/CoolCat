@@ -1,4 +1,5 @@
-﻿using BookInventory.ViewModels;
+﻿using BookInventory.Dtos;
+using BookInventory.ViewModels;
 using Mystique.Core.Helpers;
 using System;
 using System.Collections.Generic;
@@ -22,12 +23,33 @@ namespace BookInventory.DAL
 
             var dataTable = _dbHelper.ExecuteDataTable(sql);
 
-            return dataTable.Rows.Cast<DataRow>().Select(p => new BookListViewModel {
-             BookId = Guid.Parse(p["BookId"].ToString()),
-             BookName = p["BookName"].ToString(),
-             ISBN = p["ISBN"].ToString(),
-             DateIssued = Convert.ToDateTime(p["DateIssued"])
+            return dataTable.Rows.Cast<DataRow>().Select(p => new BookListViewModel
+            {
+                BookId = Guid.Parse(p["BookId"].ToString()),
+                BookName = p["BookName"].ToString(),
+                ISBN = p["ISBN"].ToString(),
+                DateIssued = Convert.ToDateTime(p["DateIssued"])
             }).ToList();
+        }
+
+        public void AddBook(AddBookDto dto)
+        {
+
+        }
+
+        public void UpdateBook(Guid bookId, UpdateBookDto dto)
+        {
+
+        }
+
+        public void DeleteBook(Guid bookId)
+        {
+
+        }
+
+        public void UpdateBookStatus(Guid bookId)
+        {
+
         }
     }
 }
