@@ -1,12 +1,13 @@
 ﻿@model BookInventory.Dtos.AddBookDto
 @{
     ViewData["Title"] = "Add Book";
+
+    var action = "/Modules/BookInventory" + Url.Action("Add", "BookInventory");
 }
 
 <h1>Add</h1>
 
-@using (Html.BeginForm("Add", "BookInventory", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form" }))
-{
+<form action="@action" method="post" enctype="multipart/form-data">
     <div class="form-group">
 
         @Html.LabelFor(p => p.BookName)
@@ -32,5 +33,4 @@
 
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
-
-}
+</form>

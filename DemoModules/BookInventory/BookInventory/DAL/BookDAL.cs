@@ -35,15 +35,15 @@ namespace BookInventory.DAL
 
         public void AddBook(AddBookDto dto)
         {
-            var sql = "INSERT INTO Book(Id, BookName, ISBN, DateIssued, Description) VALUES(@id, @bookName, @isbn, @dateIssued, @description)";
+            var sql = "INSERT INTO Book(BookId, BookName, ISBN, DateIssued, Description) VALUES(@id, @bookName, @isbn, @dateIssued, @description)";
 
             _dbHelper.ExecuteNonQuery(sql, new List<MySqlParameter>
             {
                 new MySqlParameter { ParameterName = "@id", MySqlDbType = MySqlDbType.Guid, Value = Guid.NewGuid() },
-                new MySqlParameter { ParameterName = "@bookName", MySqlDbType = MySqlDbType.Guid, Value = Guid.NewGuid() },
-                new MySqlParameter { ParameterName = "@isbn", MySqlDbType = MySqlDbType.Guid, Value = Guid.NewGuid() },
-                new MySqlParameter { ParameterName = "@dateIssued", MySqlDbType = MySqlDbType.Guid, Value = Guid.NewGuid() },
-                new MySqlParameter { ParameterName = "@description", MySqlDbType = MySqlDbType.Guid, Value = Guid.NewGuid() }
+                new MySqlParameter { ParameterName = "@bookName", MySqlDbType = MySqlDbType.Guid, Value = dto.BookName },
+                new MySqlParameter { ParameterName = "@isbn", MySqlDbType = MySqlDbType.Guid, Value = dto.ISBN },
+                new MySqlParameter { ParameterName = "@dateIssued", MySqlDbType = MySqlDbType.Guid, Value = dto.DateIssued },
+                new MySqlParameter { ParameterName = "@description", MySqlDbType = MySqlDbType.Guid, Value = dto.Description }
             }.ToArray());
         }
 

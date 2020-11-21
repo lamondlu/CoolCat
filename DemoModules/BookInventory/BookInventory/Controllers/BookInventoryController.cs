@@ -40,7 +40,7 @@ namespace BookInventory.Controllers
         [HttpPost]
         public IActionResult Add(AddBookDto dto)
         {
-            if (dto == null || ModelState.IsValid)
+            if (dto == null || !ModelState.IsValid)
             {
                 return View();
             }
