@@ -1,5 +1,6 @@
 ﻿using BookInventory.Dtos;
 using BookInventory.ViewModels;
+using MySql.Data.MySqlClient;
 using Mystique.Core.Helpers;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,16 @@ namespace BookInventory.DAL
 
         public void AddBook(AddBookDto dto)
         {
+            var sql = "INSERT INTO Book(Id, BookName, ISBN, DateIssued, Description) VALUES(@id, @bookName, @isbn, @dateIssued, @description)";
 
+            _dbHelper.ExecuteNonQuery(sql, new List<MySqlParameter>
+            {
+                new MySqlParameter { ParameterName = "@id", MySqlDbType = MySqlDbType.Guid, Value = Guid.NewGuid() },
+                new MySqlParameter { ParameterName = "@bookName", MySqlDbType = MySqlDbType.Guid, Value = Guid.NewGuid() },
+                new MySqlParameter { ParameterName = "@isbn", MySqlDbType = MySqlDbType.Guid, Value = Guid.NewGuid() },
+                new MySqlParameter { ParameterName = "@dateIssued", MySqlDbType = MySqlDbType.Guid, Value = Guid.NewGuid() },
+                new MySqlParameter { ParameterName = "@description", MySqlDbType = MySqlDbType.Guid, Value = Guid.NewGuid() }
+            }.ToArray());
         }
 
         public void UpdateBook(Guid bookId, UpdateBookDto dto)

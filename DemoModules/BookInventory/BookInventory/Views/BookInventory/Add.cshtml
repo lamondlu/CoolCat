@@ -1,5 +1,36 @@
 ﻿@model BookInventory.Dtos.AddBookDto
 @{
+    ViewData["Title"] = "Add Book";
 }
 
-<h2>Add Book</h2>
+<h1>Add</h1>
+
+@using (Html.BeginForm("Add", "BookInventory", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form" }))
+{
+    <div class="form-group">
+
+        @Html.LabelFor(p => p.BookName)
+        @Html.TextBoxFor(p => p.BookName, new { @class = "form-control" })
+
+    </div>
+    <div class="form-group">
+
+        @Html.LabelFor(p => p.ISBN)
+        @Html.TextBoxFor(p => p.ISBN, new { @class = "form-control" })
+
+    </div>
+    <div class="form-group">
+
+        @Html.LabelFor(p => p.DateIssued)
+        @Html.TextBoxFor(p => p.DateIssued, new { @class = "form-control" })
+
+    </div>
+    <div class="form-group">
+
+        @Html.LabelFor(p => p.Description)
+        @Html.TextBoxFor(p => p.BookName, new { @class = "form-control" })
+
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+}

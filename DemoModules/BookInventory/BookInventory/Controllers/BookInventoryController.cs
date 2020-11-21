@@ -1,5 +1,6 @@
 ﻿using BookInventory.DAL;
 using BookInventory.Dtos;
+using BookInventory.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Mystique.Core.Attributes;
@@ -39,10 +40,12 @@ namespace BookInventory.Controllers
         [HttpPost]
         public IActionResult Add(AddBookDto dto)
         {
-            if (ModelState.IsValid)
+            if (dto == null || ModelState.IsValid)
             {
                 return View();
             }
+
+            _bookDAL.AddBook(dto);
 
             return RedirectToAction("Books");
         }
@@ -56,7 +59,7 @@ namespace BookInventory.Controllers
         [HttpGet]
         public IActionResult Details(Guid bookId)
         {
-            return View();
+            return View(new BookDetailViewModel());
         }
 
         [HttpPut]
