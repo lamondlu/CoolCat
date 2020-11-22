@@ -47,7 +47,8 @@ namespace BookInventory.Controllers
 
             _bookDAL.AddBook(dto);
 
-            return RedirectToAction("Books");
+            return RedirectToAction("Books", "BookInventory", new { Area = ModuleDefiniation.MODULE_NAME });
+            
         }
 
         [HttpDelete]

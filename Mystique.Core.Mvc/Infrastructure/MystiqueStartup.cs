@@ -46,7 +46,9 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
 
-            IMvcBuilder mvcBuilder = services.AddMvc();
+            IMvcBuilder mvcBuilder = services.AddMvc(o=> {
+                
+            });
 
             ServiceProvider provider = services.BuildServiceProvider();
             using (IServiceScope scope = provider.CreateScope())

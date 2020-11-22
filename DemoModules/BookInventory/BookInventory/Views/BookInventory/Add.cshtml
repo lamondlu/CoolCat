@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Add Book";
 
-    var action = "/Modules/BookInventory" + Url.Action("Add", "BookInventory");
+    var action = Url.Action("Add", "BookInventory", new { Area = BookInventory.ModuleDefiniation.MODULE_NAME});
 }
 
 <h1>Add</h1>

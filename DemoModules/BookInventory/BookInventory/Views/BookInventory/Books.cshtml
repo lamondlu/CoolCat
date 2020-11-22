@@ -1,6 +1,6 @@
 ﻿@model System.Collections.Generic.List<BookInventory.ViewModels.BookListViewModel>
 @{
-    var action = "/Modules/BookInventory" + Url.Action("Add", "BookInventory");
+    var action = Url.Action("Add", "BookInventory", new { Area = BookInventory.ModuleDefiniation.MODULE_NAME });
 }
 
 <h1>Books</h1>
