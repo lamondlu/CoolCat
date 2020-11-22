@@ -40,10 +40,10 @@ namespace BookInventory.DAL
             _dbHelper.ExecuteNonQuery(sql, new List<MySqlParameter>
             {
                 new MySqlParameter { ParameterName = "@id", MySqlDbType = MySqlDbType.Guid, Value = Guid.NewGuid() },
-                new MySqlParameter { ParameterName = "@bookName", MySqlDbType = MySqlDbType.Guid, Value = dto.BookName },
-                new MySqlParameter { ParameterName = "@isbn", MySqlDbType = MySqlDbType.Guid, Value = dto.ISBN },
-                new MySqlParameter { ParameterName = "@dateIssued", MySqlDbType = MySqlDbType.Guid, Value = dto.DateIssued },
-                new MySqlParameter { ParameterName = "@description", MySqlDbType = MySqlDbType.Guid, Value = dto.Description }
+                new MySqlParameter { ParameterName = "@bookName", MySqlDbType = MySqlDbType.VarChar, Value = dto.BookName },
+                new MySqlParameter { ParameterName = "@isbn", MySqlDbType = MySqlDbType.VarChar, Value = dto.ISBN },
+                new MySqlParameter { ParameterName = "@dateIssued", MySqlDbType = MySqlDbType.Date, Value = dto.DateIssued },
+                new MySqlParameter { ParameterName = "@description", MySqlDbType = MySqlDbType.Text, Value = dto.Description }
             }.ToArray());
         }
 
