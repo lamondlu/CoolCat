@@ -24,15 +24,9 @@ namespace BookInventory.DataStores
             }
         }
 
-        public Func<string, string> Query
+        public string Query(string parameter)
         {
-            get
-            {
-                return (p) =>
-                {
-                    return string.Empty;
-                };
-            }
+            return null;
         }
     }
 }

@@ -8,8 +8,8 @@ namespace Mystique.Core.Contracts
 {
     public interface IDataStoreQuery
     {
-        string QueryName { get;}
+        string QueryName { get; }
 
-        Func<string, string> Query { get; }
+        string Query(string parameter);
     }
 }
