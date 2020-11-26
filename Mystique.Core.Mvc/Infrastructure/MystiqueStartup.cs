@@ -19,11 +19,6 @@ using System.Runtime.Loader;
 
 namespace Mystique.Core.Mvc.Infrastructure
 {
-
-
-
-
-
     public static class MystiqueStartup
     {
         private static readonly IList<string> _presets = new List<string>();
@@ -45,10 +40,9 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
             services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
+            services.AddSingleton<IDataStore, DefaultDataStore>();
 
-            IMvcBuilder mvcBuilder = services.AddMvc(o=> {
-                
-            });
+            IMvcBuilder mvcBuilder = services.AddMvc();
 
             ServiceProvider provider = services.BuildServiceProvider();
             using (IServiceScope scope = provider.CreateScope())
@@ -69,7 +63,6 @@ namespace Mystique.Core.Mvc.Infrastructure
                         string viewFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.Views.dll");
                         string referenceFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName);
 
-                        _presets.Add(filePath);
                         using (FileStream fs = new FileStream(filePath, FileMode.Open))
                         {
                             Assembly assembly = context.LoadFromStream(fs);
@@ -82,6 +75,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                             PluginsLoadContexts.Add(plugin.Name, context);
 
                             BuildNotificationProvider(assembly, scope);
+                            RegisterModuleQueries(moduleName, assembly, scope);
                         }
 
                         using (FileStream fsView = new FileStream(viewFilePath, FileMode.Open))
@@ -147,6 +141,31 @@ namespace Mystique.Core.Mvc.Infrastructure
                         {
                             register.Subscribe(item.Key, i);
                         }
+                    }
+                }
+            }
+        }
+
+        private static void RegisterModuleQueries(string moduleName, Assembly assembly, IServiceScope scope)
+        {
+            IEnumerable<Type> queries = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x.Name == "IDataStoreQuery"));
+
+            if (queries.Any())
+            {
+                IDataStore dataStore = scope.ServiceProvider.GetService<IDataStore>();
+
+                foreach (Type p in queries)
+                {
+
+                    try
+                    {
+                        //will update this part laterSS
+                        IDataStoreQuery obj = (IDataStoreQuery)assembly.CreateInstance(p.FullName);
+                        dataStore.RegisterQuery(moduleName, obj.QueryName, obj.Query);
+                    }
+                    catch
+                    {
+
                     }
                 }
             }
