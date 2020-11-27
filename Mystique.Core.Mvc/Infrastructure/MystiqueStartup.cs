@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Mystique.Core.BusinessLogic;
 using Mystique.Core.Contracts;
 using Mystique.Core.Helpers;
+using Mystique.Core.Models;
 using Mystique.Core.Repositories;
 using Mystique.Mvc.Infrastructure;
 using System;
@@ -40,7 +42,9 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
             services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
-            services.AddSingleton<IDataStore, DefaultDataStore>();
+
+
+
 
             IMvcBuilder mvcBuilder = services.AddMvc();
 
@@ -48,6 +52,8 @@ namespace Mystique.Core.Mvc.Infrastructure
             using (IServiceScope scope = provider.CreateScope())
             {
                 IUnitOfWork unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+                var dataStore = new DefaultDataStore(scope.ServiceProvider.GetService<IOptions<ConnectionStringSetting>>());
+                services.AddSingleton<IDataStore>(dataStore);
 
                 if (unitOfWork.CheckDatabase())
                 {
@@ -66,6 +72,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                         using (FileStream fs = new FileStream(filePath, FileMode.Open))
                         {
                             Assembly assembly = context.LoadFromStream(fs);
+
                             context.SetEntryPoint(assembly);
 
                             loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
@@ -75,7 +82,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                             PluginsLoadContexts.Add(plugin.Name, context);
 
                             BuildNotificationProvider(assembly, scope);
-                            RegisterModuleQueries(moduleName, assembly, scope);
+                            RegisterModuleQueries(dataStore, moduleName, assembly, scope);
                         }
 
                         using (FileStream fsView = new FileStream(viewFilePath, FileMode.Open))
@@ -90,6 +97,8 @@ namespace Mystique.Core.Mvc.Infrastructure
                         context.Enable();
                     }
                 }
+
+               
             }
 
             AssemblyLoadContextResoving();
@@ -146,27 +155,20 @@ namespace Mystique.Core.Mvc.Infrastructure
             }
         }
 
-        private static void RegisterModuleQueries(string moduleName, Assembly assembly, IServiceScope scope)
+        private static void RegisterModuleQueries(IDataStore dataStore, string moduleName, Assembly assembly, IServiceScope scope)
         {
             IEnumerable<Type> queries = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x.Name == "IDataStoreQuery"));
-
             if (queries.Any())
             {
-                IDataStore dataStore = scope.ServiceProvider.GetService<IDataStore>();
+                var connString = scope.ServiceProvider.GetService<IOptions<ConnectionStringSetting>>();
 
                 foreach (Type p in queries)
                 {
+                    //will update this part laterSS
+                    var constructor = p.GetConstructors().FirstOrDefault(p => p.GetParameters().Length == 1);
 
-                    try
-                    {
-                        //will update this part laterSS
-                        IDataStoreQuery obj = (IDataStoreQuery)assembly.CreateInstance(p.FullName);
-                        dataStore.RegisterQuery(moduleName, obj.QueryName, obj.Query);
-                    }
-                    catch
-                    {
-
-                    }
+                    IDataStoreQuery obj = (IDataStoreQuery)constructor.Invoke(new object[] { connString.Value.ConnectionString });
+                    dataStore.RegisterQuery(moduleName, obj.QueryName, obj.Query);
                 }
             }
         }

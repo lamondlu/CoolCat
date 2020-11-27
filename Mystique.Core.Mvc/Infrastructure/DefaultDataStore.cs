@@ -1,4 +1,6 @@
-﻿using Mystique.Core.Contracts;
+﻿using Microsoft.Extensions.Options;
+using Mystique.Core.Contracts;
+using Mystique.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,15 @@ namespace Mystique.Core.Mvc.Infrastructure
 {
     public class DefaultDataStore : IDataStore
     {
+        private string _connectionString = string.Empty;
+
+        public Guid Id { get; set; } = Guid.NewGuid();
+
+        public DefaultDataStore(IOptions<ConnectionStringSetting> connectionStringAccessor)
+        {
+            _connectionString = connectionStringAccessor.Value.ConnectionString;
+        }
+
         private List<QueryItem> _queryItems = new List<QueryItem>();
 
         public string Query(string moduleName, string queryName, string parameter)
@@ -17,7 +28,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
             if (query != null)
             {
-                return query.Run(parameter);
+                return query.Query(parameter);
             }
             else
             {

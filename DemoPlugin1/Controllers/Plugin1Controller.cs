@@ -13,10 +13,12 @@ namespace DemoPlugin1.Controllers
     public class Plugin1Controller : Controller
     {
         private readonly INotificationRegister _notificationRegister;
+        private readonly IDataStore _dataStore;
 
-        public Plugin1Controller(INotificationRegister notificationRegister)
+        public Plugin1Controller(INotificationRegister notificationRegister, IDataStore dataStore)
         {
             _notificationRegister = notificationRegister;
+            _dataStore = dataStore;
         }
 
         [Page("Plugin One")]
@@ -32,6 +34,8 @@ namespace DemoPlugin1.Controllers
             };
 
             _notificationRegister.Publish("LoadHelloWorldEvent", JsonConvert.SerializeObject(new LoadHelloWorldEvent() { Str = "Hello World" }));
+
+            ViewBag.Books = _dataStore.Query("BookInventory", "Available_Books", string.Empty);
 
             return View(testClass);
         }
