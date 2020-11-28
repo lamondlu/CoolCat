@@ -98,7 +98,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                     }
                 }
 
-               
+
             }
 
             AssemblyLoadContextResoving();
@@ -133,7 +133,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
         private static void BuildNotificationProvider(Assembly assembly, IServiceScope scope)
         {
-            IEnumerable<Type> providers = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x.Name == "INotificationProvider"));
+            IEnumerable<Type> providers = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x == typeof(INotificationProvider)));
 
             if (providers.Any())
             {
@@ -157,14 +157,13 @@ namespace Mystique.Core.Mvc.Infrastructure
 
         private static void RegisterModuleQueries(IDataStore dataStore, string moduleName, Assembly assembly, IServiceScope scope)
         {
-            IEnumerable<Type> queries = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x.Name == "IDataStoreQuery"));
+            IEnumerable<Type> queries = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x == typeof(IDataStoreQuery)));
             if (queries.Any())
             {
                 var connString = scope.ServiceProvider.GetService<IOptions<ConnectionStringSetting>>();
 
                 foreach (Type p in queries)
                 {
-                    //will update this part laterSS
                     var constructor = p.GetConstructors().FirstOrDefault(p => p.GetParameters().Length == 1);
 
                     IDataStoreQuery obj = (IDataStoreQuery)constructor.Invoke(new object[] { connString.Value.ConnectionString });
