@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Mystique.Core.Contracts;
 using Mystique.Core.Models;
 using System;
@@ -12,8 +13,6 @@ namespace Mystique.Core.Mvc.Infrastructure
     public class DefaultDataStore : IDataStore
     {
         private string _connectionString = string.Empty;
-
-        public Guid Id { get; set; } = Guid.NewGuid();
 
         public DefaultDataStore(IOptions<ConnectionStringSetting> connectionStringAccessor)
         {
