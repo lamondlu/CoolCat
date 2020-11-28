@@ -166,8 +166,16 @@ namespace Mystique.Core.Mvc.Infrastructure
                 {
                     var constructor = p.GetConstructors().FirstOrDefault(p => p.GetParameters().Length == 1);
 
-                    IDataStoreQuery obj = (IDataStoreQuery)constructor.Invoke(new object[] { connString.Value.ConnectionString });
-                    dataStore.RegisterQuery(moduleName, obj.QueryName, obj.Query);
+                    if (constructor != null)
+                    {
+                        IDataStoreQuery obj = (IDataStoreQuery)constructor.Invoke(new object[] { connString.Value.ConnectionString });
+                        dataStore.RegisterQuery(moduleName, obj.QueryName, obj.Query);
+                    }
+                    else
+                    {
+                        IDataStoreQuery obj = (IDataStoreQuery)assembly.CreateInstance(p.FullName);
+                        dataStore.RegisterQuery(moduleName, obj.QueryName, obj.Query);
+                    }
                 }
             }
         }
