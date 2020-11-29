@@ -43,9 +43,6 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
 
-
-
-
             IMvcBuilder mvcBuilder = services.AddMvc();
 
             ServiceProvider provider = services.BuildServiceProvider();
@@ -54,6 +51,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                 IUnitOfWork unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
                 var dataStore = new DefaultDataStore(scope.ServiceProvider.GetService<IOptions<ConnectionStringSetting>>());
                 services.AddSingleton<IDataStore>(dataStore);
+                var contextProvider = new CollectibleAssemblyLoadContextProvider();
 
                 if (unitOfWork.CheckDatabase())
                 {
@@ -62,43 +60,10 @@ namespace Mystique.Core.Mvc.Infrastructure
 
                     foreach (ViewModels.PluginListItemViewModel plugin in allEnabledPlugins)
                     {
-                        CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(plugin.Name);
-                        string moduleName = plugin.Name;
-
-                        string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.dll");
-                        string viewFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.Views.dll");
-                        string referenceFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName);
-
-                        using (FileStream fs = new FileStream(filePath, FileMode.Open))
-                        {
-                            Assembly assembly = context.LoadFromStream(fs);
-
-                            context.SetEntryPoint(assembly);
-
-                            loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
-
-                            AssemblyPart controllerAssemblyPart = new AssemblyPart(assembly);
-                            mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
-                            PluginsLoadContexts.Add(plugin.Name, context);
-
-                            BuildNotificationProvider(assembly, scope);
-                            RegisterModuleQueries(dataStore, moduleName, assembly, scope);
-                        }
-
-                        using (FileStream fsView = new FileStream(viewFilePath, FileMode.Open))
-                        {
-                            Assembly viewAssembly = context.LoadFromStream(fsView);
-                            loader.LoadStreamsIntoContext(context, referenceFolderPath, viewAssembly);
-
-                            MystiqueRazorAssemblyPart moduleView = new MystiqueRazorAssemblyPart(viewAssembly, moduleName);
-                            mvcBuilder.PartManager.ApplicationParts.Add(moduleView);
-                        }
-
-                        context.Enable();
+                        var context = contextProvider.Get(plugin.Name, mvcBuilder, scope, dataStore);
+                        PluginsLoadContexts.Add(plugin.Name, context);
                     }
                 }
-
-
             }
 
             AssemblyLoadContextResoving();
@@ -131,53 +96,7 @@ namespace Mystique.Core.Mvc.Infrastructure
             };
         }
 
-        private static void BuildNotificationProvider(Assembly assembly, IServiceScope scope)
-        {
-            IEnumerable<Type> providers = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x == typeof(INotificationProvider)));
 
-            if (providers.Any())
-            {
-                INotificationRegister register = scope.ServiceProvider.GetService<INotificationRegister>();
-
-                foreach (Type p in providers)
-                {
-                    INotificationProvider obj = (INotificationProvider)assembly.CreateInstance(p.FullName);
-                    Dictionary<string, List<INotificationHandler>> result = obj.GetNotifications();
-
-                    foreach (KeyValuePair<string, List<INotificationHandler>> item in result)
-                    {
-                        foreach (INotificationHandler i in item.Value)
-                        {
-                            register.Subscribe(item.Key, i);
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void RegisterModuleQueries(IDataStore dataStore, string moduleName, Assembly assembly, IServiceScope scope)
-        {
-            IEnumerable<Type> queries = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x == typeof(IDataStoreQuery)));
-            if (queries.Any())
-            {
-                var connString = scope.ServiceProvider.GetService<IOptions<ConnectionStringSetting>>();
-
-                foreach (Type p in queries)
-                {
-                    var constructor = p.GetConstructors().FirstOrDefault(p => p.GetParameters().Length == 1);
-
-                    if (constructor != null)
-                    {
-                        IDataStoreQuery obj = (IDataStoreQuery)constructor.Invoke(new object[] { connString.Value.ConnectionString });
-                        dataStore.RegisterQuery(moduleName, obj.QueryName, obj.Query);
-                    }
-                    else
-                    {
-                        IDataStoreQuery obj = (IDataStoreQuery)assembly.CreateInstance(p.FullName);
-                        dataStore.RegisterQuery(moduleName, obj.QueryName, obj.Query);
-                    }
-                }
-            }
-        }
     }
+
 }
