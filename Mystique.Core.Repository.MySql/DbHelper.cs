@@ -1,17 +1,21 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Microsoft.Extensions.Options;
+using MySql.Data.MySqlClient;
+using Mystique.Core.Contracts;
+using Mystique.Core.Models;
+using Mystique.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace Mystique.Core.Repository.MySql
 {
-    public class DbHelper
+    public class DbHelper : IDbHelper
     {
         private readonly string connectionString = string.Empty;
 
-        public DbHelper(string connectionString)
+        public DbHelper(IOptions<ConnectionStringSetting> setting)
         {
-            this.connectionString = connectionString;
+            this.connectionString = setting.Value.ConnectionString;
         }
 
         public void ExecuteNonQuery(List<Command> commands)
@@ -195,31 +199,6 @@ namespace Mystique.Core.Repository.MySql
                 cmd.Parameters.AddRange(values);
                 return cmd.ExecuteScalar();
             }
-        }
-
-        public MySqlDataReader ExecuteReader(string safeSql, MySqlConnection Connection)    
-        {
-            if (Connection.State != ConnectionState.Open)
-            {
-                Connection.Open();
-            }
-
-            MySqlCommand cmd = new MySqlCommand(safeSql, Connection);
-            MySqlDataReader reader = cmd.ExecuteReader();
-            return reader;
-        }
-
-        public MySqlDataReader ExecuteReader(string sql, MySqlParameter[] values, MySqlConnection Connection)
-        {
-            if (Connection.State != ConnectionState.Open)
-            {
-                Connection.Open();
-            }
-
-            MySqlCommand cmd = new MySqlCommand(sql, Connection);
-            cmd.Parameters.AddRange(values);
-            MySqlDataReader reader = cmd.ExecuteReader();
-            return reader;
         }
 
         public DataTable ExecuteDataTable(CommandType type, string safeSql, params MySqlParameter[] values)

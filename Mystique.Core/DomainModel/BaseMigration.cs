@@ -9,9 +9,9 @@ namespace Mystique.Core.DomainModel
     public abstract class BaseMigration : IMigration
     {
         private readonly Version _version = null;
-        private readonly DbHelper _dbHelper = null;
+        private readonly IDbHelper _dbHelper = null;
 
-        public BaseMigration(DbHelper dbHelper, Version version)
+        public BaseMigration(IDbHelper dbHelper, Version version)
         {
             _version = version;
             _dbHelper = dbHelper;

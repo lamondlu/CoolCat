@@ -135,7 +135,7 @@ namespace Mystique.Core.Mvc.Infrastructure
             IEnumerable<Type> queries = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x == typeof(IDataStoreQuery)));
             if (queries.Any())
             {
-                var connString = scope.ServiceProvider.GetService<IOptions<ConnectionStringSetting>>();
+                var dbHelper = scope.ServiceProvider.GetService<IDbHelper>();
 
                 foreach (Type p in queries)
                 {
@@ -143,7 +143,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
                     if (constructor != null)
                     {
-                        IDataStoreQuery obj = (IDataStoreQuery)constructor.Invoke(new object[] { connString.Value.ConnectionString });
+                        IDataStoreQuery obj = (IDataStoreQuery)constructor.Invoke(new object[] { dbHelper });
                         dataStore.RegisterQuery(moduleName, obj.QueryName, obj.Query);
                     }
                     else

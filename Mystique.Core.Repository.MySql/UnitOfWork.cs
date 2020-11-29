@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using Mystique.Core.Contracts;
 using Mystique.Core.Models;
 using Mystique.Core.Repositories;
 using System.Collections.Generic;
@@ -8,17 +9,15 @@ namespace Mystique.Core.Repository.MySql
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DbHelper _dbHelper = null;
-        private readonly string _connectionString = string.Empty;
+        private readonly IDbHelper _dbHelper = null;
         private IPluginRepository _pluginRepository = null;
         private ISiteRepository _siteRepository = null;
         private readonly List<Command> _commands;
 
-        public UnitOfWork(IOptions<ConnectionStringSetting> connectionStringAccessor)
+        public UnitOfWork(IDbHelper dbHelper)
         {
             _commands = new List<Command>();
-            _connectionString = connectionStringAccessor.Value.ConnectionString;
-            _dbHelper = new DbHelper(_connectionString);
+            _dbHelper = dbHelper;
         }
 
         public IPluginRepository PluginRepository

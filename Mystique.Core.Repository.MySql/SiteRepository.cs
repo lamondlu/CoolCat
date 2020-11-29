@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using Mystique.Core.Consts;
+using Mystique.Core.Contracts;
 using Mystique.Core.DTOs;
 using Mystique.Core.Repositories;
 using Mystique.Core.ViewModels;
@@ -12,10 +13,10 @@ namespace Mystique.Core.Repository.MySql
 {
     public class SiteRepository : ISiteRepository
     {
-        private readonly DbHelper _dbHelper = null;
+        private readonly IDbHelper _dbHelper = null;
         private readonly List<Command> _commands = null;
 
-        public SiteRepository(DbHelper dbHelper, List<Command> commands)
+        public SiteRepository(IDbHelper dbHelper, List<Command> commands)
         {
             _dbHelper = dbHelper;
             _commands = commands;

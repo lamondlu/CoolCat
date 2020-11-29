@@ -1,4 +1,5 @@
-﻿using Mystique.Core.DomainModel;
+﻿using Mystique.Core.Contracts;
+using Mystique.Core.DomainModel;
 using Mystique.Core.Helpers;
 
 namespace BookInventory.Migrations
@@ -18,7 +19,7 @@ namespace BookInventory.Migrations
 
         public override string DownScripts => @"DROP TABLE Book";
 
-        public Migration_1_0_0(DbHelper dbHelper) : base(dbHelper, _version)
+        public Migration_1_0_0(IDbHelper dbHelper) : base(dbHelper, _version)
         {
 
         }

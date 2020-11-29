@@ -9,11 +9,11 @@ namespace BookInventory.DataStores
 {
     public class AvailableBookQuery : IDataStoreQuery
     {
-        private DbHelper _dbHelper = null;
+        private IDbHelper _dbHelper = null;
 
-        public AvailableBookQuery(string connectionString)
+        public AvailableBookQuery(IDbHelper dbHelper)
         {
-            _dbHelper = new DbHelper(connectionString);
+            _dbHelper = dbHelper;
         }
 
         public string QueryName

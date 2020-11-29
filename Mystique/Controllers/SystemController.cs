@@ -15,12 +15,14 @@ namespace Mystique.Controllers
     {
         private readonly ISystemManager _systemManager;
         private readonly IPluginManager _pluginManager;
+        private readonly IDbHelper _dbHelper;
 
 
-        public SystemController(ISystemManager systemManager, IPluginManager pluginManager)
+        public SystemController(ISystemManager systemManager, IPluginManager pluginManager, IDbHelper dbHelper)
         {
             _systemManager = systemManager;
             _pluginManager = pluginManager;
+            _dbHelper = dbHelper;
         }
 
         public IActionResult GetSiteCSS()
@@ -73,7 +75,7 @@ namespace Mystique.Controllers
                 {
                     using (FileStream fs = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, GlobalConst.PresetFolder, module), FileMode.Open))
                     {
-                        _pluginManager.AddPlugins(new Core.DomainModel.PluginPackage(fs));
+                        _pluginManager.AddPlugins(new Core.DomainModel.PluginPackage(fs, _dbHelper));
                     }
                 }
             }

@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Mystique.Core.Contracts;
 using Mystique.Core.DTOs;
 using Mystique.Core.Repositories;
 using Mystique.Core.ViewModels;
@@ -11,10 +12,10 @@ namespace Mystique.Core.Repository.MySql
 {
     public class PluginRepository : IPluginRepository
     {
-        private readonly DbHelper _dbHelper = null;
+        private readonly IDbHelper _dbHelper = null;
         private readonly List<Command> _commands = null;
 
-        public PluginRepository(DbHelper dbHelper, List<Command> commands)
+        public PluginRepository(IDbHelper dbHelper, List<Command> commands)
         {
             _dbHelper = dbHelper;
             _commands = commands;

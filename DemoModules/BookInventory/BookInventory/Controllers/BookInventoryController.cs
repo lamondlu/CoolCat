@@ -4,8 +4,10 @@ using BookInventory.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Mystique.Core.Attributes;
+using Mystique.Core.Contracts;
 using Mystique.Core.Helpers;
 using Mystique.Core.Models;
+using Mystique.Core.Repository.MySql;
 using System;
 
 namespace BookInventory.Controllers
@@ -14,11 +16,11 @@ namespace BookInventory.Controllers
     public class BookInventoryController : Controller
     {
         private BookDAL _bookDAL = null;
-        private DbHelper _dbHelper = null;
+        private IDbHelper _dbHelper = null;
 
-        public BookInventoryController(IOptions<ConnectionStringSetting> connectionStringAccessor)
+        public BookInventoryController(IDbHelper dbHelper)
         {
-            _dbHelper = new DbHelper(connectionStringAccessor.Value.ConnectionString);
+            _dbHelper = dbHelper;
             _bookDAL = new BookDAL(_dbHelper);
         }
 
@@ -48,7 +50,7 @@ namespace BookInventory.Controllers
             _bookDAL.AddBook(dto);
 
             return RedirectToAction("Books", "BookInventory", new { Area = ModuleDefiniation.MODULE_NAME });
-            
+
         }
 
         [HttpDelete]

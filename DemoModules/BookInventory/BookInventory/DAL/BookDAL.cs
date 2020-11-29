@@ -1,6 +1,7 @@
 ﻿using BookInventory.Dtos;
 using BookInventory.ViewModels;
 using MySql.Data.MySqlClient;
+using Mystique.Core.Contracts;
 using Mystique.Core.Helpers;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ namespace BookInventory.DAL
 {
     public class BookDAL
     {
-        private DbHelper _dbHelper = null;
+        private IDbHelper _dbHelper = null;
 
-        public BookDAL(DbHelper dbHelper)
+        public BookDAL(IDbHelper dbHelper)
         {
             _dbHelper = dbHelper;
         }

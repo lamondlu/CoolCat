@@ -11,6 +11,7 @@ using Mystique.Core.Contracts;
 using Mystique.Core.Helpers;
 using Mystique.Core.Models;
 using Mystique.Core.Repositories;
+using Mystique.Core.Repository.MySql;
 using Mystique.Mvc.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,6 @@ namespace Mystique.Core.Mvc.Infrastructure
 {
     public static class MystiqueStartup
     {
-        private static readonly IList<string> _presets = new List<string>();
         private static IServiceCollection _serviceCollection;
 
         public static IServiceCollection Services => _serviceCollection;
@@ -34,6 +34,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
+            services.AddScoped<IDbHelper, DbHelper>();
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<ISystemManager, SystemManager>();
             services.AddScoped<IUnitOfWork, Repository.MySql.UnitOfWork>();

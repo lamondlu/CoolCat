@@ -10,11 +10,13 @@ namespace Mystique.Controllers
     {
         private readonly IPluginManager _pluginManager = null;
         private readonly IReferenceContainer _referenceContainer = null;
+        private readonly IDbHelper _dbHelper = null;
 
-        public PluginsController(IPluginManager pluginManager, IReferenceContainer referenceContainer)
+        public PluginsController(IPluginManager pluginManager, IReferenceContainer referenceContainer, IDbHelper dbHelper)
         {
             _pluginManager = pluginManager;
             _referenceContainer = referenceContainer;
+            _dbHelper = _dbHelper;
         }
 
         public IActionResult Assemblies()
@@ -38,7 +40,7 @@ namespace Mystique.Controllers
         [HttpPost]
         public IActionResult Upload()
         {
-            PluginPackage package = new PluginPackage(Request.GetPluginStream());
+            PluginPackage package = new PluginPackage(Request.GetPluginStream(), _dbHelper);
             _pluginManager.AddPlugins(package);
             return RedirectToAction("Index");
         }

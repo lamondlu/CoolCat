@@ -1,4 +1,5 @@
-﻿using Mystique.Core.DomainModel;
+﻿using Mystique.Core.Contracts;
+using Mystique.Core.DomainModel;
 using Mystique.Core.Helpers;
 
 namespace DemoPlugin1.Migrations
@@ -15,7 +16,7 @@ namespace DemoPlugin1.Migrations
 
         public override string DownScripts => @"DROP TABLE `test2`";
 
-        public Migration_1_1_0(DbHelper dbHelper) : base(dbHelper, _version)
+        public Migration_1_1_0(IDbHelper dbHelper) : base(dbHelper, _version)
         {
 
         }

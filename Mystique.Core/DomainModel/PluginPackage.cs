@@ -17,12 +17,14 @@ namespace Mystique.Core.DomainModel
         private Stream _zipStream = null;
         private string _tempFolderName = string.Empty;
         private string _folderName = string.Empty;
+        private IDbHelper _dbHelper = null;
 
         public PluginConfiguration Configuration => _pluginConfiguration;
 
-        public PluginPackage(Stream stream)
+        public PluginPackage(Stream stream, IDbHelper dbHelper)
         {
             _zipStream = stream;
+            _dbHelper = dbHelper;
             Initialize(stream);
         }
 
@@ -33,16 +35,16 @@ namespace Mystique.Core.DomainModel
 
             using (FileStream fs = new FileStream(assemblyPath, FileMode.Open, FileAccess.Read))
             {
-                DbHelper dbHelper = new DbHelper(connectionString);
+
                 System.Reflection.Assembly assembly = context.LoadFromStream(fs);
                 IEnumerable<Type> migrationTypes = assembly.ExportedTypes.Where(p => p.GetInterfaces().Contains(typeof(IMigration)));
 
                 List<IMigration> migrations = new List<IMigration>();
                 foreach (Type migrationType in migrationTypes)
                 {
-                    System.Reflection.ConstructorInfo constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(DbHelper));
+                    System.Reflection.ConstructorInfo constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(IDbHelper));
 
-                    migrations.Add((IMigration)constructor.Invoke(new object[] { dbHelper }));
+                    migrations.Add((IMigration)constructor.Invoke(new object[] { _dbHelper }));
                 }
 
                 context.Unload();

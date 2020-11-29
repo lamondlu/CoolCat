@@ -1,4 +1,5 @@
-﻿using Mystique.Core.DomainModel;
+﻿using Mystique.Core.Contracts;
+using Mystique.Core.DomainModel;
 using Mystique.Core.Helpers;
 
 namespace DemoPlugin2.Migrations
@@ -7,7 +8,7 @@ namespace DemoPlugin2.Migrations
     {
         private static readonly Mystique.Core.DomainModel.Version _version = new Mystique.Core.DomainModel.Version("1.0.0");
 
-        public Migration_1_0_0(DbHelper dbHelper) : base(dbHelper, _version)
+        public Migration_1_0_0(IDbHelper dbHelper) : base(dbHelper, _version)
         {
 
         }
