@@ -53,6 +53,44 @@ namespace Mystique.Core.Mvc.Infrastructure
             return context;
         }
 
+        public CollectibleAssemblyLoadContext Get(string moduleName, ApplicationPartManager apm, IServiceScope scope, IDataStore dataStore)
+        {
+            CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(moduleName);
+            IReferenceLoader loader = scope.ServiceProvider.GetService<IReferenceLoader>();
+
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.dll");
+            string viewFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.Views.dll");
+            string referenceFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName);
+
+            using (FileStream fs = new FileStream(filePath, FileMode.Open))
+            {
+                Assembly assembly = context.LoadFromStream(fs);
+
+                context.SetEntryPoint(assembly);
+
+                loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
+
+                AssemblyPart controllerAssemblyPart = new AssemblyPart(assembly);
+                apm.ApplicationParts.Add(controllerAssemblyPart);
+
+                BuildNotificationProvider(assembly, scope);
+                RegisterModuleQueries(dataStore, moduleName, assembly, scope);
+            }
+
+            using (FileStream fsView = new FileStream(viewFilePath, FileMode.Open))
+            {
+                Assembly viewAssembly = context.LoadFromStream(fsView);
+                loader.LoadStreamsIntoContext(context, referenceFolderPath, viewAssembly);
+
+                MystiqueRazorAssemblyPart moduleView = new MystiqueRazorAssemblyPart(viewAssembly, moduleName);
+                apm.ApplicationParts.Add(moduleView);
+            }
+
+            context.Enable();
+
+            return context;
+        }
+
         private static void BuildNotificationProvider(Assembly assembly, IServiceScope scope)
         {
             IEnumerable<Type> providers = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x == typeof(INotificationProvider)));

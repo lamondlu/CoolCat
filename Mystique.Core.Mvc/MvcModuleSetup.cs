@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Mystique.Core.Contracts;
+using Mystique.Core.Models;
 using Mystique.Core.Mvc.Infrastructure;
 using Mystique.Mvc.Infrastructure;
 using System;
@@ -27,50 +30,28 @@ namespace Mystique.Core.Mvc
         {
             if (!PluginsLoadContexts.Any(moduleName))
             {
-                CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(moduleName);
+                ServiceProvider provider = MystiqueStartup.Services.BuildServiceProvider();
+                var contextProvider = new CollectibleAssemblyLoadContextProvider();
 
-                var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Modules", moduleName, $"{moduleName}.dll" );
-                var viewFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.Views.dll");
-                var referenceFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Modules", moduleName);
-                using (FileStream fs = new FileStream(filePath, FileMode.Open))
+                using (IServiceScope scope = provider.CreateScope())
                 {
-                    var assembly = context.LoadFromStream(fs);
-                    _referenceLoader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
+                    var dataStore = new DefaultDataStore(scope.ServiceProvider.GetService<IOptions<ConnectionStringSetting>>());
 
-                    context.SetEntryPoint(assembly);
-
-                    var controllerAssemblyPart = new AssemblyPart(assembly);
-
-                    AdditionalReferencePathHolder.AdditionalReferencePaths.Add(filePath);
-                    _partManager.ApplicationParts.Add(controllerAssemblyPart);
+                    var context = contextProvider.Get(moduleName, _partManager, scope, dataStore);
                     PluginsLoadContexts.Add(moduleName, context);
-                    context.Enable();
                 }
 
-                using (FileStream fsView = new FileStream(viewFilePath, FileMode.Open))
-                {
-                    var viewAssembly = context.LoadFromStream(fsView);
-                    _referenceLoader.LoadStreamsIntoContext(context, referenceFolderPath, viewAssembly);
-
-                    var moduleView = new MystiqueRazorAssemblyPart(viewAssembly, moduleName);
-                    _partManager.ApplicationParts.Add(moduleView);
-                }
+                ResetControllActions();
             }
-            else
-            {
-                var context = PluginsLoadContexts.Get(moduleName);
-                var controllerAssemblyPart = new MystiqueAssemblyPart(context.Assemblies.First());
-                _partManager.ApplicationParts.Add(controllerAssemblyPart);
-                context.Enable();
-            }
-
-            ResetControllActions();
         }
 
         public void DisableModule(string moduleName)
         {
-            var last = _partManager.ApplicationParts.First(p => p.Name == moduleName);
-            _partManager.ApplicationParts.Remove(last);
+            var controller = _partManager.ApplicationParts.First(p => p.Name == moduleName);
+            _partManager.ApplicationParts.Remove(controller);
+
+            var ui = _partManager.ApplicationParts.First(p => p.Name == $"{moduleName}.Views");
+            _partManager.ApplicationParts.Remove(ui);
 
             var context = PluginsLoadContexts.Get(moduleName);
             context.Disable();
@@ -82,7 +63,7 @@ namespace Mystique.Core.Mvc
         {
             PluginsLoadContexts.Remove(moduleName);
 
-            var directory = new DirectoryInfo($"{AppDomain.CurrentDomain.BaseDirectory}Modules\\{moduleName}");
+            var directory = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName));
             directory.Delete(true);
         }
 
