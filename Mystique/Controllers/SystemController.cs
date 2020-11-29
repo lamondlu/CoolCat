@@ -36,7 +36,20 @@ namespace Mystique.Controllers
 
         public IActionResult GetModuleCSS(string moduleName, string fileName)
         {
-            return PhysicalFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, "Content", fileName), "text/css");
+            return PhysicalFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                "Modules",
+                moduleName,
+                "Content",
+                fileName), "text/css");
+        }
+
+        public IActionResult GetModuleScript(string moduleName, string fileName)
+        {
+            return PhysicalFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                "Modules",
+                moduleName,
+                "Content",
+                fileName), "text/javascript");
         }
 
         public IActionResult Setup()
@@ -54,7 +67,7 @@ namespace Mystique.Controllers
         }
 
         [HttpPost]
-        public IActionResult Install([FromBody]SetupModulesModel model)
+        public IActionResult Install([FromBody] SetupModulesModel model)
         {
             if (model != null && model.Modules != null)
             {
