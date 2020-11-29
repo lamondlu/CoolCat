@@ -1,16 +1,49 @@
 ﻿@using DemoPlugin1.Models;
 @model TestClass
 @{
-
+    var books = (List<BookViewModel>)ViewBag.Books;
 }
 
 @section Header{
-
-    <link rel="stylesheet" href="@Url.Action("GetModuleCSS", "System", new { moduleName = DemoPlugin1.DemoPlugin1Definiation.MODULE_NAME, fileName="module.css" })" />
+    <link rel="stylesheet" href="@Url.Action("GetModuleCSS", "System", new { moduleName = DemoPlugin1.ModuleDefiniation.MODULE_NAME, fileName="module.css" })" />
 }
 
 <h1>@ViewBag.Content</h1>
 <h2>@Model.Message</h2>
 <p class="helloWorld">Test style container</p>
+
 <h1>Book Data</h1>
-<p>@ViewBag.Books</p>
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>BookId</th>
+                <th>Book Name</th>
+                <th>ISBN</th>
+                <th>Date Issued</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (books != null && books.Count > 0)
+            {
+                foreach (var item in books)
+                {
+                    <tr>
+                        <td>@item.BookId</td>
+                        <td>@item.BookName</td>
+                        <td>@item.ISBN</td>
+                        <td>@item.DateIssued.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4">No Records.</td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>

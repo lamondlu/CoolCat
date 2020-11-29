@@ -6,10 +6,11 @@ using Mystique.Core.Attributes;
 using Mystique.Core.Contracts;
 using Mystique.Core.Mvc.Infrastructure;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace DemoPlugin1.Controllers
 {
-    [Area(DemoPlugin1Definiation.MODULE_NAME)]
+    [Area(ModuleDefiniation.MODULE_NAME)]
     public class Plugin1Controller : Controller
     {
         private readonly INotificationRegister _notificationRegister;
@@ -35,7 +36,7 @@ namespace DemoPlugin1.Controllers
 
             _notificationRegister.Publish("LoadHelloWorldEvent", JsonConvert.SerializeObject(new LoadHelloWorldEvent() { Str = "Hello World" }));
 
-            ViewBag.Books = _dataStore.Query("BookInventory", "Available_Books", string.Empty);
+            ViewBag.Books = JsonConvert.DeserializeObject<List<BookViewModel>>(_dataStore.Query("BookInventory", "Available_Books", string.Empty));
 
             return View(testClass);
         }
