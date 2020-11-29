@@ -46,7 +46,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                         var source = assembly.GetManifestResourceStream(item);
                         source.CopyTo(stream);
 
-                        context.AddResource(item, stream);
+                        context.AddResource(item, stream.ToArray());
                     }
                 }
 

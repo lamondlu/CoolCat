@@ -10,12 +10,12 @@ namespace Mystique.Core
         private Assembly _entryPoint = null;
         private bool _isEnabled = false;
         private readonly string _pluginName = string.Empty;
-        private Dictionary<string, Stream> _resourceItems = null;
+        private Dictionary<string, byte[]> _resourceItems = null;
 
         public CollectibleAssemblyLoadContext(string pluginName) : base(isCollectible: true)
         {
             _pluginName = pluginName;
-            _resourceItems = new Dictionary<string, Stream>();
+            _resourceItems = new Dictionary<string, byte[]>();
         }
 
         public string PluginName => _pluginName;
@@ -27,15 +27,15 @@ namespace Mystique.Core
             _isEnabled = true;
         }
 
-        public void AddResource(string path, Stream stream)
+        public void AddResource(string path, byte[] fileContent)
         {
             if (_resourceItems.ContainsKey(path))
             {
-                _resourceItems[path] = stream;
+                _resourceItems[path] = fileContent;
             }
             else
             {
-                _resourceItems.Add(path, stream);
+                _resourceItems.Add(path, fileContent);
             }
         }
 
@@ -47,16 +47,15 @@ namespace Mystique.Core
             }
         }
 
-        public Stream LoadResource(string virtualPath)
+        public byte[] LoadResource(string virtualPath)
         {
             var className = $"{PluginName}.{virtualPath.Replace("~/", string.Empty).Replace("/", ".")}";
 
             if (_resourceItems.ContainsKey(className))
             {
-                var stream = _resourceItems[className];
+                var fileContent = _resourceItems[className];
 
-                stream.Position = 0;
-                return stream;
+                return fileContent;
             }
             else
             {

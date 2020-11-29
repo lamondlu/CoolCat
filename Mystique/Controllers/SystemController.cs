@@ -40,16 +40,16 @@ namespace Mystique.Controllers
         [HttpGet("~/System/GetModuleCSS")]
         public IActionResult GetModuleCSS(string moduleName, string fileName)
         {
-            var stream = PluginsLoadContexts.Get(moduleName).LoadResource(fileName);
+            var fileContent = PluginsLoadContexts.Get(moduleName).LoadResource(fileName);
 
-            return new FileStreamResult(stream, "text/css");
+            return new FileContentResult(fileContent, "text/css");
         }
 
         [HttpGet("~/System/GetModuleScript")]
         public IActionResult GetModuleScript(string moduleName, string fileName)
         {
-            var stream = PluginsLoadContexts.Get(moduleName).LoadResource(fileName);
-            return new FileStreamResult(stream, "text/javascript");
+            var fileContent = PluginsLoadContexts.Get(moduleName).LoadResource(fileName);
+            return new FileContentResult(fileContent, "text/javascript");
         }
 
         public IActionResult Setup()
