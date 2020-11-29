@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Mystique.Core;
 using Mystique.Core.Consts;
 using Mystique.Core.Contracts;
 using Mystique.Core.DTOs;
@@ -34,22 +35,19 @@ namespace Mystique.Controllers
             return null;
         }
 
+        [HttpGet("~/System/GetModuleCSS")]
         public IActionResult GetModuleCSS(string moduleName, string fileName)
         {
-            return PhysicalFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                "Modules",
-                moduleName,
-                "Content",
-                fileName), "text/css");
+            var stream = PluginsLoadContexts.Get(moduleName).LoadResource(fileName);
+
+            return new FileStreamResult(stream, "text/css");
         }
 
+        [HttpGet("~/System/GetModuleScript")]
         public IActionResult GetModuleScript(string moduleName, string fileName)
         {
-            return PhysicalFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                "Modules",
-                moduleName,
-                "Content",
-                fileName), "text/javascript");
+            var stream = PluginsLoadContexts.Get(moduleName).LoadResource(fileName);
+            return new FileStreamResult(stream, "text/javascript");
         }
 
         public IActionResult Setup()

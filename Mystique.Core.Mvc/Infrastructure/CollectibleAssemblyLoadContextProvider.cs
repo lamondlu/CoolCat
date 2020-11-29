@@ -35,6 +35,21 @@ namespace Mystique.Core.Mvc.Infrastructure
                 AssemblyPart controllerAssemblyPart = new AssemblyPart(assembly);
                 mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
 
+
+                var resources = assembly.GetManifestResourceNames();
+
+                if (resources.Any())
+                {
+                    foreach (var item in resources)
+                    {
+                        var stream = new MemoryStream();
+                        var source = assembly.GetManifestResourceStream(item);
+                        source.CopyTo(stream);
+
+                        context.AddResource(item, stream);
+                    }
+                }
+
                 BuildNotificationProvider(assembly, scope);
                 RegisterModuleQueries(dataStore, moduleName, assembly, scope);
             }
