@@ -2,12 +2,8 @@
 using BookInventory.Dtos;
 using BookInventory.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Mystique.Core.Attributes;
 using Mystique.Core.Contracts;
-using Mystique.Core.Helpers;
-using Mystique.Core.Models;
-using Mystique.Core.Repository.MySql;
 using System;
 
 namespace BookInventory.Controllers

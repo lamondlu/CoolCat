@@ -1,6 +1,4 @@
-﻿using Mystique.Core.Models;
-
-namespace DemoPlugin1
+﻿namespace DemoPlugin1
 {
     public class ModuleDefiniation : Mystique.Core.Models.ModuleDefiniation
     {

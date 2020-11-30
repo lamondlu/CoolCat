@@ -1,5 +1,4 @@
 ﻿using Mystique.Core.Contracts;
-using Mystique.Core.Repository.MySql;
 using Newtonsoft.Json;
 using System;
 using System.Data;

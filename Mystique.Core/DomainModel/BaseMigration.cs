@@ -1,6 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
 using Mystique.Core.Contracts;
-using Mystique.Core.Helpers;
 using System;
 using System.Collections.Generic;
 

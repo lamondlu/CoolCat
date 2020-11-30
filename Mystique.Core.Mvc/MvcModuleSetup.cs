@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Mystique.Core.Contracts;
-using Mystique.Core.Models;
 using Mystique.Core.Mvc.Infrastructure;
 using Mystique.Mvc.Infrastructure;
 using System;

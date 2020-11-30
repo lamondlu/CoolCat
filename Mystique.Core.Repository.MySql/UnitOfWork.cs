@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Mystique.Core.Contracts;
-using Mystique.Core.Models;
+﻿using Mystique.Core.Contracts;
 using Mystique.Core.Repositories;
 using System.Collections.Generic;
 using MySqlClient = MySql.Data.MySqlClient;

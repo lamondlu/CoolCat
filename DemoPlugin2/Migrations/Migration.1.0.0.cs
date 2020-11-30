@@ -1,6 +1,5 @@
 ﻿using Mystique.Core.Contracts;
 using Mystique.Core.DomainModel;
-using Mystique.Core.Helpers;
 
 namespace DemoPlugin2.Migrations
 {
