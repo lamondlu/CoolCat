@@ -31,6 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="PresetModules\BookInventory 1.1.0.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="PresetModules\DemoPlugin1.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

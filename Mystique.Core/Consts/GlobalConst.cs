@@ -2,6 +2,6 @@
 {
     public static class GlobalConst
     {
-        public const string PresetFolder = "PresetFolders";
+        public const string PresetFolder = "PresetModules";
     }
 }

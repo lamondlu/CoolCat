@@ -72,6 +72,8 @@ namespace Mystique
 
         private static IServiceProvider CreateServices(ConnectionStringSetting settings)
         {
+            Console.WriteLine(settings.ConnectionString);
+
             return new ServiceCollection().AddFluentMigratorCore().ConfigureRunner(rb =>
              rb.AddMySql5()
                  .WithGlobalConnectionString(settings.ConnectionString)
@@ -88,14 +90,9 @@ namespace Mystique
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
+
+            app.UseDeveloperExceptionPage();
+
 
 #if DEBUG
             app.UseStaticFiles(new StaticFileOptions
