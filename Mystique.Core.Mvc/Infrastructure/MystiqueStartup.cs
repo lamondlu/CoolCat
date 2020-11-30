@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Mystique.Core.BusinessLogic;
 using Mystique.Core.Contracts;
@@ -44,13 +45,14 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
             services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
 
+
             IMvcBuilder mvcBuilder = services.AddMvc();
 
             ServiceProvider provider = services.BuildServiceProvider();
             using (IServiceScope scope = provider.CreateScope())
             {
                 IUnitOfWork unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
-                var dataStore = new DefaultDataStore(scope.ServiceProvider.GetService<IOptions<ConnectionStringSetting>>());
+                var dataStore = new DefaultDataStore(scope.ServiceProvider.GetService<ILogger<DefaultDataStore>>());
                 services.AddSingleton<IDataStore>(dataStore);
                 var contextProvider = new CollectibleAssemblyLoadContextProvider();
 

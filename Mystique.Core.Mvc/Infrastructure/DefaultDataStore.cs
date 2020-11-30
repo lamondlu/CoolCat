@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
 using Mystique.Core.Contracts;
-using Mystique.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,21 +8,23 @@ namespace Mystique.Core.Mvc.Infrastructure
 {
     public class DefaultDataStore : IDataStore
     {
-        private string _connectionString = string.Empty;
+        private ILogger<DefaultDataStore> _logger = null;
 
-        public DefaultDataStore(IOptions<ConnectionStringSetting> connectionStringAccessor)
+        public DefaultDataStore(ILogger<DefaultDataStore> logger)
         {
-            _connectionString = connectionStringAccessor.Value.ConnectionString;
+            _logger = logger;
         }
 
         private List<QueryItem> _queryItems = new List<QueryItem>();
 
-        public string Query(string moduleName, string queryName, string parameter)
+        public string Query(string moduleName, string queryName, string parameter, string source = "")
         {
             var query = _queryItems.FirstOrDefault(p => p.ModuleName == moduleName && p.QueryName == queryName);
 
             if (query != null)
             {
+                _logger.LogDebug($"Module '{source}' try to query the '{queryName}' from '{moduleName}' with parameter '{parameter}'");
+
                 return query.Query(parameter);
             }
             else

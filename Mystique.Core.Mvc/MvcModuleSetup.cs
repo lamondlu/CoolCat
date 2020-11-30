@@ -35,7 +35,7 @@ namespace Mystique.Core.Mvc
 
                 using (IServiceScope scope = provider.CreateScope())
                 {
-                    var dataStore = new DefaultDataStore(scope.ServiceProvider.GetService<IOptions<ConnectionStringSetting>>());
+                    var dataStore = scope.ServiceProvider.GetService<IDataStore>();
 
                     var context = contextProvider.Get(moduleName, _partManager, scope, dataStore);
                     PluginsLoadContexts.Add(moduleName, context);

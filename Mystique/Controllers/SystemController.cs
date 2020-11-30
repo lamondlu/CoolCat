@@ -41,7 +41,6 @@ namespace Mystique.Controllers
         public IActionResult GetModuleCSS(string moduleName, string fileName)
         {
             var fileContent = PluginsLoadContexts.Get(moduleName).LoadResource(fileName);
-
             return new FileContentResult(fileContent, "text/css");
         }
 
