@@ -26,7 +26,7 @@ namespace Mystique.Core
             _isEnabled = true;
         }
 
-        public void AddResource(string path, byte[] fileContent)
+        public void RegisterResource(string path, byte[] fileContent)
         {
             if (_resourceItems.ContainsKey(path))
             {

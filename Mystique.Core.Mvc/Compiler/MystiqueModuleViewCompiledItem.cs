@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Razor.Hosting;
+using Mystique.Core.Consts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +20,11 @@ namespace Mystique.Core.Mvc.Infrastructure
         {
             Type = attr.Type;
             Kind = attr.Kind;
-            Identifier = "/Modules/" + moduleName + attr.Identifier;
+            Identifier = $"/{GlobalConst.ModulePrefix}/{moduleName}{attr.Identifier}";
 
             Metadata = Type.GetCustomAttributes(inherit: true).Select(o =>
                 o is RazorSourceChecksumAttribute rsca
-                    ? new RazorSourceChecksumAttribute(rsca.ChecksumAlgorithm, rsca.Checksum, "/Modules/" + moduleName + rsca.Identifier)
+                    ? new RazorSourceChecksumAttribute(rsca.ChecksumAlgorithm, rsca.Checksum, $"/{GlobalConst.ModulePrefix}/{moduleName}{rsca.Identifier}")
                     : o).ToList();
         }
 
