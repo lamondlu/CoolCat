@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yml = docker-compose.yml
 		dockerfile = dockerfile
 		init\init.sql = init\init.sql
-		Nuget.Config = Nuget.Config
-		TestPlugins\DemoPlugin1\plugin.json = TestPlugins\DemoPlugin1\plugin.json
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -33,9 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoPlugin2", "DemoPlugin2\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core.Repository.MySql", "Mystique.Core.Repository.MySql\Mystique.Core.Repository.MySql.csproj", "{CDDDC11F-81B6-475C-85E2-FC7C32BC5909}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{0B7BD338-03F6-466B-8E48-606D42F27D55}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookInventory", "DemoModules\BookInventory\BookInventory\BookInventory.csproj", "{17B399FC-D289-4651-BFB1-F87F309F98E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookInventory", "DemoModules\BookInventory\BookInventory\BookInventory.csproj", "{17B399FC-D289-4651-BFB1-F87F309F98E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

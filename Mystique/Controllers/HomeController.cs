@@ -7,12 +7,10 @@ namespace Mystique.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IPluginManager _pluginManager = null;
         private readonly ISystemManager _systemManager = null;
 
-        public HomeController(IPluginManager pluginManager, ISystemManager systemManager)
+        public HomeController(ISystemManager systemManager)
         {
-            _pluginManager = pluginManager;
             _systemManager = systemManager;
         }
 
@@ -27,12 +25,6 @@ namespace Mystique.Controllers
                 return RedirectToAction("Setup", "System");
             }
 
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
