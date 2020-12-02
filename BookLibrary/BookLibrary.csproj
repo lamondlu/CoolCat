@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mystique.Core.Mvc\Mystique.Core.Mvc.csproj" />
+    <ProjectReference Include="..\Mystique.Core.Repository.MySql\Mystique.Core.Repository.MySql.csproj" />
+    <ProjectReference Include="..\Mystique.Core\Mystique.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Content\module.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+
+
+</Project>

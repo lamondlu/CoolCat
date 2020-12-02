@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core.Repository.My
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookInventory", "DemoModules\BookInventory\BookInventory\BookInventory.csproj", "{17B399FC-D289-4651-BFB1-F87F309F98E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookLibrary", "BookLibrary\BookLibrary.csproj", "{ED2649A1-A355-411C-9D04-6E489CBBC068}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +153,18 @@ Global
 		{17B399FC-D289-4651-BFB1-F87F309F98E6}.Release|x64.Build.0 = Release|Any CPU
 		{17B399FC-D289-4651-BFB1-F87F309F98E6}.Release|x86.ActiveCfg = Release|Any CPU
 		{17B399FC-D289-4651-BFB1-F87F309F98E6}.Release|x86.Build.0 = Release|Any CPU
+		{ED2649A1-A355-411C-9D04-6E489CBBC068}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED2649A1-A355-411C-9D04-6E489CBBC068}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED2649A1-A355-411C-9D04-6E489CBBC068}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ED2649A1-A355-411C-9D04-6E489CBBC068}.Debug|x64.Build.0 = Debug|Any CPU
+		{ED2649A1-A355-411C-9D04-6E489CBBC068}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ED2649A1-A355-411C-9D04-6E489CBBC068}.Debug|x86.Build.0 = Debug|Any CPU
+		{ED2649A1-A355-411C-9D04-6E489CBBC068}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED2649A1-A355-411C-9D04-6E489CBBC068}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED2649A1-A355-411C-9D04-6E489CBBC068}.Release|x64.ActiveCfg = Release|Any CPU
+		{ED2649A1-A355-411C-9D04-6E489CBBC068}.Release|x64.Build.0 = Release|Any CPU
+		{ED2649A1-A355-411C-9D04-6E489CBBC068}.Release|x86.ActiveCfg = Release|Any CPU
+		{ED2649A1-A355-411C-9D04-6E489CBBC068}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -161,6 +175,7 @@ Global
 		{769D3886-1411-4DA4-BB5C-A4A2B5A37645} = {28305C7A-F6FE-4EE4-AD0C-9C1BA1B5AC87}
 		{0E46F881-151E-4F33-9D98-C4CE5DC08385} = {28305C7A-F6FE-4EE4-AD0C-9C1BA1B5AC87}
 		{17B399FC-D289-4651-BFB1-F87F309F98E6} = {28305C7A-F6FE-4EE4-AD0C-9C1BA1B5AC87}
+		{ED2649A1-A355-411C-9D04-6E489CBBC068} = {28305C7A-F6FE-4EE4-AD0C-9C1BA1B5AC87}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {01E2A57E-2BFE-40F9-9501-D2AA53FC1170}
