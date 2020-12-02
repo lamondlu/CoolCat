@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Mystique.Core.Contracts;
-using Mystique.Models;
-using System.Diagnostics;
 
 namespace Mystique.Controllers
 {

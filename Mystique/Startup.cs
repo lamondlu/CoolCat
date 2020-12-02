@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
 using MySql.Data.MySqlClient;
 using Mystique.Core.Models;
 using Mystique.Core.Mvc.Infrastructure;
@@ -72,7 +71,7 @@ namespace Mystique
 
         private static IServiceProvider CreateServices(ConnectionStringSetting settings)
         {
-            Console.WriteLine(settings.ConnectionString);
+            //Console.WriteLine(settings.ConnectionString);
 
             return new ServiceCollection().AddFluentMigratorCore().ConfigureRunner(rb =>
              rb.AddMySql5()
