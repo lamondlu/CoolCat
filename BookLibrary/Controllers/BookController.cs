@@ -1,4 +1,5 @@
-﻿using BookLibrary.ViewModels;
+﻿using BookLibrary.DAL;
+using BookLibrary.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Mystique.Core.Attributes;
 using Mystique.Core.Contracts;
@@ -15,18 +16,34 @@ namespace BookLibrary.Controllers
     public class BookController : Controller
     {
         private readonly IDataStore _dataStore;
+        private readonly IDbHelper _dbHelper;
+        private readonly BookDAL _bookDAL;
 
-        public BookController(IDataStore dataStore)
+        public BookController(IDataStore dataStore, IDbHelper dbHelper)
         {
             _dataStore = dataStore;
+            _dbHelper = dbHelper;
+            _bookDAL = new BookDAL(_dbHelper);
         }
 
+        [HttpGet]
         [Page("Book Library")]
         public IActionResult AvailableBooks()
         {
             var books = JsonConvert.DeserializeObject<List<BookViewModel>>(_dataStore.Query("BookInventory", "Available_Books", string.Empty, source: ModuleDefiniation.MODULE_NAME));
 
             return View(books);
+        }
+
+        [HttpPut]
+        public IActionResult RentBook(Guid bookId)
+        {
+            _bookDAL.RentBook();
+
+            return Json(new
+            {
+                result = true
+            });
         }
     }
 }

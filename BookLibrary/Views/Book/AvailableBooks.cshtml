@@ -18,6 +18,7 @@
                 <th>Book Name</th>
                 <th>ISBN</th>
                 <th>Date Issued</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -30,16 +31,31 @@
                         <td>@item.BookName</td>
                         <td>@item.ISBN</td>
                         <td>@item.DateIssued.ToString("yyyy-MM-dd")</td>
+                        <td><span class="btn btn-primary" onclick="rentBook('@item.BookId')">Rent</span></td>
                     </tr>
                 }
             }
             else
             {
                 <tr>
-                    <td colspan="4">No Records.</td>
+                    <td colspan="5">No Records.</td>
                 </tr>
             }
-        </tbody>
-
+        </tbody>S
     </table>
 </div>
+
+@section Scripts{
+    <script type="text/javascript">
+        function rentBook(id) {
+            $.ajax({
+                url: '@Url.Action("RentBook","Book", new { areaName= BookLibrary.ModuleDefiniation.MODULE_NAME })?bookId=' + id,
+                method: 'PUT',
+                success: function (data) {
+                    window.reload();
+                }
+            });
+        }
+    </script>
+
+}
