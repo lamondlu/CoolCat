@@ -16,7 +16,7 @@ namespace Mystique.Controllers
         {
             _pluginManager = pluginManager;
             _referenceContainer = referenceContainer;
-            _dbHelper = _dbHelper;
+            _dbHelper = dbHelper;
         }
 
         public IActionResult Assemblies()

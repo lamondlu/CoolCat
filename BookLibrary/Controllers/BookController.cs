@@ -1,5 +1,6 @@
 ﻿using BookLibrary.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Mystique.Core.Attributes;
 using Mystique.Core.Contracts;
 using Newtonsoft.Json;
 using System;
@@ -20,6 +21,7 @@ namespace BookLibrary.Controllers
             _dataStore = dataStore;
         }
 
+        [Page("Book Library")]
         public IActionResult AvailableBooks()
         {
             var books = JsonConvert.DeserializeObject<List<BookViewModel>>(_dataStore.Query("BookInventory", "Available_Books", string.Empty, source: ModuleDefiniation.MODULE_NAME));
