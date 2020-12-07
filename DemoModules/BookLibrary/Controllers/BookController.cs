@@ -18,12 +18,14 @@ namespace BookLibrary.Controllers
         private readonly IDataStore _dataStore;
         private readonly IDbHelper _dbHelper;
         private readonly BookDAL _bookDAL;
+        private readonly INotificationRegister _notificationRegister;
 
-        public BookController(IDataStore dataStore, IDbHelper dbHelper)
+        public BookController(IDataStore dataStore, IDbHelper dbHelper, INotificationRegister notificationRegister)
         {
             _dataStore = dataStore;
             _dbHelper = dbHelper;
             _bookDAL = new BookDAL(_dbHelper);
+            _notificationRegister = notificationRegister;
         }
 
         [HttpGet]
@@ -40,12 +42,20 @@ namespace BookLibrary.Controllers
         {
             var book = JsonConvert.DeserializeObject<BookDetailsViewModel>(_dataStore.Query("BookInventory", "Book_Details", JsonConvert.SerializeObject(new { bookId }), source: ModuleDefiniation.MODULE_NAME));
 
+            var date = DateTime.Today;
+
             _bookDAL.RentBook(new Dtos.RentBookDTO
             {
                 BookId = bookId,
                 BookName = book.BookName,
-                RentDate = DateTime.Now
+                RentDate = date
             });
+
+            _notificationRegister.Publish("BookOutEvent", JsonConvert.SerializeObject(new
+            {
+                BookId = bookId,
+                OutDate = date
+            }));
 
             return Json(new
             {

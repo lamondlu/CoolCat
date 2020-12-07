@@ -110,10 +110,12 @@ namespace Mystique.Core.Mvc.Infrastructure
             {
                 INotificationRegister register = scope.ServiceProvider.GetService<INotificationRegister>();
 
+                IDbHelper dbHelper = scope.ServiceProvider.GetService<IDbHelper>();
+
                 foreach (Type p in providers)
                 {
                     INotificationProvider obj = (INotificationProvider)assembly.CreateInstance(p.FullName);
-                    Dictionary<string, List<INotificationHandler>> result = obj.GetNotifications();
+                    Dictionary<string, List<INotificationHandler>> result = obj.GetNotifications(dbHelper);
 
                     foreach (KeyValuePair<string, List<INotificationHandler>> item in result)
                     {
