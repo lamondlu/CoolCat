@@ -30,7 +30,7 @@ namespace BookLibrary.Controllers
         [Page("Book Library")]
         public IActionResult AvailableBooks()
         {
-            var books = JsonConvert.DeserializeObject<List<BookViewModel>>(_dataStore.Query("BookInventory", "Available_Books", string.Empty, source: ModuleDefiniation.MODULE_NAME));
+            var books = JsonConvert.DeserializeObject<List<BookListViewModel>>(_dataStore.Query("BookInventory", "Available_Books", string.Empty, source: ModuleDefiniation.MODULE_NAME));
 
             return View(books);
         }
@@ -38,7 +38,14 @@ namespace BookLibrary.Controllers
         [HttpPut]
         public IActionResult RentBook(Guid bookId)
         {
-            _bookDAL.RentBook();
+            var book = JsonConvert.DeserializeObject<BookDetailsViewModel>(_dataStore.Query("BookInventory", "Book_Details", JsonConvert.SerializeObject(new { bookId }), source: ModuleDefiniation.MODULE_NAME));
+
+            _bookDAL.RentBook(new Dtos.RentBookDTO
+            {
+                BookId = bookId,
+                BookName = book.BookName,
+                RentDate = DateTime.Now
+            });
 
             return Json(new
             {

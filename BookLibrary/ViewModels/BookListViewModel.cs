@@ -2,7 +2,7 @@
 
 namespace BookLibrary.ViewModels
 {
-    public class BookViewModel
+    public class BookListViewModel
     {
         public Guid BookId { get; set; }
 

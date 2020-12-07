@@ -1,4 +1,6 @@
-﻿using Mystique.Core.Contracts;
+﻿using BookLibrary.Dtos;
+using MySql.Data.MySqlClient;
+using Mystique.Core.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,23 +17,19 @@ namespace BookLibrary.DAL
             _dbHelper = dbHelper;
         }
 
-        public bool CheckBookTracking(Guid bookId)
+        public void RentBook(RentBookDTO dto)
         {
-            var sql = "SELECT COUNT(*) FROM Book WHERE BookId=@bookId";
+            var sql = "INSERT INTO rent_history(RentId, BookId, BookName, RentDate) values(@rentId, @bookId, @bookName, @rentDate)";
 
-            var count = _dbHelper.ExecuteScalar(sql);
-
-            return count == 1;
+            _dbHelper.ExecuteNonQuery(sql,
+                new List<MySqlParameter> {
+                   new MySqlParameter { ParameterName = "@rentId", MySqlDbType = MySqlDbType.Guid, Value = Guid.NewGuid() },
+                   new MySqlParameter { ParameterName = "@bookId", MySqlDbType = MySqlDbType.Guid, Value = dto.BookId },
+                   new MySqlParameter { ParameterName = "@bookName", MySqlDbType = MySqlDbType.VarChar, Value = dto.BookName },
+                   new MySqlParameter { ParameterName = "@rentDate", MySqlDbType = MySqlDbType.Date, Value = dto.RentDate }
+                   }.ToArray());
         }
 
-        public void RentBook()
-        {
-            var sql = "";
-        }
 
-        public void RentBookWithNew()
-        {
-            var sql = "";
-        }
     }
 }
