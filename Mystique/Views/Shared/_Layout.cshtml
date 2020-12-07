@@ -23,7 +23,7 @@
               integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
     </environment>
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="@Url.Action("GetSiteCSS", "System")"/>
+    <link rel="stylesheet" href="@Url.Action("GetSiteCSS", "System")" />
     @RenderSection("Header", required: false)
 </head>
 <body>
@@ -54,7 +54,7 @@
                                     <li>
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Plugins" asp-action="Index">Plugins</a>
                                     </li>
-                                     <li>
+                                    <li>
                                         <a class="nav-link text-dark" asp-area="" asp-controller="System" asp-action="SiteSettings">Site Settings</a>
                                     </li>
                                 </ul>
@@ -83,7 +83,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - Mystique
+            &copy; 2020 - Mystique Framework v1.0
         </div>
     </footer>
 
