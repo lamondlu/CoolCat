@@ -49,7 +49,7 @@
     <script type="text/javascript">
         function rentBook(id) {
             $.ajax({
-                url: '@Url.Action("RentBook","Book", new { areaName= BookLibrary.ModuleDefiniation.MODULE_NAME })?bookId=' + id,
+                url: '@Url.Action("RentBook","Book")?bookId=' + id,
                 method: 'PUT',
                 success: function (data) {
                     window.reload();

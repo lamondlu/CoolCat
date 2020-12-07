@@ -32,13 +32,23 @@ namespace BookInventory.DataStores
 
             var dataTable = _dbHelper.ExecuteDataTable(sql, new MySqlParameter { ParameterName = "@id", MySqlDbType = MySqlDbType.Guid, Value = param.BookId });
 
-            return JsonConvert.SerializeObject(dataTable.Rows.Cast<DataRow>().Select(p => new BookDetailViewModel
+            var items = dataTable.Rows.Cast<DataRow>().Select(p => new BookDetailViewModel
             {
                 BookId = Guid.Parse(p["BookId"].ToString()),
                 BookName = p["BookName"].ToString(),
                 ISBN = p["ISBN"].ToString(),
                 DateIssued = Convert.ToDateTime(p["DateIssued"])
-            }).ToList());
+            }).ToList();
+
+            if (items.Count == 1)
+            {
+                return JsonConvert.SerializeObject(items.First());
+            }
+            else
+            {
+                return null;
+            }
+
         }
     }
 
