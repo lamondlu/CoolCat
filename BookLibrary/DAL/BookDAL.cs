@@ -15,9 +15,23 @@ namespace BookLibrary.DAL
             _dbHelper = dbHelper;
         }
 
+        public bool CheckBookTracking(Guid bookId)
+        {
+            var sql = "SELECT COUNT(*) FROM Book WHERE BookId=@bookId";
+
+            var count = _dbHelper.ExecuteScalar(sql);
+
+            return count == 1;
+        }
+
         public void RentBook()
         {
+            var sql = "";
+        }
 
+        public void RentBookWithNew()
+        {
+            var sql = "";
         }
     }
 }
