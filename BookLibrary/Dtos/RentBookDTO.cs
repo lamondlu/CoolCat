@@ -11,6 +11,10 @@ namespace BookLibrary.Dtos
 
         public string BookName { get; set; }
 
+        public string ISBN { get; set; }
+
+        public DateTime DateIssued { get; set; }
+
         public DateTime RentDate { get; set; }
     }
 }

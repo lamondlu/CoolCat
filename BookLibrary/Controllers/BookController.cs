@@ -52,5 +52,20 @@ namespace BookLibrary.Controllers
                 result = true
             });
         }
+
+        [HttpPut]
+        public IActionResult ReturnBook(Guid rentId)
+        {
+            _bookDAL.ReturnBook(new Dtos.ReturnBookDTO
+            {
+                RentId = rentId,
+                ReturnDate = DateTime.Now
+            });
+
+            return Json(new
+            {
+                result = true
+            });
+        }
     }
 }

@@ -11,6 +11,8 @@ namespace BookLibrary.Migrations
   `RentId` char(36) NOT NULL,
   `BookId` char(36) NOT NULL,
   `BookName` varchar(255) NULL DEFAULT NULL,
+  `ISBN` varchar(255)NULL DEFAULT NULL,
+  `DateIssued` datetime(0) NULL DEFAULT NULL,
   `RentDate` datetime(0) NULL DEFAULT NULL,
   `ReturnDate` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`RentId`) USING BTREE
