@@ -6,9 +6,6 @@ using Mystique.Core.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookLibrary.Controllers
 {
@@ -48,6 +45,8 @@ namespace BookLibrary.Controllers
             {
                 BookId = bookId,
                 BookName = book.BookName,
+                DateIssued = book.DateIssued,
+                ISBN = book.ISBN,
                 RentDate = date
             });
 

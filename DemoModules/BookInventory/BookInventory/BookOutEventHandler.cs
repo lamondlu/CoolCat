@@ -5,27 +5,27 @@ using System;
 
 namespace BookInventory
 {
-    public class BookInEventHandler : INotificationHandler
+    public class BookOutEventHandler : INotificationHandler
     {
         private BookDAL _bookDAL = null;
 
-        public BookInEventHandler(IDbHelper dbHelper)
+        public BookOutEventHandler(IDbHelper dbHelper)
         {
             _bookDAL = new BookDAL(dbHelper);
         }
 
         public void Handle(string data)
         {
-            var obj = JsonConvert.DeserializeObject<BookInEvent>(data);
+            var obj = JsonConvert.DeserializeObject<BookOutEvent>(data);
             _bookDAL.UpdateBookStatus(obj.BookId, true);
         }
     }
 
-    public class BookInEvent
+    public class BookOutEvent
     {
         public Guid BookId { get; set; }
 
-        public DateTime InDate { get; set; }
+        public DateTime OutDate { get; set; }
     }
 
 }

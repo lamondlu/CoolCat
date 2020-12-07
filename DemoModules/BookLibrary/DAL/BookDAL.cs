@@ -19,7 +19,7 @@ namespace BookLibrary.DAL
 
         public void RentBook(RentBookDTO dto)
         {
-            var sql = "INSERT INTO rent_history(RentId, BookId, BookName, ISBN, RentDate) values(@rentId, @bookId, @bookName, @isbn, @rentDate)";
+            var sql = "INSERT INTO rent_history(RentId, BookId, BookName, ISBN, RentDate, DateIssued) VALUES(@rentId, @bookId, @bookName, @isbn, @rentDate, @dateIssued)";
 
             _dbHelper.ExecuteNonQuery(sql,
                 new List<MySqlParameter> {
