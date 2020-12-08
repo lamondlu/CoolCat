@@ -15,6 +15,7 @@
                 <th>Book Name</th>
                 <th>ISBN</th>
                 <th>Date Issued</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
@@ -27,6 +28,7 @@
                         <td>@item.BookName</td>
                         <td>@item.ISBN</td>
                         <td>@item.DateIssued.ToString("yyyy-MM-dd")</td>
+                        <td>@(item.Status?"Out":"In")</td>
                     </tr>
                 }
             }

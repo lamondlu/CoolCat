@@ -11,5 +11,7 @@ namespace BookInventory.ViewModels
         public string ISBN { get; set; }
 
         public DateTime DateIssued { get; set; }
+
+        public bool Status { get; set; }
     }
 }

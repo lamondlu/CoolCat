@@ -29,7 +29,8 @@ namespace BookInventory.DAL
                 BookId = Guid.Parse(p["BookId"].ToString()),
                 BookName = p["BookName"].ToString(),
                 ISBN = p["ISBN"].ToString(),
-                DateIssued = Convert.ToDateTime(p["DateIssued"])
+                DateIssued = Convert.ToDateTime(p["DateIssued"]),
+                Status = Convert.ToBoolean(p["Status"])
             }).ToList();
         }
 
@@ -72,7 +73,7 @@ namespace BookInventory.DAL
 
         public void UpdateBook(Guid bookId, UpdateBookDto dto)
         {
-            var sql = "UPDATE SET Book BookName=@bookName, ISBN=@isbn, DateIssued=@dateIssued, Description=@description WHERE BookId=@id";
+            var sql = "UPDATE Book SET BookName=@bookName, ISBN=@isbn, DateIssued=@dateIssued, Description=@description WHERE BookId=@id";
 
             _dbHelper.ExecuteNonQuery(sql, new List<MySqlParameter>
             {
@@ -96,7 +97,7 @@ namespace BookInventory.DAL
 
         public void UpdateBookStatus(Guid bookId, bool isOut)
         {
-            var sql = "UPDATE SET Book SET Status=@status WHERE BookId=@id";
+            var sql = "UPDATE Book SET Status=@status WHERE BookId=@id";
 
             _dbHelper.ExecuteNonQuery(sql, new List<MySqlParameter>
             {
