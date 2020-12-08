@@ -19,6 +19,12 @@ namespace Mystique.Controllers
             _dbHelper = dbHelper;
         }
 
+
+        public IActionResult Document()
+        {
+            return View();
+        }
+
         public IActionResult Assemblies()
         {
             System.Collections.Generic.List<CachedReferenceItemKey> items = _referenceContainer.GetAll();

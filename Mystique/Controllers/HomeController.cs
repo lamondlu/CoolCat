@@ -22,7 +22,6 @@ namespace Mystique.Controllers
             {
                 return RedirectToAction("Setup", "System");
             }
-
         }
     }
 }
