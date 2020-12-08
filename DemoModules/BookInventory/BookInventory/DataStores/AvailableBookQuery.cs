@@ -1,11 +1,15 @@
-﻿using Mystique.Core.Contracts;
+﻿using Mystique.Core.Attributes;
+using Mystique.Core.Contracts;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
 namespace BookInventory.DataStores
 {
+    [NoneRequestParameter]
+    [ResponseType(typeof(List<AvailableBookViewModel>))]
     public class AvailableBookQuery : IDataStoreQuery
     {
         private IDbHelper _dbHelper = null;

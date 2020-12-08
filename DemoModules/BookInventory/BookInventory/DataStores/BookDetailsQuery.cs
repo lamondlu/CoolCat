@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Mystique.Core.Attributes;
 using Mystique.Core.Contracts;
 using Newtonsoft.Json;
 using System;
@@ -7,6 +8,8 @@ using System.Linq;
 
 namespace BookInventory.DataStores
 {
+    [RequestParameterType(typeof(BookDetailsQueryParameter))]
+    [ResponseType(typeof(BookDetailViewModel))]
     public class BookDetailsQuery : IDataStoreQuery
     {
         private IDbHelper _dbHelper = null;
