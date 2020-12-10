@@ -1,8 +1,34 @@
-﻿
+﻿@model Dictionary<string, System.Collections.Generic.List<Mystique.Core.DomainModel.QueryDocumentItem>>
 @{
     ViewData["Title"] = "Documentation";
 }
 
 <h1>Documentation</h1>
 
+@foreach (var item in Model)
+{
+    <div class="document-group">
+        <div class="document-title">@item.Key</div>
 
+        @foreach (var d in item.Value)
+        {
+            <div class="documentItem">
+                <div class="document-query-name">@d.QueryName</div>
+                <div class="document-sample">
+                    <div class="document-request-sample">
+                        <div class="document-query-sample-title">Request Sample:</div>
+                        <div>
+                            @d.RequestSample
+                        </div>
+                    </div>
+                    <div class="document-response-sample">
+                        <div class="document-query-sample-title">Response Sample:</div>
+                        <div>
+                            @d.ResponseSample
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

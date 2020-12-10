@@ -55,9 +55,26 @@ namespace Mystique.Core.Mvc.Infrastructure
 
         private string BuildSampleFromType(Type t)
         {
-            var obj = t.Assembly.CreateInstance(t.FullName);
+            Object obj = null;
 
-            return JsonConvert.SerializeObject(obj);
+            if (t.IsGenericType)
+            {
+                var innerType = t.GetGenericArguments()[0];
+
+                var listType = typeof(List<>).MakeGenericType(innerType);
+                var list = Activator.CreateInstance(listType);
+
+                var addMethod = listType.GetMethod("Add");
+                addMethod.Invoke(list, new object[] { innerType.Assembly.CreateInstance(innerType.FullName) });
+            }
+            else
+            {
+                obj = t.Assembly.CreateInstance(t.FullName);
+            }
+
+            var sample = JsonConvert.SerializeObject(obj);
+
+            return sample;
         }
     }
 }
