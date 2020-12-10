@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29020.237
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique", "Mystique\Mystique.csproj", "{1A9E44EA-5EC2-4A36-BB44-196292DFE11F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoPlugin1", "DemoPlugin1\DemoPlugin1.csproj", "{C102ADC9-354B-46FA-A083-A8E01A56895A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoPlugin1", "DemoModules\DemoPlugin1\DemoPlugin1.csproj", "{C102ADC9-354B-46FA-A083-A8E01A56895A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core", "Mystique.Core\Mystique.Core.csproj", "{51262BFE-1E31-4317-A920-9F127C111712}"
 EndProject
@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{28305C7A-F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoReferenceLibrary", "DemoReferenceLibrary\DemoReferenceLibrary.csproj", "{769D3886-1411-4DA4-BB5C-A4A2B5A37645}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoPlugin2", "DemoPlugin2\DemoPlugin2.csproj", "{0E46F881-151E-4F33-9D98-C4CE5DC08385}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoPlugin2", "DemoModules\DemoPlugin2\DemoPlugin2.csproj", "{0E46F881-151E-4F33-9D98-C4CE5DC08385}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mystique.Core.Repository.MySql", "Mystique.Core.Repository.MySql\Mystique.Core.Repository.MySql.csproj", "{CDDDC11F-81B6-475C-85E2-FC7C32BC5909}"
 EndProject
