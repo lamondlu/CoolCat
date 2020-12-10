@@ -11,7 +11,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 {
     public class CollectibleAssemblyLoadContextProvider
     {
-        public CollectibleAssemblyLoadContext Get(string moduleName, IMvcBuilder mvcBuilder, IServiceScope scope, IDataStore dataStore)
+        public CollectibleAssemblyLoadContext Get(string moduleName, IMvcBuilder mvcBuilder, IServiceScope scope, IDataStore dataStore, IQueryDocumentation documentation)
         {
             CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(moduleName);
             IReferenceLoader loader = scope.ServiceProvider.GetService<IReferenceLoader>();
@@ -47,7 +47,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                 }
 
                 BuildNotificationProvider(assembly, scope);
-                RegisterModuleQueries(dataStore, moduleName, assembly, scope);
+                RegisterModuleQueries(dataStore, moduleName, assembly, scope, documentation);
             }
 
             using (FileStream fsView = new FileStream(viewFilePath, FileMode.Open))
@@ -64,7 +64,7 @@ namespace Mystique.Core.Mvc.Infrastructure
             return context;
         }
 
-        public CollectibleAssemblyLoadContext Get(string moduleName, ApplicationPartManager apm, IServiceScope scope, IDataStore dataStore)
+        public CollectibleAssemblyLoadContext Get(string moduleName, ApplicationPartManager apm, IServiceScope scope, IDataStore dataStore, IQueryDocumentation documentation)
         {
             CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(moduleName);
             IReferenceLoader loader = scope.ServiceProvider.GetService<IReferenceLoader>();
@@ -85,7 +85,7 @@ namespace Mystique.Core.Mvc.Infrastructure
                 apm.ApplicationParts.Add(controllerAssemblyPart);
 
                 BuildNotificationProvider(assembly, scope);
-                RegisterModuleQueries(dataStore, moduleName, assembly, scope);
+                RegisterModuleQueries(dataStore, moduleName, assembly, scope, documentation);
             }
 
             using (FileStream fsView = new FileStream(viewFilePath, FileMode.Open))
@@ -128,7 +128,7 @@ namespace Mystique.Core.Mvc.Infrastructure
             }
         }
 
-        private static void RegisterModuleQueries(IDataStore dataStore, string moduleName, Assembly assembly, IServiceScope scope)
+        private static void RegisterModuleQueries(IDataStore dataStore, string moduleName, Assembly assembly, IServiceScope scope, IQueryDocumentation documentation)
         {
             IEnumerable<Type> queries = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x == typeof(IDataStoreQuery)));
             if (queries.Any())
@@ -142,11 +142,13 @@ namespace Mystique.Core.Mvc.Infrastructure
                     if (constructor != null)
                     {
                         IDataStoreQuery obj = (IDataStoreQuery)constructor.Invoke(new object[] { dbHelper });
+                        documentation.BuildDocumentation(moduleName, obj);
                         dataStore.RegisterQuery(moduleName, obj.QueryName, obj.Query);
                     }
                     else
                     {
                         IDataStoreQuery obj = (IDataStoreQuery)assembly.CreateInstance(p.FullName);
+                        documentation.BuildDocumentation(moduleName, obj);
                         dataStore.RegisterQuery(moduleName, obj.QueryName, obj.Query);
                     }
                 }

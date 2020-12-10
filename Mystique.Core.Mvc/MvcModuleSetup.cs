@@ -34,8 +34,9 @@ namespace Mystique.Core.Mvc
                 using (IServiceScope scope = provider.CreateScope())
                 {
                     var dataStore = scope.ServiceProvider.GetService<IDataStore>();
+                    var documentation = scope.ServiceProvider.GetService<IQueryDocumentation>();
 
-                    var context = contextProvider.Get(moduleName, _partManager, scope, dataStore);
+                    var context = contextProvider.Get(moduleName, _partManager, scope, dataStore, documentation);
                     PluginsLoadContexts.Add(moduleName, context);
                 }
 

@@ -11,20 +11,21 @@ namespace Mystique.Controllers
         private readonly IPluginManager _pluginManager = null;
         private readonly IReferenceContainer _referenceContainer = null;
         private readonly IDbHelper _dbHelper = null;
+        private readonly IQueryDocumentation _queryDocumentation = null;
 
-        public PluginsController(IPluginManager pluginManager, IReferenceContainer referenceContainer, IDbHelper dbHelper)
+        public PluginsController(IPluginManager pluginManager, IReferenceContainer referenceContainer, IDbHelper dbHelper, IQueryDocumentation queryDocumentation)
         {
             _pluginManager = pluginManager;
             _referenceContainer = referenceContainer;
             _dbHelper = dbHelper;
+            _queryDocumentation = queryDocumentation;
         }
 
 
         public IActionResult Document()
         {
-
-
-            return View();
+            var documents = _queryDocumentation.GetAllDocuments();
+            return View(documents);
         }
 
         public IActionResult Assemblies()

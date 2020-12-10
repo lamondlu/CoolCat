@@ -39,8 +39,11 @@ namespace Mystique.Core.Mvc.Infrastructure
             services.AddSingleton<IActionDescriptorChangeProvider>(MystiqueActionDescriptorChangeProvider.Instance);
             services.AddSingleton<IReferenceContainer, DefaultReferenceContainer>();
             services.AddSingleton<IReferenceLoader, DefaultReferenceLoader>();
-            services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
 
+            var documentation = new MystiqueModuleDocumentation();
+
+            services.AddSingleton<IQueryDocumentation>(documentation);
+            services.AddSingleton(MystiqueActionDescriptorChangeProvider.Instance);
 
             IMvcBuilder mvcBuilder = services.AddMvc();
 
@@ -59,7 +62,7 @@ namespace Mystique.Core.Mvc.Infrastructure
 
                     foreach (ViewModels.PluginListItemViewModel plugin in allEnabledPlugins)
                     {
-                        var context = contextProvider.Get(plugin.Name, mvcBuilder, scope, dataStore);
+                        var context = contextProvider.Get(plugin.Name, mvcBuilder, scope, dataStore, documentation);
                         PluginsLoadContexts.Add(plugin.Name, context);
                     }
                 }

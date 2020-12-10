@@ -11,5 +11,13 @@ namespace Mystique.Core.Attributes
         {
             _requestType = requestType;
         }
+
+        public Type RequestType
+        {
+            get
+            {
+                return _requestType;
+            }
+        }
     }
 }

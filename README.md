@@ -1,3 +1,5 @@
+![](./doc/images/logo.png)
+
 # Mystique
 A sample about how to create a dynamic plugins mechanism with ASP.NET Core Mvc based on the AssemblyLoadContext.
 
