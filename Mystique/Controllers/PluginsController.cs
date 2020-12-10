@@ -22,6 +22,8 @@ namespace Mystique.Controllers
 
         public IActionResult Document()
         {
+
+
             return View();
         }
 
