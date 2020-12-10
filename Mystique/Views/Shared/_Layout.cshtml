@@ -44,13 +44,10 @@
                         @if (SystemManager.CheckInstall())
                         {
                             <li class="dropdown">
-                                <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Management<span class="caret"></span></a>
+                                <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">System<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
-                                    </li>
-                                    <li>
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Roles</a>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Plugins" asp-action="Assemblies">Assemblies</a>
                                     </li>
                                     <li>
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Plugins" asp-action="Index">Plugins</a>
@@ -63,9 +60,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Plugins" asp-action="Assemblies">Assemblies</a>
-                            </li>
+                            
                             foreach (var item in menus)
                             {
                                 <li class="nav-item">
