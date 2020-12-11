@@ -1,0 +1,56 @@
+﻿@model List<Mystique.Core.ViewModels.PluginListItemViewModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Plugin Management</h1>
+
+<button type="button" class="btn btn-primary" onclick="window.location = '@Url.Action("Add","Plugins")';">+ Add New</button>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>PluginId</th>
+            <th>UniqueKey</th>
+            <th>Version</th>
+            <th>Name</th>
+            <th>DisplayName</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var row in Model)
+            {
+                <tr>
+                    <td>@row.PluginId</td>
+                    <td>@row.UniqueKey</td>
+                    <td>@row.Version</td>
+                    <td>@row.Name</td>
+                    <td>@row.DisplayName</td>
+                    <td>
+                        @if (row.IsEnable)
+                        {
+                            <button type="button" class="btn-danger" onclick="window.location = '@Url.Action("Disable","Plugins", new { id = row.PluginId })';">Disable</button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn-primary" onclick="window.location = '@Url.Action("Enable","Plugins", new { id = row.PluginId })';">Enable</button>
+                        }
+
+                        <button type="button" class="btn-danger" onclick="window.location = '@Url.Action("Delete","Plugins", new { id = row.PluginId })';">Delete</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">No Data.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

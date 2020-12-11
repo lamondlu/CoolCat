@@ -1,0 +1,84 @@
+﻿@model List<string>
+@using Mystique.Utilities;
+@{
+    ViewData["Title"] = "Setup";
+
+    var presetPluginLoader = new PresetPluginLoader();
+    var plugins = presetPluginLoader.LoadPlugins();
+}
+
+@section Header{
+    <link rel="stylesheet" href="~/css/setup.css" />
+}
+
+<h1>Setup</h1>
+
+<p>
+    Welcome to use Mystique. The following step will help you to install the framework.
+</p>
+
+
+<section class="signup-step-container">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-8">
+                <div class="wizard">
+                    <div class="wizard-inner">
+                        <div class="connecting-line"></div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active">
+                                <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" aria-expanded="true"><span class="round-tab">1 </span> <i>Step 1 - Choose Modules</i></a>
+                            </li>
+                            <li role="presentation" class="disabled">
+                                <a href="#step4" data-toggle="tab" aria-controls="step4" role="tab"><span class="round-tab">2</span> <i>Step 2 - Confirmation</i></a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <form role="form" action="index.html" class="login-box">
+                        <div class="tab-content" id="main_form">
+                            <div class="tab-pane active" role="tabpanel" id="step1">
+                                <h4 class="text-center">Step 1 - Choose Modules</h4>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <select multiple="multiple" style="padding:5px; width:100%" id="presetModules">
+                                                @foreach (var plugin in Model)
+                                                {
+                                                    <option>@plugin</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul class="list-inline pull-right">
+                                    <li><button type="button" class="default-btn next-step" id="btnChoosePlugin">Continue to next step</button></li>
+                                </ul>
+                            </div>
+                            <div class="tab-pane" role="tabpanel" id="step4">
+                                <h4 class="text-center">Step 2 - Confirmation</h4>
+                                <div class="all-info-container" id="summaryPanel">
+                                </div>
+
+                                <ul class="list-inline pull-right">
+                                    <li><button type="button" class="default-btn prev-step">Back</button></li>
+                                    <li><button type="button" class="default-btn next-step" id="btnInstall">Install</button></li>
+                                </ul>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts{
+
+    <script src="~/js/setup.js"></script>
+
+}
+
