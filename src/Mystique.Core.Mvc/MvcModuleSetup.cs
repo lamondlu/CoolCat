@@ -26,22 +26,20 @@ namespace Mystique.Core.Mvc
 
         public void EnableModule(string moduleName)
         {
-            if (!PluginsLoadContexts.Any(moduleName))
+            ServiceProvider provider = MystiqueStartup.Services.BuildServiceProvider();
+            var contextProvider = new CollectibleAssemblyLoadContextProvider();
+
+            using (IServiceScope scope = provider.CreateScope())
             {
-                ServiceProvider provider = MystiqueStartup.Services.BuildServiceProvider();
-                var contextProvider = new CollectibleAssemblyLoadContextProvider();
+                var dataStore = scope.ServiceProvider.GetService<IDataStore>();
+                var documentation = scope.ServiceProvider.GetService<IQueryDocumentation>();
 
-                using (IServiceScope scope = provider.CreateScope())
-                {
-                    var dataStore = scope.ServiceProvider.GetService<IDataStore>();
-                    var documentation = scope.ServiceProvider.GetService<IQueryDocumentation>();
-
-                    var context = contextProvider.Get(moduleName, _partManager, scope, dataStore, documentation);
-                    PluginsLoadContexts.Add(moduleName, context);
-                }
-
-                ResetControllActions();
+                var context = contextProvider.Get(moduleName, _partManager, scope, dataStore, documentation);
+                PluginsLoadContexts.Add(moduleName, context);
+                context.Enable();
             }
+
+            ResetControllActions();
         }
 
         public void DisableModule(string moduleName)
@@ -54,6 +52,8 @@ namespace Mystique.Core.Mvc
 
             var context = PluginsLoadContexts.Get(moduleName);
             context.Disable();
+
+            PluginsLoadContexts.Remove(moduleName);
 
             ResetControllActions();
         }
