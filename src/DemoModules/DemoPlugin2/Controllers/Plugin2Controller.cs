@@ -1,6 +1,6 @@
 ﻿using DemoReferenceLibrary;
 using Microsoft.AspNetCore.Mvc;
-using Mystique.Core.Attributes;
+using CoolCat.Core.Attributes;
 
 namespace DemoPlugin2.Controllers
 {

@@ -1,6 +1,6 @@
 ﻿using BookLibrary.Dtos;
 using MySql.Data.MySqlClient;
-using Mystique.Core.Contracts;
+using CoolCat.Core.Contracts;
 using System;
 using System.Collections.Generic;
 

@@ -1,5 +1,5 @@
-﻿using Mystique.Core.Attributes;
-using Mystique.Core.Contracts;
+﻿using CoolCat.Core.Attributes;
+using CoolCat.Core.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

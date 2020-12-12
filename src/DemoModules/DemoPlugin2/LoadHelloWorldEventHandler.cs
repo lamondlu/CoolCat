@@ -1,4 +1,4 @@
-﻿using Mystique.Core.Contracts;
+﻿using CoolCat.Core.Contracts;
 using System;
 
 namespace DemoPlugin2

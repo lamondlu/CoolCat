@@ -1,5 +1,5 @@
 ﻿using BookInventory.DAL;
-using Mystique.Core.Contracts;
+using CoolCat.Core.Contracts;
 using Newtonsoft.Json;
 using System;
 

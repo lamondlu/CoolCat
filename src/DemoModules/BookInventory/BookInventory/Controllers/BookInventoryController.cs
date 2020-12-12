@@ -2,8 +2,8 @@
 using BookInventory.Dtos;
 using BookInventory.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Mystique.Core.Attributes;
-using Mystique.Core.Contracts;
+using CoolCat.Core.Attributes;
+using CoolCat.Core.Contracts;
 using System;
 
 namespace BookInventory.Controllers

@@ -1,6 +1,6 @@
 ![](./doc/images/logo_small.png)
 
-# Mystique
+# CoolCat
 A sample about how to create a dynamic plugins mechanism with ASP.NET Core Mvc based on the AssemblyLoadContext.
 
 This whole project is built under .NET Core 3.1 and .NET 5. 

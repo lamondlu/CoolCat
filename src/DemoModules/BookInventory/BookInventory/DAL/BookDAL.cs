@@ -1,7 +1,7 @@
 ﻿using BookInventory.Dtos;
 using BookInventory.ViewModels;
 using MySql.Data.MySqlClient;
-using Mystique.Core.Contracts;
+using CoolCat.Core.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Data;

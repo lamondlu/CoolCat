@@ -2,9 +2,9 @@
 using DemoReferenceLibrary;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Mystique.Core.Attributes;
-using Mystique.Core.Contracts;
-using Mystique.Core.Mvc.Infrastructure;
+using CoolCat.Core.Attributes;
+using CoolCat.Core.Contracts;
+using CoolCat.Core.Mvc.Infrastructure;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -44,14 +44,14 @@ namespace DemoPlugin1.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            MystiqueStartup.Services.AddScoped<IHandler, MyHandler>();
+            CoolCatStartup.Services.AddScoped<IHandler, MyHandler>();
             return Content("OK");
         }
 
         [HttpGet]
         public IActionResult Show()
         {
-            ServiceProvider provider = MystiqueStartup.Services.BuildServiceProvider();
+            ServiceProvider provider = CoolCatStartup.Services.BuildServiceProvider();
             using (IServiceScope scope = provider.CreateScope())
             {
                 IHandler handler = scope.ServiceProvider.GetService<IHandler>();

@@ -1,4 +1,4 @@
-﻿using Mystique.Core.Contracts;
+﻿using CoolCat.Core.Contracts;
 using System.Collections.Generic;
 
 namespace BookInventory

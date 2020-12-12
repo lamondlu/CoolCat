@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Mystique.Core.Mvc\Mystique.Core.Mvc.csproj" />
-    <ProjectReference Include="..\..\Mystique.Core.Repository.MySql\Mystique.Core.Repository.MySql.csproj" />
-    <ProjectReference Include="..\..\Mystique.Core\Mystique.Core.csproj" />
+    <ProjectReference Include="..\..\CoolCat.Core.Mvc\CoolCat.Core.Mvc.csproj" />
+    <ProjectReference Include="..\..\CoolCat.Core.Repository.MySql\CoolCat.Core.Repository.MySql.csproj" />
+    <ProjectReference Include="..\..\CoolCat.Core\CoolCat.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

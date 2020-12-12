@@ -1,6 +1,6 @@
 ﻿namespace DemoPlugin1
 {
-    public class ModuleDefiniation : Mystique.Core.Models.ModuleDefiniation
+    public class ModuleDefiniation : CoolCat.Core.Models.ModuleDefiniation
     {
         public const string MODULE_NAME = "DemoPlugin1";
 
