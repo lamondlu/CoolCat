@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Content\module.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Content\module.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoolCat.Core.Mvc\CoolCat.Core.Mvc.csproj" />
+    <ProjectReference Include="..\..\CoolCat.Core.Repository.MySql\CoolCat.Core.Repository.MySql.csproj" />
+    <ProjectReference Include="..\..\CoolCat.Core\CoolCat.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.0" />
+  </ItemGroup>
+
+</Project>
