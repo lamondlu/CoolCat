@@ -92,9 +92,9 @@ span.round-tab {
     }
 
 .wizard li.active span.round-tab {
-    background: #0db02b;
+    background: #5cbedf;
     color: #fff;
-    border-color: #0db02b;
+    border-color: #5cbedf;
 }
 
     .wizard li.active span.round-tab i {
@@ -102,7 +102,7 @@ span.round-tab {
     }
 
 .wizard .nav-tabs > li.active > a i {
-    color: #0db02b;
+    color: #5cbedf;
 }
 
 .wizard .nav-tabs > li {
@@ -168,10 +168,11 @@ span.round-tab {
     border: none;
     border-radius: 4px;
     margin-top: 30px;
+    color: '#fff',
 }
 
 .next-step {
-    background-color: #0db02b;
+    background-color: #5cbedf;
 }
 
 .skip-btn {
