@@ -331,3 +331,5 @@ ASALocalRun/
 /data1
 /data
 /.vscode
+/src/Nuget.Config
+/src/nuget.exe

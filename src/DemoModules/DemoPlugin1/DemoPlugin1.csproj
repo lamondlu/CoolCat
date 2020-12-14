@@ -14,15 +14,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include=".template.config\template.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Content\module.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DemoReferenceLibrary\DemoReferenceLibrary.csproj" />
-    <ProjectReference Include="..\..\CoolCat.Core.Mvc\CoolCat.Core.Mvc.csproj" />
-    <ProjectReference Include="..\..\CoolCat.Core\CoolCat.Core.csproj" />
+    <PackageReference Include="CoolCat.Core" Version="1.0.0" />
+    <PackageReference Include="CoolCat.Core.Mvc" Version="1.0.0" />
+    <PackageReference Include="CoolCat.Core.Repository.MySql" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

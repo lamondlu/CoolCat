@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Lamond Lu</Authors>
+    <Company>Lamond Lu</Company>
+    <Product>CoolCat</Product>
   </PropertyGroup>
 
   <ItemGroup>
