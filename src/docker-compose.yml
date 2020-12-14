@@ -1,7 +1,7 @@
 version: "3"
 services:
   myapp:
-    image: "lamondlu/CoolCat:v2"
+    image: "lamondlu/coolcat:v2"
     container_name: app
     ports:
       - "5000:5000"
