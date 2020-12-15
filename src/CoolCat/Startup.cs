@@ -93,18 +93,18 @@ namespace CoolCat
             app.UseDeveloperExceptionPage();
 
 
-#if DEBUG
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(@"F:\D1\CoolCat\src\CoolCat\wwwroot")
-                //FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot"))
-            });
-#endif
+// #if DEBUG
+//             app.UseStaticFiles(new StaticFileOptions
+//             {
+//                 FileProvider = new PhysicalFileProvider(@"F:\D1\CoolCat\src\CoolCat\wwwroot")
+//                 //FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot"))
+//             });
+// #endif
 
-#if !DEBUG
+// #if !DEBUG
 
             app.UseStaticFiles();
-#endif
+// #endif
 
             app.CoolCatRoute();
         }
