@@ -149,6 +149,15 @@ button.accept-policy {
   border-color: #ced4da
 }
 
+.footLeft{
+  float: left;
+}
+.footRight{
+  float: right;
+}
+.footRight img{
+  width: 120px;
+}
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
