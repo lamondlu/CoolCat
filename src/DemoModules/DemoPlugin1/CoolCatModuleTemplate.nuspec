@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CoolCatModule</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>
       Creates a coolcat modules.
     </description>
