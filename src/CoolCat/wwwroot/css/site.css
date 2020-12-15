@@ -34,7 +34,17 @@ h1{
   margin-bottom: 1rem;
   font-size: 1.5rem !important;
 }
-
+.document-title {
+  font-size: 1.4rem !important;
+  font-weight: 500;
+}
+.document-query-name {
+  font-size: 1.2rem !important;
+  font-weight: 500;
+  margin-bottom: .4rem;
+  margin-top: .8rem;
+  color: #5cbedf;
+}
 button.accept-policy {
   font-size: 1rem;
   line-height: inherit;
@@ -88,8 +98,23 @@ button.accept-policy {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
-
-
+.table thead th {
+  background-color: #5cbedf;
+  color: #fff;
+  border-top: 0;
+  border-bottom: 0;
+}
+.table thead th:first-child{
+  border-top-left-radius:.4rem;
+  border-bottom-left-radius: .4rem;
+}
+.table thead th:last-child{
+  border-top-right-radius: .4rem;
+  border-bottom-right-radius: .4rem;
+}
+.table tbody tr:first-child td{
+  border-top: 0;
+}
 .sample-content {
   border-radius: .25rem;
   margin-top: .5rem;
