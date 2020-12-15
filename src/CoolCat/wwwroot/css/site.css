@@ -12,6 +12,12 @@ a.navbar-brand {
 html {
   font-size: 14px;
 }
+body {
+  font-size: .9rem !important;
+}
+.form-control{
+  font-size: .9rem !important;
+}
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -19,6 +25,7 @@ html {
 }
 .dropdown-menu{
   padding: 0;
+  font-size: .9rem !important;
 }
 .dropdown-menu li{
   border-bottom: 1px solid #ececec;
@@ -50,10 +57,11 @@ html {
 }
 h1{
   margin-bottom: 1rem;
+  font-size: 1.5rem !important;
 }
 .btn-danger {
   box-shadow: none;
-  border-radius: 6px;
+  border-radius: .25rem;
   background-color: #dc3545;
   border: 0;
   color: #fff;
@@ -64,7 +72,7 @@ h1{
   background-color: #5cbedf;
   border-color: #5cbedf;
   border: 0;
-  border-radius: 6px;
+  border-radius: .25rem;
   padding: .375rem .75rem;
 }
 .box-shadow {
@@ -74,6 +82,13 @@ h1{
 button.accept-policy {
   font-size: 1rem;
   line-height: inherit;
+}
+
+.sample-content {
+  border-radius: .25rem;
+  margin-top: .5rem;
+  padding: .5rem;
+  border-color: #ced4da
 }
 
 /* Sticky footer styles

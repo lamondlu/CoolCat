@@ -26,10 +26,10 @@
                 <tr>
                     <td>@row.PluginId</td>
                     <td>@row.UniqueKey</td>
-                    <td>@row.Version</td>
+                    <td style="text-align: center;">@row.Version</td>
                     <td>@row.Name</td>
                     <td>@row.DisplayName</td>
-                    <td>
+                    <td style="text-align: center;">
                         @if (row.IsEnable)
                         {
                             <button type="button" class="btn-danger" onclick="window.location = '@Url.Action("Disable","Plugins", new { id = row.PluginId })';">Disable</button>
