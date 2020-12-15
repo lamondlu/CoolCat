@@ -115,6 +115,9 @@ button.accept-policy {
 .table tbody tr:first-child td{
   border-top: 0;
 }
+.table td {
+  vertical-align: middle;
+}
 .sample-content {
   border-radius: .25rem;
   margin-top: .5rem;
