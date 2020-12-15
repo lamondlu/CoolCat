@@ -1,5 +1,4 @@
 ﻿using DemoPlugin1.Models;
-using DemoReferenceLibrary;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using CoolCat.Core.Attributes;
@@ -26,9 +25,6 @@ namespace DemoPlugin1.Controllers
         [HttpGet]
         public IActionResult HelloWorld()
         {
-            string content = new Demo().SayHello();
-            ViewBag.Content = content + "; Plugin2 triggered";
-
             TestClass testClass = new TestClass
             {
                 Message = "Hello World"

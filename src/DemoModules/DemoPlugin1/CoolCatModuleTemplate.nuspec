@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>LamondDynamicPlugin</id>
+    <id>CoolCatModule</id>
     <version>1.0.0</version>
     <description>
-      Creates a dynamic plugin.
+      Creates a coolcat modules.
     </description>
     <authors>Lamond Lu</authors>
     <packageTypes>
