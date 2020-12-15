@@ -81,7 +81,31 @@ button.accept-policy {
 .btn-danger {
   box-shadow: none;
   border-radius: .25rem;
-  background-color: #dc3545;
+  background-color: #ef5a92;
+  border: 0;
+  color: #fff;
+  padding: .375rem .75rem;
+}
+.btn-danger:hover {
+  box-shadow: none;
+  border-radius: .25rem;
+  background-color: #fd2274;
+  border: 0;
+  color: #fff;
+  padding: .375rem .75rem;
+}
+.btn-disabled {
+  box-shadow: none;
+  border-radius: .25rem;
+  background-color: #d8d8d8;
+  border: 0;
+  color: #fff;
+  padding: .375rem .75rem;
+}
+.btn-disabled:hover {
+  box-shadow: none;
+  border-radius: .25rem;
+  background-color: #5cbedf;
   border: 0;
   color: #fff;
   padding: .375rem .75rem;
