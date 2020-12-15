@@ -18,6 +18,9 @@ body {
 .form-control{
   font-size: .9rem !important;
 }
+.display-4 {
+  font-size: 3.5rem !important;
+}
 @media (min-width: 768px) {
   html {
     font-size: 16px;
