@@ -52,7 +52,7 @@
                 url: '@Url.Action("RentBook","Book")?bookId=' + id,
                 method: 'PUT',
                 success: function (data) {
-                    window.reload();
+                    window.location.reload();
                 }
             });
         }
