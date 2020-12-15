@@ -45,10 +45,28 @@ html {
 .mb-3, .my-3{
   margin-bottom: 2rem !important;
 }
+.marginBottom1rem {
+  margin-bottom: 1rem;
+}
 h1{
   margin-bottom: 1rem;
 }
-
+.btn-danger {
+  box-shadow: none;
+  border-radius: 6px;
+  background-color: #dc3545;
+  border: 0;
+  color: #fff;
+  padding: .375rem .75rem;
+}
+.btn-primary{
+  color: #fff;
+  background-color: #5cbedf;
+  border-color: #5cbedf;
+  border: 0;
+  border-radius: 6px;
+  padding: .375rem .75rem;
+}
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
