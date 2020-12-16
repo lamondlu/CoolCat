@@ -66,15 +66,16 @@ namespace CoolCat.Core.Mvc.Infrastructure
 
                 var addMethod = listType.GetMethod("Add");
                 addMethod.Invoke(list, new object[] { innerType.Assembly.CreateInstance(innerType.FullName) });
+
+                var sample = JsonConvert.SerializeObject(list);
+                return sample;
             }
             else
             {
                 obj = t.Assembly.CreateInstance(t.FullName);
+                var sample = JsonConvert.SerializeObject(obj);
+                return sample;
             }
-
-            var sample = JsonConvert.SerializeObject(obj);
-
-            return sample;
         }
     }
 }
