@@ -40,5 +40,23 @@ namespace BookLibrary.DAL
                    new MySqlParameter { ParameterName = "@dateIssued", MySqlDbType = MySqlDbType.Date, Value = dto.ReturnDate }
                   }.ToArray());
         }
+
+        public Guid? GetBookId(Guid rentId)
+        {
+            var sql = "SELECT BookId FROM rent_history WHERE RentId=@rentId";
+
+            var result = _dbHelper.ExecuteScalarWithObjReturn(sql, new List<MySqlParameter> {
+                new MySqlParameter { ParameterName = "@rentId", MySqlDbType = MySqlDbType.Guid, Value = rentId }
+            }.ToArray());
+
+            if (result == null)
+            {
+                return null;
+            }
+            else
+            {
+                return Guid.Parse(result.ToString());
+            }
+        }
     }
 }

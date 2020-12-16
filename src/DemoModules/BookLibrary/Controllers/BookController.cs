@@ -65,11 +65,23 @@ namespace BookLibrary.Controllers
         [HttpPut]
         public IActionResult ReturnBook(Guid rentId)
         {
+            var bookId = _bookDAL.GetBookId(rentId);
+            var date = DateTime.Today;
+
+            var book = JsonConvert.DeserializeObject<BookDetailsViewModel>(_dataStore.Query("BookInventory", "Book_Details", JsonConvert.SerializeObject(new { bookId }), source: ModuleDefiniation.MODULE_NAME));
+
             _bookDAL.ReturnBook(new Dtos.ReturnBookDTO
             {
                 RentId = rentId,
                 ReturnDate = DateTime.Now
             });
+
+            _notificationRegister.Publish("BookInEvent", JsonConvert.SerializeObject(new
+            {
+                BookId = bookId,
+                OutDate = date
+            }));
+
 
             return Json(new
             {
