@@ -17,3 +17,9 @@ I want to build a runtime plugin mechanism based on .NET Core 3.1 and .NET 5. Ea
 ![](./doc/images/20200726215825.png)
  - Start to use the system 
 
+ ## How to create and publish a plugin
+ - Run `dotnet new -i CoolCatModule`, it will install the CoolCatModule on your machine
+ - Run `dotnet new CoolCatModule -n {your plugin name}`
+ - Build the plugin with VisualStudio 2019 or `dotnet publish`
+ - Package the release files into a zip package
+
