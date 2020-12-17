@@ -1,1 +1,14 @@
-﻿
+﻿.out {
+    background: #ef5a92;
+    padding: 5px;
+    border-radius: 3px;
+    color: white;
+}
+
+.in {
+    background: #5cbedf;
+    padding: 5px;
+    border-radius: 3px;
+    color: white;
+}
+

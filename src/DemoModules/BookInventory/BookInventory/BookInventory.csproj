@@ -10,16 +10,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Content\module.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Content\module.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\DemoReferenceLibrary\DemoReferenceLibrary.csproj" />
     <ProjectReference Include="..\..\..\CoolCat.Core.Mvc\CoolCat.Core.Mvc.csproj" />
     <ProjectReference Include="..\..\..\CoolCat.Core\CoolCat.Core.csproj" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <None Update="Content\module.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 

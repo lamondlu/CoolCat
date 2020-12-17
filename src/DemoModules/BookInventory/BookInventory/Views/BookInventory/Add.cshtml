@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Add Book";
 
-    var action = Url.Action("Add", "BookInventory", new { Area = BookInventory.ModuleDefiniation.MODULE_NAME});
+    var action = Url.Action("Add", "BookInventory", new { Area = BookInventory.ModuleDefiniation.MODULE_NAME });
 }
 
 <h1>Add</h1>
@@ -34,3 +34,11 @@
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#@Html.IdFor(p=>p.DateIssued)').datepicker();
+        });
+    </script>
+} 

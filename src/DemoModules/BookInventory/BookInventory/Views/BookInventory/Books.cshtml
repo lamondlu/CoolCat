@@ -3,6 +3,10 @@
     var action = Url.Action("Add", "BookInventory", new { Area = BookInventory.ModuleDefiniation.MODULE_NAME });
 }
 
+@section Header{
+    <link rel="stylesheet" href="@Url.Action("GetModuleCSS", "System", new { moduleName = BookInventory.ModuleDefiniation.MODULE_NAME, fileName = "Content/module.css" })" />
+}
+
 <h1>Books</h1>
 
 <div><button type="button" class="btn btn-primary marginBottom1rem" onclick="window.location = '@action'">+ Add</button></div>
@@ -28,7 +32,7 @@
                         <td>@item.BookName</td>
                         <td>@item.ISBN</td>
                         <td>@item.DateIssued.ToString("yyyy-MM-dd")</td>
-                        <td>@(item.Status?"Out":"In")</td>
+                        <td><span class="@(item.Status?"out":"in")">@(item.Status?"Out":"In")</span></td>
                     </tr>
                 }
             }
