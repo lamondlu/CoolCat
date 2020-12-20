@@ -84,6 +84,20 @@ namespace CoolCat.Core.Mvc.Infrastructure
                 AssemblyPart controllerAssemblyPart = new AssemblyPart(assembly);
                 apm.ApplicationParts.Add(controllerAssemblyPart);
 
+                var resources = assembly.GetManifestResourceNames();
+
+                if (resources.Any())
+                {
+                    foreach (var item in resources)
+                    {
+                        var stream = new MemoryStream();
+                        var source = assembly.GetManifestResourceStream(item);
+                        source.CopyTo(stream);
+
+                        context.RegisterResource(item, stream.ToArray());
+                    }
+                }
+
                 BuildNotificationProvider(assembly, scope);
                 RegisterModuleQueries(dataStore, moduleName, assembly, scope, documentation);
             }
