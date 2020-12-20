@@ -13,55 +13,7 @@ namespace CoolCat.Core.Mvc.Infrastructure
     {
         public CollectibleAssemblyLoadContext Get(string moduleName, IMvcBuilder mvcBuilder, IServiceScope scope, IDataStore dataStore, IQueryDocumentation documentation)
         {
-            CollectibleAssemblyLoadContext context = new CollectibleAssemblyLoadContext(moduleName);
-            IReferenceLoader loader = scope.ServiceProvider.GetService<IReferenceLoader>();
-
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.dll");
-            string viewFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName, $"{moduleName}.Views.dll");
-            string referenceFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Modules", moduleName);
-
-            using (FileStream fs = new FileStream(filePath, FileMode.Open))
-            {
-                Assembly assembly = context.LoadFromStream(fs);
-
-                context.SetEntryPoint(assembly);
-
-                loader.LoadStreamsIntoContext(context, referenceFolderPath, assembly);
-
-                AssemblyPart controllerAssemblyPart = new AssemblyPart(assembly);
-                mvcBuilder.PartManager.ApplicationParts.Add(controllerAssemblyPart);
-
-
-                var resources = assembly.GetManifestResourceNames();
-
-                if (resources.Any())
-                {
-                    foreach (var item in resources)
-                    {
-                        var stream = new MemoryStream();
-                        var source = assembly.GetManifestResourceStream(item);
-                        source.CopyTo(stream);
-
-                        context.RegisterResource(item, stream.ToArray());
-                    }
-                }
-
-                BuildNotificationProvider(assembly, scope);
-                RegisterModuleQueries(dataStore, moduleName, assembly, scope, documentation);
-            }
-
-            using (FileStream fsView = new FileStream(viewFilePath, FileMode.Open))
-            {
-                Assembly viewAssembly = context.LoadFromStream(fsView);
-                loader.LoadStreamsIntoContext(context, referenceFolderPath, viewAssembly);
-
-                CoolCatRazorAssemblyPart moduleView = new CoolCatRazorAssemblyPart(viewAssembly, moduleName);
-                mvcBuilder.PartManager.ApplicationParts.Add(moduleView);
-            }
-
-            context.Enable();
-
-            return context;
+            return Get(moduleName, mvcBuilder.PartManager, scope, dataStore, documentation);
         }
 
         public CollectibleAssemblyLoadContext Get(string moduleName, ApplicationPartManager apm, IServiceScope scope, IDataStore dataStore, IQueryDocumentation documentation)
