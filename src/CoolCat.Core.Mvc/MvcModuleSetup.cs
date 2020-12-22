@@ -26,37 +26,37 @@ namespace CoolCat.Core.Mvc
 
         public void EnableModule(string moduleName)
         {
-            //ServiceProvider provider = CoolCatStartup.Services.BuildServiceProvider();
-            //var contextProvider = new CollectibleAssemblyLoadContextProvider();
+            ServiceProvider provider = CoolCatStartup.Services.BuildServiceProvider();
+            var contextProvider = new CollectibleAssemblyLoadContextProvider();
 
-            //using (IServiceScope scope = provider.CreateScope())
-            //{
-            //    var dataStore = scope.ServiceProvider.GetService<IDataStore>();
-            //    var documentation = scope.ServiceProvider.GetService<IQueryDocumentation>();
-
-            //    var context = contextProvider.Get(moduleName, _partManager, scope, dataStore, documentation);
-            //    PluginsLoadContexts.Add(moduleName, context);
-            //    context.Enable();
-            //}
-
-            //ResetControllActions();
-
-            if (!PluginsLoadContexts.Any(moduleName))
+            using (IServiceScope scope = provider.CreateScope())
             {
-                ServiceProvider provider = CoolCatStartup.Services.BuildServiceProvider();
-                var contextProvider = new CollectibleAssemblyLoadContextProvider();
+                var dataStore = scope.ServiceProvider.GetService<IDataStore>();
+                var documentation = scope.ServiceProvider.GetService<IQueryDocumentation>();
 
-                using (IServiceScope scope = provider.CreateScope())
-                {
-                    var dataStore = scope.ServiceProvider.GetService<IDataStore>();
-                    var documentation = scope.ServiceProvider.GetService<IQueryDocumentation>();
-
-                    var context = contextProvider.Get(moduleName, _partManager, scope, dataStore, documentation);
-                    PluginsLoadContexts.Add(moduleName, context);
-                }
-
-                ResetControllActions();
+                var context = contextProvider.Get(moduleName, _partManager, scope, dataStore, documentation);
+                PluginsLoadContexts.Add(moduleName, context);
+                context.Enable();
             }
+
+            ResetControllActions();
+
+            //if (!PluginsLoadContexts.Any(moduleName))
+            //{
+            //    ServiceProvider provider = CoolCatStartup.Services.BuildServiceProvider();
+            //    var contextProvider = new CollectibleAssemblyLoadContextProvider();
+
+            //    using (IServiceScope scope = provider.CreateScope())
+            //    {
+            //        var dataStore = scope.ServiceProvider.GetService<IDataStore>();
+            //        var documentation = scope.ServiceProvider.GetService<IQueryDocumentation>();
+
+            //        var context = contextProvider.Get(moduleName, _partManager, scope, dataStore, documentation);
+            //        PluginsLoadContexts.Add(moduleName, context);
+            //    }
+
+            //    ResetControllActions();
+            //}
         }
 
         public void DisableModule(string moduleName)
@@ -70,7 +70,10 @@ namespace CoolCat.Core.Mvc
             var context = PluginsLoadContexts.Get(moduleName);
             context.Disable();
 
-            //PluginsLoadContexts.Remove(moduleName);
+            PluginsLoadContexts.Remove(moduleName);
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
 
             ResetControllActions();
         }

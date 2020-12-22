@@ -58,7 +58,7 @@ namespace CoolCat.Core.DomainModel
         public void Initialize(Stream stream)
         {
             _zipStream = stream;
-            _tempFolderName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{ Guid.NewGuid().ToString()}");
+            _tempFolderName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{ Guid.NewGuid()}");
             ZipTool archive = new ZipTool(_zipStream, ZipArchiveMode.Read);
 
             archive.ExtractToDirectory(_tempFolderName);
