@@ -9,6 +9,8 @@ using System.Reflection;
 
 namespace CoolCat.Core.Mvc.Infrastructure
 {
+
+    
     public class CollectibleAssemblyLoadContextProvider
     {
         public CollectibleAssemblyLoadContext Get(string moduleName, IMvcBuilder mvcBuilder, IServiceScope scope, IDataStore dataStore, IQueryDocumentation documentation)
