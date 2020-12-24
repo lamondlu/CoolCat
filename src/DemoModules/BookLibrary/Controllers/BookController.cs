@@ -6,20 +6,19 @@ using CoolCat.Core.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using CoolCat.Core.Mvc.Infrastructure;
 
 namespace BookLibrary.Controllers
 {
     [Area(ModuleDefiniation.MODULE_NAME)]
-    public class BookController : Controller
+    public class BookController : CoolCatController
     {
-        private readonly IDataStore _dataStore;
         private readonly IDbHelper _dbHelper;
         private readonly BookDAL _bookDAL;
         private readonly INotificationRegister _notificationRegister;
 
-        public BookController(IDataStore dataStore, IDbHelper dbHelper, INotificationRegister notificationRegister)
+        public BookController(IDataStore dataStore, IDbHelper dbHelper, INotificationRegister notificationRegister) : base(ModuleDefiniation.MODULE_NAME, dataStore)
         {
-            _dataStore = dataStore;
             _dbHelper = dbHelper;
             _bookDAL = new BookDAL(_dbHelper);
             _notificationRegister = notificationRegister;
@@ -29,7 +28,7 @@ namespace BookLibrary.Controllers
         [Page("Book Library")]
         public IActionResult AvailableBooks()
         {
-            var books = JsonConvert.DeserializeObject<List<BookListViewModel>>(_dataStore.Query("BookInventory", "Available_Books", string.Empty, source: ModuleDefiniation.MODULE_NAME));
+            var books = JsonConvert.DeserializeObject<List<BookListViewModel>>(Query("BookInventory", "Available_Books", string.Empty));
 
             return View(books);
         }
@@ -37,7 +36,7 @@ namespace BookLibrary.Controllers
         [HttpPut]
         public IActionResult RentBook(Guid bookId)
         {
-            var book = JsonConvert.DeserializeObject<BookDetailsViewModel>(_dataStore.Query("BookInventory", "Book_Details", JsonConvert.SerializeObject(new { bookId }), source: ModuleDefiniation.MODULE_NAME));
+            var book = JsonConvert.DeserializeObject<BookDetailsViewModel>(Query("BookInventory", "Book_Details", JsonConvert.SerializeObject(new { bookId })));
 
             var date = DateTime.Today;
 
@@ -68,8 +67,6 @@ namespace BookLibrary.Controllers
             var bookId = _bookDAL.GetBookId(rentId);
             var date = DateTime.Today;
 
-            var book = JsonConvert.DeserializeObject<BookDetailsViewModel>(_dataStore.Query("BookInventory", "Book_Details", JsonConvert.SerializeObject(new { bookId }), source: ModuleDefiniation.MODULE_NAME));
-
             _bookDAL.ReturnBook(new Dtos.ReturnBookDTO
             {
                 RentId = rentId,
@@ -81,7 +78,6 @@ namespace BookLibrary.Controllers
                 BookId = bookId,
                 OutDate = date
             }));
-
 
             return Json(new
             {

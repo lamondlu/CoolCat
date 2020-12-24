@@ -5,16 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 using CoolCat.Core.Attributes;
 using CoolCat.Core.Contracts;
 using System;
+using CoolCat.Core.Mvc.Infrastructure;
 
 namespace BookInventory.Controllers
 {
     [Area(ModuleDefiniation.MODULE_NAME)]
-    public class BookInventoryController : Controller
+    public class BookInventoryController : CoolCatController
     {
         private BookDAL _bookDAL = null;
         private IDbHelper _dbHelper = null;
 
-        public BookInventoryController(IDbHelper dbHelper)
+        public BookInventoryController(IDbHelper dbHelper) : base(ModuleDefiniation.MODULE_NAME)
         {
             _dbHelper = dbHelper;
             _bookDAL = new BookDAL(_dbHelper);
@@ -45,8 +46,7 @@ namespace BookInventory.Controllers
 
             _bookDAL.AddBook(dto);
 
-            return RedirectToAction("Books", "BookInventory", new { Area = ModuleDefiniation.MODULE_NAME });
-
+            return RedirectToAction("Books", "BookInventory");
         }
 
         [HttpDelete]
