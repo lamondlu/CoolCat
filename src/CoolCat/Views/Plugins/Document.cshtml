@@ -18,16 +18,23 @@
                     <div class="document-request-sample">
                         <div class="document-query-sample-title">Request Sample:</div>
                         <div class="sample-container">
-                            <textarea cols="100" rows="6" class="sample-content">@Html.Raw(d.RequestSample)</textarea>
+                            <textarea cols="100" rows="6" class="sample-content" readonly>@Html.Raw(d.RequestSample)</textarea>
                         </div>
                     </div>
                     <div class="document-response-sample">
                         <div class="document-query-sample-title">Response Sample:</div>
                         <div class="sample-container">
-                            <textarea cols="100" rows="6" class="sample-content">@Html.Raw(@d.ResponseSample)</textarea>
+                            <textarea cols="100" rows="6" class="sample-content" readonly>@Html.Raw(@d.ResponseSample)</textarea>
+                        </div>
+                    </div>
+                    <div class="document-response-sample">
+                        <div class="document-query-sample-title">Calling Sample:</div>
+                        <div class="sample-container">
+                            <textarea cols="100" rows="6" class="sample-content" readonly>_dataStore.Query("@item.Key", "@d.QueryName", @@requestParam, source: ModuleDefiniation.MODULE_NAME)</textarea>
                         </div>
                     </div>
                 </div>
+
             </div>
         }
     </div>
@@ -73,7 +80,7 @@
                     }
                 }
 
-              
+
             });
 
 
