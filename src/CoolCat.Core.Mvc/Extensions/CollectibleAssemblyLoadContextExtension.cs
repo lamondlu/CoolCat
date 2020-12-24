@@ -4,6 +4,7 @@ using CoolCat.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoolCat.Core.Mvc.Infrastructure;
 
 namespace CoolCat.Core.Mvc.Extensions
 {
@@ -21,7 +22,7 @@ namespace CoolCat.Core.Mvc.Extensions
 
             string areaName = context.PluginName;
 
-            IEnumerable<Type> types = entryPointAssembly.GetExportedTypes().Where(p => p.BaseType == typeof(Controller));
+            IEnumerable<Type> types = entryPointAssembly.GetExportedTypes().Where(p => p.BaseType == typeof(CoolCatController));
 
             if (types.Any())
             {

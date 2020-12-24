@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CoolCat.Core.Mvc\CoolCat.Core.Mvc.csproj" />
     <ProjectReference Include="..\..\DemoReferenceLibrary\DemoReferenceLibrary.csproj" />
     <ProjectReference Include="..\..\CoolCat.Core\CoolCat.Core.csproj" />
   </ItemGroup>

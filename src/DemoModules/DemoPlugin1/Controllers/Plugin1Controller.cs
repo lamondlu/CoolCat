@@ -10,12 +10,12 @@ using System.Collections.Generic;
 namespace DemoPlugin1.Controllers
 {
     [Area(ModuleDefiniation.MODULE_NAME)]
-    public class Plugin1Controller : Controller
+    public class Plugin1Controller : CoolCatController
     {
         private readonly INotificationRegister _notificationRegister;
         private readonly IDataStore _dataStore;
 
-        public Plugin1Controller(INotificationRegister notificationRegister, IDataStore dataStore)
+        public Plugin1Controller(INotificationRegister notificationRegister, IDataStore dataStore) : base(ModuleDefiniation.MODULE_NAME, dataStore)
         {
             _notificationRegister = notificationRegister;
             _dataStore = dataStore;

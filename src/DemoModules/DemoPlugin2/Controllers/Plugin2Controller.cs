@@ -1,12 +1,19 @@
 ﻿using DemoReferenceLibrary;
 using Microsoft.AspNetCore.Mvc;
 using CoolCat.Core.Attributes;
+using CoolCat.Core.Mvc.Infrastructure;
+using CoolCat.Core.Contracts;
 
 namespace DemoPlugin2.Controllers
 {
     [Area("DemoPlugin2")]
-    public class Plugin2Controller : Controller
+    public class Plugin2Controller : CoolCatController
     {
+        public Plugin2Controller() : base("DemoPlugin2", null)
+        {
+
+        }
+
 
         [Page("Plugin Two")]
         [HttpGet]

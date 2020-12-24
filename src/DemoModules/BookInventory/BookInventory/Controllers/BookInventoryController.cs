@@ -15,7 +15,7 @@ namespace BookInventory.Controllers
         private BookDAL _bookDAL = null;
         private IDbHelper _dbHelper = null;
 
-        public BookInventoryController(IDbHelper dbHelper) : base(ModuleDefiniation.MODULE_NAME)
+        public BookInventoryController(IDbHelper dbHelper, IDataStore dataStore) : base(ModuleDefiniation.MODULE_NAME, dataStore)
         {
             _dbHelper = dbHelper;
             _bookDAL = new BookDAL(_dbHelper);

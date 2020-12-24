@@ -24,9 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CoolCat.Core" Version="1.0.0" />
-    <PackageReference Include="CoolCat.Core.Mvc" Version="1.0.0" />
-    <PackageReference Include="CoolCat.Core.Repository.MySql" Version="1.0.0" />
+    <ProjectReference Include="..\..\CoolCat.Core.Mvc\CoolCat.Core.Mvc.csproj" />
+    <ProjectReference Include="..\..\CoolCat.Core.Repository.MySql\CoolCat.Core.Repository.MySql.csproj" />
+    <ProjectReference Include="..\..\CoolCat.Core\CoolCat.Core.csproj" />
   </ItemGroup>
 
 </Project>
