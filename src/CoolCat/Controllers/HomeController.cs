@@ -20,7 +20,7 @@ namespace CoolCat.Controllers
             }
             else
             {
-                return RedirectToAction("Setup", "System");
+                return RedirectToAction("Setup", "System", new { Area = "Admin" });
             }
         }
     }
