@@ -6,6 +6,7 @@ using System;
 
 namespace CoolCat.Controllers
 {
+    [Area("Admin")]
     public class PluginsController : Controller
     {
         private readonly IPluginManager _pluginManager = null;

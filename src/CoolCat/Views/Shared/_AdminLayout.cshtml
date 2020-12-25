@@ -23,7 +23,7 @@
               integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
     </environment>
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="@Url.Action("GetSiteCSS", "System")" />
+    <link rel="stylesheet" href="@Url.Action("GetSiteCSS", "Common")" />
     <link href="~/lib/bootstrap/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" />
     @RenderSection("Header", required: false)
 </head>
@@ -32,7 +32,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
 
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <a class="navbar-brand" asp-area="Admin" asp-controller="Home" asp-action="Dashboard">
                     <img src="~/logo_small.png" width="45px" />
                     <span style="color: #5cbedf;">CoolCat</span>
                 </a>
@@ -44,16 +44,27 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Home" asp-action="Dashboard">Home</a>
                         </li>
                         @if (SystemManager.CheckInstall())
                         {
-                            foreach (var item in menus)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" href="/Modules/@item.Url">@item.PageName</a>
-                                </li>
-                            }
+                            <li class="dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">System<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Plugins" asp-action="Assemblies">Assemblies</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Plugins" asp-action="Index">Plugins</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Plugins" asp-action="Document">Documentation</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="System" asp-action="SiteSettings">Site Settings</a>
+                                    </li>
+                                </ul>
+                            </li>
                         }
                     </ul>
                 </div>
@@ -61,7 +72,6 @@
         </nav>
     </header>
     <div class="container">
-        <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

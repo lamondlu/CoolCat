@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="PresetModules\" />
     <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>

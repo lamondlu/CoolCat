@@ -11,6 +11,7 @@ using System.IO;
 
 namespace CoolCat.Controllers
 {
+    [Area("Admin")]
     public class SystemController : Controller
     {
         private readonly ISystemManager _systemManager;
