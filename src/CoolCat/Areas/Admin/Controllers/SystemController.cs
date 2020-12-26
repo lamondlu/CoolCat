@@ -26,32 +26,19 @@ namespace CoolCat.Controllers
             _dbHelper = dbHelper;
         }
 
-        public IActionResult GetSiteCSS()
+        [HttpGet]
+        public IActionResult Login()
         {
-            var settings = _systemManager.GetSiteSettings();
-
-            if (!string.IsNullOrEmpty(settings.SiteCSS))
-            {
-                return Content(settings.SiteCSS, "text/css");
-            }
-
-            return null;
+            return View();
         }
 
-        [HttpGet("~/System/GetModuleCSS")]
-        public IActionResult GetModuleCSS(string moduleName, string fileName)
+        [HttpPost]
+        public IActionResult Login(LoginDTO dto)
         {
-            var fileContent = PluginsLoadContexts.Get(moduleName).LoadResource(fileName);
-
-            return new FileContentResult(fileContent, "text/css");
+            return View();
         }
 
-        [HttpGet("~/System/GetModuleScript")]
-        public IActionResult GetModuleScript(string moduleName, string fileName)
-        {
-            var fileContent = PluginsLoadContexts.Get(moduleName).LoadResource(fileName);
-            return new FileContentResult(fileContent, "text/javascript");
-        }
+
 
         public IActionResult Setup()
         {
