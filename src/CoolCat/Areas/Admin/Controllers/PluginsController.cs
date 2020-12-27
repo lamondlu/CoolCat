@@ -3,10 +3,12 @@ using CoolCat.Core.Contracts;
 using CoolCat.Core.DomainModel;
 using CoolCat.Core.Mvc.Extensions;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CoolCat.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class PluginsController : Controller
     {
         private readonly IPluginManager _pluginManager = null;

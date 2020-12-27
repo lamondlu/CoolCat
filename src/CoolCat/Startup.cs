@@ -11,6 +11,7 @@ using CoolCat.Core.Mvc.Infrastructure;
 using CoolCat.Core.Repository.MySql.Migrations;
 using System;
 using System.Threading;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace CoolCat
 {
@@ -41,6 +42,11 @@ namespace CoolCat
                 runner.MigrateUp();
             }
 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(o =>
+            {
+                o.LoginPath = "/Admin/System/Login";
+            });
             services.CoolCatSetup(Configuration);
         }
 
@@ -105,6 +111,8 @@ namespace CoolCat
 
             //app.UseStaticFiles();
             // #endif
+
+
 
             app.CoolCatRoute();
         }

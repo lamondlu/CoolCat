@@ -8,6 +8,10 @@ using CoolCat.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace CoolCat.Controllers
 {
@@ -35,10 +39,39 @@ namespace CoolCat.Controllers
         [HttpPost]
         public IActionResult Login(LoginDTO dto)
         {
+            if (ModelState.IsValid)
+            {
+                //Fake login
+                if (dto.UserName == "admin" && dto.Password == "admin")
+                {
+                    var authProperties = new AuthenticationProperties
+                    {
+
+                        RedirectUri = "/Admin/Home/Dashboard"
+                    };
+
+
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, dto.UserName)
+                    };
+
+                    var claimsIdentity = new ClaimsIdentity(
+    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    HttpContext.SignInAsync(
+   CookieAuthenticationDefaults.AuthenticationScheme,
+   new ClaimsPrincipal(claimsIdentity),
+   authProperties);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "User name or password is wrong.");
+                }
+            }
+
             return View();
         }
-
-
 
         public IActionResult Setup()
         {
@@ -74,6 +107,7 @@ namespace CoolCat.Controllers
         }
 
         [HttpGet("SiteSettings")]
+        [Authorize]
         public IActionResult SiteSettings()
         {
             var settings = _systemManager.GetSiteSettings();
@@ -81,6 +115,7 @@ namespace CoolCat.Controllers
         }
 
         [HttpPost("SiteSettings")]
+        [Authorize]
         public IActionResult SiteSettings(SiteSettingsDTO dto)
         {
             _systemManager.SaveSiteSettings(dto);
