@@ -14,7 +14,7 @@ namespace DemoPlugin1.Migrations
 
         public override string DownScripts => @"DROP TABLE `test`";
 
-        public Migration_1_0_0(IDbHelper dbHelper) : base(dbHelper, _version)
+        public Migration_1_0_0(IDbConnectionFactory dbConnectionFactory) : base(_version, dbConnectionFactory)
         {
 
         }

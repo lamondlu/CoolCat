@@ -7,17 +7,18 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Dapper;
 
 namespace CoolCat.Core.Repository.MySql
 {
     public class PluginRepository : IPluginRepository
     {
-        private readonly IDbHelper _dbHelper = null;
+        private readonly IDbConnection _dbConnection = null;
         private readonly List<Command> _commands = null;
 
-        public PluginRepository(IDbHelper dbHelper, List<Command> commands)
+        public PluginRepository(IDbConnectionFactory dbConnectionFactory, List<Command> commands)
         {
-            _dbHelper = dbHelper;
+            _dbConnection = dbConnectionFactory.GetConnection();
             _commands = commands;
         }
 

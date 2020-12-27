@@ -7,7 +7,7 @@ namespace DemoPlugin2.Migrations
     {
         private static readonly CoolCat.Core.DomainModel.Version _version = new CoolCat.Core.DomainModel.Version("1.0.0");
 
-        public Migration_1_0_0(IDbHelper dbHelper) : base(dbHelper, _version)
+        public Migration_1_0_0(IDbConnectionFactory dbConnectionFactory) : base(_version, dbConnectionFactory)
         {
 
         }

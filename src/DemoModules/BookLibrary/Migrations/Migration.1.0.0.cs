@@ -20,7 +20,7 @@ namespace BookLibrary.Migrations
 
         public override string DownScripts => @"DROP TABLE rent_history";
 
-        public Migration_1_0_0(IDbHelper dbHelper) : base(dbHelper, _version)
+        public Migration_1_0_0(IDbConnectionFactory dbConnectionFactory) : base(_version, dbConnectionFactory)
         {
 
         }
