@@ -1,9 +1,9 @@
-﻿using DemoPlugin1.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using CoolCat.Core.Attributes;
+﻿using CoolCat.Core.Attributes;
 using CoolCat.Core.Contracts;
 using CoolCat.Core.Mvc.Infrastructure;
+using DemoPlugin1.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 

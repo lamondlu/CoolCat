@@ -1,6 +1,6 @@
-﻿using MySql.Data.MySqlClient;
-using CoolCat.Core.Attributes;
+﻿using CoolCat.Core.Attributes;
 using CoolCat.Core.Contracts;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Data;

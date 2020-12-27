@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Razor.Hosting;
-using CoolCat.Core.Consts;
+﻿using CoolCat.Core.Consts;
+using Microsoft.AspNetCore.Razor.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;

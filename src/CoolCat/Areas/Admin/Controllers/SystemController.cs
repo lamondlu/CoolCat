@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CoolCat.Core;
-using CoolCat.Core.Consts;
+﻿using CoolCat.Core.Consts;
 using CoolCat.Core.Contracts;
 using CoolCat.Core.DTOs;
 using CoolCat.Models;
 using CoolCat.Utilities;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 
 namespace CoolCat.Controllers

@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CoolCat.Core.Contracts;
+﻿using CoolCat.Core.Contracts;
 using CoolCat.Core.DomainModel;
 using CoolCat.Core.Mvc.Extensions;
-using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace CoolCat.Controllers
 {

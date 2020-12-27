@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CoolCat.Core.Attributes;
+﻿using CoolCat.Core.Attributes;
+using CoolCat.Core.Mvc.Infrastructure;
 using CoolCat.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoolCat.Core.Mvc.Infrastructure;
 
 namespace CoolCat.Core.Mvc.Extensions
 {

@@ -1,22 +1,21 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CoolCat.Core.BusinessLogic;
+using CoolCat.Core.Contracts;
+using CoolCat.Core.Helpers;
+using CoolCat.Core.Repositories;
+using CoolCat.Core.Repository.MySql;
+using CoolCat.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using CoolCat.Core.BusinessLogic;
-using CoolCat.Core.Contracts;
-using CoolCat.Core.Helpers;
-using CoolCat.Core.Repositories;
-using CoolCat.Core.Repository.MySql;
-using CoolCat.Mvc.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace CoolCat.Core.Mvc.Infrastructure
 {

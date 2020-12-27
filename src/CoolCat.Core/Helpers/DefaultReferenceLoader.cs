@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using CoolCat.Core.Consts;
+﻿using CoolCat.Core.Consts;
 using CoolCat.Core.Contracts;
+using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Reflection;
 

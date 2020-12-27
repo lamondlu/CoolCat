@@ -4,9 +4,6 @@ using CoolCat.Core.Mvc.Extensions;
 using CoolCat.Core.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PluginManagement.Controllers
 {

@@ -1,7 +1,7 @@
 ﻿using BookInventory.Dtos;
 using BookInventory.ViewModels;
-using MySql.Data.MySqlClient;
 using CoolCat.Core.Contracts;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CoolCat.Core.Contracts;
+﻿using CoolCat.Core.Contracts;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CoolCat.Controllers
 {

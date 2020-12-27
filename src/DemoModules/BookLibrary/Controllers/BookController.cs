@@ -1,12 +1,12 @@
 ﻿using BookLibrary.DAL;
 using BookLibrary.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 using CoolCat.Core.Attributes;
 using CoolCat.Core.Contracts;
+using CoolCat.Core.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using CoolCat.Core.Mvc.Infrastructure;
 
 namespace BookLibrary.Controllers
 {

@@ -1,8 +1,8 @@
-﻿using MySql.Data.MySqlClient;
-using CoolCat.Core.Contracts;
+﻿using CoolCat.Core.Contracts;
 using CoolCat.Core.DTOs;
 using CoolCat.Core.Repositories;
 using CoolCat.Core.ViewModels;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;

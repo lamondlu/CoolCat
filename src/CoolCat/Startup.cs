@@ -1,17 +1,17 @@
-﻿using FluentMigrator.Runner;
+﻿using CoolCat.Core.Models;
+using CoolCat.Core.Mvc.Infrastructure;
+using CoolCat.Core.Repository.MySql.Migrations;
+using FluentMigrator.Runner;
 using FluentMigrator.Runner.Initialization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using MySql.Data.MySqlClient;
-using CoolCat.Core.Models;
-using CoolCat.Core.Mvc.Infrastructure;
-using CoolCat.Core.Repository.MySql.Migrations;
 using System;
 using System.Threading;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace CoolCat
 {

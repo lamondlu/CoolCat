@@ -1,11 +1,11 @@
 ﻿using BookInventory.DAL;
 using BookInventory.Dtos;
 using BookInventory.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 using CoolCat.Core.Attributes;
 using CoolCat.Core.Contracts;
-using System;
 using CoolCat.Core.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace BookInventory.Controllers
 {

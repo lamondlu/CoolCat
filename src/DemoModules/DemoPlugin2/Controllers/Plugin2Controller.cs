@@ -1,8 +1,7 @@
-﻿using DemoReferenceLibrary;
-using Microsoft.AspNetCore.Mvc;
-using CoolCat.Core.Attributes;
+﻿using CoolCat.Core.Attributes;
 using CoolCat.Core.Mvc.Infrastructure;
-using CoolCat.Core.Contracts;
+using DemoReferenceLibrary;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DemoPlugin2.Controllers
 {

@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using CoolCat.Core.Contracts;
+﻿using CoolCat.Core.Contracts;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;

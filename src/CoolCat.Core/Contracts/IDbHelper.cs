@@ -1,5 +1,5 @@
-﻿using MySql.Data.MySqlClient;
-using CoolCat.Core.Repositories;
+﻿using CoolCat.Core.Repositories;
+using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Data;
 

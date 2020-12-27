@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CoolCat.Core.Contracts;
+using CoolCat.Core.Mvc.Infrastructure;
+using CoolCat.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.Extensions.DependencyInjection;
-using CoolCat.Core.Contracts;
-using CoolCat.Core.Mvc.Infrastructure;
-using CoolCat.Mvc.Infrastructure;
 using System;
 using System.IO;
 using System.Linq;

@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Options;
-using CoolCat.Core.Contracts;
+﻿using CoolCat.Core.Contracts;
 using CoolCat.Core.DomainModel;
 using CoolCat.Core.Models;
 using CoolCat.Core.Repositories;
 using CoolCat.Core.ViewModels;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
