@@ -64,24 +64,24 @@ namespace CoolCat.Core.Repository.MySql
             List<PluginListItemViewModel> plugins = new List<PluginListItemViewModel>();
             string sql = "SELECT * from Plugins";
 
-            DataTable table = _dbHelper.ExecuteDataTable(sql);
+            return _dbConnection.Query<PluginListItemViewModel>(sql).ToList();
 
-            foreach (DataRow row in table.Rows.Cast<DataRow>())
-            {
-                PluginListItemViewModel plugin = new PluginListItemViewModel
-                {
-                    PluginId = Guid.Parse(row["PluginId"].ToString()),
-                    Name = row["Name"].ToString(),
-                    UniqueKey = row["UniqueKey"].ToString(),
-                    Version = row["Version"].ToString(),
-                    DisplayName = row["DisplayName"].ToString(),
-                    IsEnable = Convert.ToBoolean(row["Enable"])
-                };
+            //foreach (DataRow row in table.Rows.Cast<DataRow>())
+            //{
+            //    PluginListItemViewModel plugin = new PluginListItemViewModel
+            //    {
+            //        PluginId = Guid.Parse(row["PluginId"].ToString()),
+            //        Name = row["Name"].ToString(),
+            //        UniqueKey = row["UniqueKey"].ToString(),
+            //        Version = row["Version"].ToString(),
+            //        DisplayName = row["DisplayName"].ToString(),
+            //        IsEnable = Convert.ToBoolean(row["Enable"])
+            //    };
 
-                plugins.Add(plugin);
-            }
+            //    plugins.Add(plugin);
+            //}
 
-            return plugins;
+            //return plugins;
         }
 
         public List<PluginListItemViewModel> GetAllEnabledPlugins()
@@ -93,39 +93,28 @@ namespace CoolCat.Core.Repository.MySql
         {
             string sql = "UPDATE Plugins SET Enable=@enable WHERE PluginId = @pluginId";
 
-            _dbHelper.ExecuteNonQuery(sql, new List<MySqlParameter> {
-                new MySqlParameter{ParameterName = "@enable", MySqlDbType = MySqlDbType.Bit, Value= enable},
-                new MySqlParameter{ParameterName = "@pluginId", MySqlDbType = MySqlDbType.Guid, Value= pluginId}
-             }.ToArray());
+            _dbConnection.Execute(sql, new
+            {
+                enable,
+                pluginId
+            });
+
+            //_dbHelper.ExecuteNonQuery(sql, new List<MySqlParameter> {
+            //    new MySqlParameter{ParameterName = "@enable", MySqlDbType = MySqlDbType.Bit, Value= enable},
+            //    new MySqlParameter{ParameterName = "@pluginId", MySqlDbType = MySqlDbType.Guid, Value= pluginId}
+            // }.ToArray());
         }
 
         public PluginViewModel GetPlugin(string pluginName)
         {
             string sql = "SELECT * from Plugins where Name = @pluginName";
 
-            DataTable table = _dbHelper.ExecuteDataTable(sql, new MySqlParameter
-            {
-                ParameterName = "@pluginName",
-                Value = pluginName,
-                MySqlDbType = MySqlDbType.VarChar
-            });
+            var plugin = _dbConnection.QueryFirstOrDefault<PluginViewModel>(sql, new { pluginName });
 
-            if (table.Rows.Cast<DataRow>().Count() == 0)
+            if (plugin == null)
             {
                 return null;
             }
-
-            DataRow row = table.Rows.Cast<DataRow>().First();
-
-            PluginViewModel plugin = new PluginViewModel
-            {
-                PluginId = Guid.Parse(row["PluginId"].ToString()),
-                Name = row["Name"].ToString(),
-                UniqueKey = row["UniqueKey"].ToString(),
-                Version = row["Version"].ToString(),
-                DisplayName = row["DisplayName"].ToString(),
-                IsEnable = Convert.ToBoolean(row["Enable"])
-            };
 
             return plugin;
         }
