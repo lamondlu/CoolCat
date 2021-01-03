@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Data;
 using System.Linq;
+using Dapper;
 
 namespace BookInventory.DataStores
 {
@@ -12,11 +13,11 @@ namespace BookInventory.DataStores
     [ResponseType(typeof(BookDetailViewModel))]
     public class BookDetailsQuery : IDataStoreQuery
     {
-        private IDbHelper _dbHelper = null;
+        private IDbConnectionFactory _dbConnectionFactory = null;
 
-        public BookDetailsQuery(IDbHelper dbHelper)
+        public BookDetailsQuery(IDbConnectionFactory dbConnectionFactory)
         {
-            _dbHelper = dbHelper;
+            _dbConnectionFactory = dbConnectionFactory;
         }
 
         public string QueryName
@@ -29,29 +30,23 @@ namespace BookInventory.DataStores
 
         public string Query(string parameter)
         {
-            var param = JsonConvert.DeserializeObject<BookDetailsQueryParameter>(parameter);
-
-            var sql = "SELECT * FROM Book WHERE BookId=@id";
-
-            var dataTable = _dbHelper.ExecuteDataTable(sql, new MySqlParameter { ParameterName = "@id", MySqlDbType = MySqlDbType.Guid, Value = param.BookId });
-
-            var items = dataTable.Rows.Cast<DataRow>().Select(p => new BookDetailViewModel
+            using (var connection = _dbConnectionFactory.GetConnection())
             {
-                BookId = Guid.Parse(p["BookId"].ToString()),
-                BookName = p["BookName"].ToString(),
-                ISBN = p["ISBN"].ToString(),
-                DateIssued = Convert.ToDateTime(p["DateIssued"])
-            }).ToList();
+                var param = JsonConvert.DeserializeObject<BookDetailsQueryParameter>(parameter);
 
-            if (items.Count == 1)
-            {
-                return JsonConvert.SerializeObject(items.First());
+                var sql = "SELECT * FROM Book WHERE BookId=@id";
+
+                var items = connection.Query<BookDetailViewModel>(sql, new { id = param.BookId }).ToList();
+
+                if (items.Count == 1)
+                {
+                    return JsonConvert.SerializeObject(items.First());
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
-            {
-                return null;
-            }
-
         }
     }
 

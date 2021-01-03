@@ -9,9 +9,9 @@ namespace BookInventory
     {
         private BookDAL _bookDAL = null;
 
-        public BookOutEventHandler(IDbHelper dbHelper)
+        public BookOutEventHandler(IDbConnectionFactory connectionFactory)
         {
-            _bookDAL = new BookDAL(dbHelper);
+            _bookDAL = new BookDAL(connectionFactory);
         }
 
         public void Handle(string data)

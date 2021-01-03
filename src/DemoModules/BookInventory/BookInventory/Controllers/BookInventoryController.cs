@@ -13,12 +13,10 @@ namespace BookInventory.Controllers
     public class BookInventoryController : CoolCatController
     {
         private BookDAL _bookDAL = null;
-        private IDbHelper _dbHelper = null;
 
-        public BookInventoryController(IDbHelper dbHelper, IDataStore dataStore) : base(ModuleDefiniation.MODULE_NAME, dataStore)
+        public BookInventoryController(IDbConnectionFactory dbConnectionFactory, IDataStore dataStore) : base(ModuleDefiniation.MODULE_NAME, dataStore)
         {
-            _dbHelper = dbHelper;
-            _bookDAL = new BookDAL(_dbHelper);
+            _bookDAL = new BookDAL(dbConnectionFactory);
         }
 
         [Page("Book Inventory")]

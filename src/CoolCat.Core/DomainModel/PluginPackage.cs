@@ -16,14 +16,14 @@ namespace CoolCat.Core.DomainModel
         private Stream _zipStream = null;
         private string _tempFolderName = string.Empty;
         private string _folderName = string.Empty;
-        private IDbHelper _dbHelper = null;
+        private IDbConnectionFactory _dbConnectionFactory = null;
 
         public PluginConfiguration Configuration => _pluginConfiguration;
 
-        public PluginPackage(Stream stream, IDbHelper dbHelper)
+        public PluginPackage(Stream stream, IDbConnectionFactory dbConnectionFactory)
         {
             _zipStream = stream;
-            _dbHelper = dbHelper;
+            _dbConnectionFactory = dbConnectionFactory;
             Initialize(stream);
         }
 
@@ -41,9 +41,9 @@ namespace CoolCat.Core.DomainModel
                 List<IMigration> migrations = new List<IMigration>();
                 foreach (Type migrationType in migrationTypes)
                 {
-                    System.Reflection.ConstructorInfo constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(IDbHelper));
+                    System.Reflection.ConstructorInfo constructor = migrationType.GetConstructors().First(p => p.GetParameters().Count() == 1 && p.GetParameters()[0].ParameterType == typeof(IDbConnectionFactory));
 
-                    migrations.Add((IMigration)constructor.Invoke(new object[] { _dbHelper }));
+                    migrations.Add((IMigration)constructor.Invoke(new object[] { _dbConnectionFactory }));
                 }
 
                 context.Unload();

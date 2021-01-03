@@ -24,6 +24,8 @@ namespace CoolCat.Core.Repository.MySql
         public IDbConnection GetConnection()
         {
             _mySqlConnection = new MySqlConnection(_setting.ConnectionString);
+            _mySqlConnection.Open();
+
             return _mySqlConnection;
         }
     }

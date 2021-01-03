@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Dapper;
 
 namespace BookInventory.DataStores
 {
@@ -12,11 +13,11 @@ namespace BookInventory.DataStores
     [ResponseType(typeof(List<AvailableBookViewModel>))]
     public class AvailableBookQuery : IDataStoreQuery
     {
-        private IDbHelper _dbHelper = null;
+        private IDbConnectionFactory _dbConnectionFactory = null;
 
-        public AvailableBookQuery(IDbHelper dbHelper)
+        public AvailableBookQuery(IDbConnectionFactory dbConnectionFactory)
         {
-            _dbHelper = dbHelper;
+            _dbConnectionFactory = dbConnectionFactory;
         }
 
         public string QueryName
@@ -29,17 +30,12 @@ namespace BookInventory.DataStores
 
         public string Query(string parameter)
         {
-            var sql = "SELECT * FROM Book WHERE Status=0";
-
-            var dataTable = _dbHelper.ExecuteDataTable(sql);
-
-            return JsonConvert.SerializeObject(dataTable.Rows.Cast<DataRow>().Select(p => new AvailableBookViewModel
+            using (var connection = _dbConnectionFactory.GetConnection())
             {
-                BookId = Guid.Parse(p["BookId"].ToString()),
-                BookName = p["BookName"].ToString(),
-                ISBN = p["ISBN"].ToString(),
-                DateIssued = Convert.ToDateTime(p["DateIssued"])
-            }).ToList());
+                var sql = "SELECT * FROM Book WHERE Status=0";
+                var books = connection.Query<AvailableBookViewModel>(sql).ToList();
+                return JsonConvert.SerializeObject(books);
+            }
         }
     }
 

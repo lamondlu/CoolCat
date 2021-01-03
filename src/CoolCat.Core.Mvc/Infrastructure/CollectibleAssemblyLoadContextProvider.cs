@@ -78,12 +78,12 @@ namespace CoolCat.Core.Mvc.Infrastructure
             {
                 INotificationRegister register = scope.ServiceProvider.GetService<INotificationRegister>();
 
-                IDbHelper dbHelper = scope.ServiceProvider.GetService<IDbHelper>();
+                IDbConnectionFactory dbConnectionFactory = scope.ServiceProvider.GetService<IDbConnectionFactory>();
 
                 foreach (Type p in providers)
                 {
                     INotificationProvider obj = (INotificationProvider)assembly.CreateInstance(p.FullName);
-                    Dictionary<string, List<INotificationHandler>> result = obj.GetNotifications(dbHelper);
+                    Dictionary<string, List<INotificationHandler>> result = obj.GetNotifications(dbConnectionFactory);
 
                     foreach (KeyValuePair<string, List<INotificationHandler>> item in result)
                     {
@@ -101,7 +101,7 @@ namespace CoolCat.Core.Mvc.Infrastructure
             IEnumerable<Type> queries = assembly.GetExportedTypes().Where(p => p.GetInterfaces().Any(x => x == typeof(IDataStoreQuery)));
             if (queries.Any())
             {
-                var dbHelper = scope.ServiceProvider.GetService<IDbHelper>();
+                IDbConnectionFactory dbConnectionFactory = scope.ServiceProvider.GetService<IDbConnectionFactory>();
 
                 foreach (Type p in queries)
                 {
@@ -109,7 +109,7 @@ namespace CoolCat.Core.Mvc.Infrastructure
 
                     if (constructor != null)
                     {
-                        IDataStoreQuery obj = (IDataStoreQuery)constructor.Invoke(new object[] { dbHelper });
+                        IDataStoreQuery obj = (IDataStoreQuery)constructor.Invoke(new object[] { dbConnectionFactory });
                         documentation.BuildDocumentation(moduleName, obj);
                         dataStore.RegisterQuery(moduleName, obj.QueryName, obj.Query);
                     }

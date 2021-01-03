@@ -8,14 +8,12 @@ namespace CoolCat.Controllers
     {
         private readonly ISystemManager _systemManager;
         private readonly IPluginManager _pluginManager;
-        private readonly IDbHelper _dbHelper;
 
 
-        public CommonController(ISystemManager systemManager, IPluginManager pluginManager, IDbHelper dbHelper)
+        public CommonController(ISystemManager systemManager, IPluginManager pluginManager)
         {
             _systemManager = systemManager;
             _pluginManager = pluginManager;
-            _dbHelper = dbHelper;
         }
 
         [HttpGet("~/Common/GetSiteCSS")]

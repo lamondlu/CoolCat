@@ -30,8 +30,8 @@ namespace CoolCat.Core.Mvc.Infrastructure
             _serviceCollection = services;
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IDbConnectionFactory, MySqlConnectionFactory>();
             services.AddSingleton<IMvcModuleSetup, MvcModuleSetup>();
-            services.AddScoped<IDbHelper, DbHelper>();
             services.AddScoped<IPluginManager, PluginManager>();
             services.AddScoped<ISystemManager, SystemManager>();
             services.AddScoped<IUnitOfWork, Repository.MySql.UnitOfWork>();

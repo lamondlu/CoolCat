@@ -13,14 +13,12 @@ namespace BookLibrary.Controllers
     [Area(ModuleDefiniation.MODULE_NAME)]
     public class BookController : CoolCatController
     {
-        private readonly IDbHelper _dbHelper;
         private readonly BookDAL _bookDAL;
         private readonly INotificationRegister _notificationRegister;
 
-        public BookController(IDataStore dataStore, IDbHelper dbHelper, INotificationRegister notificationRegister) : base(ModuleDefiniation.MODULE_NAME, dataStore)
+        public BookController(IDataStore dataStore, IDbConnectionFactory dbConnectionFactory, INotificationRegister notificationRegister) : base(ModuleDefiniation.MODULE_NAME, dataStore)
         {
-            _dbHelper = dbHelper;
-            _bookDAL = new BookDAL(_dbHelper);
+            _bookDAL = new BookDAL(dbConnectionFactory);
             _notificationRegister = notificationRegister;
         }
 

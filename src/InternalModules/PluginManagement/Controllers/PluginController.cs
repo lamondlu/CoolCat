@@ -12,14 +12,14 @@ namespace PluginManagement.Controllers
     {
         private readonly IPluginManager _pluginManager = null;
         private readonly IReferenceContainer _referenceContainer = null;
-        private readonly IDbHelper _dbHelper = null;
+        private readonly IDbConnectionFactory _dbConnectionFactory = null;
         private readonly IQueryDocumentation _queryDocumentation = null;
 
-        public PluginController(IPluginManager pluginManager, IReferenceContainer referenceContainer, IDbHelper dbHelper, IQueryDocumentation queryDocumentation, IDataStore dataStore) : base(ModuleDefiniation.MODULE_NAME, dataStore)
+        public PluginController(IPluginManager pluginManager, IReferenceContainer referenceContainer, IDbConnectionFactory dbConnectionFactory, IQueryDocumentation queryDocumentation, IDataStore dataStore) : base(ModuleDefiniation.MODULE_NAME, dataStore)
         {
             _pluginManager = pluginManager;
             _referenceContainer = referenceContainer;
-            _dbHelper = dbHelper;
+            _dbConnectionFactory = dbConnectionFactory;
             _queryDocumentation = queryDocumentation;
         }
 
@@ -51,7 +51,7 @@ namespace PluginManagement.Controllers
         [HttpPost]
         public IActionResult Upload()
         {
-            PluginPackage package = new PluginPackage(Request.GetPluginStream(), _dbHelper);
+            PluginPackage package = new PluginPackage(Request.GetPluginStream(), _dbConnectionFactory);
             _pluginManager.AddPlugins(package);
             return RedirectToAction("Index");
         }

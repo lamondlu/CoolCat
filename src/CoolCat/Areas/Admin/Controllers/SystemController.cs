@@ -19,14 +19,14 @@ namespace CoolCat.Controllers
     {
         private readonly ISystemManager _systemManager;
         private readonly IPluginManager _pluginManager;
-        private readonly IDbHelper _dbHelper;
+        private readonly IDbConnectionFactory _dbConnectionFactory;
 
 
-        public SystemController(ISystemManager systemManager, IPluginManager pluginManager, IDbHelper dbHelper)
+        public SystemController(ISystemManager systemManager, IPluginManager pluginManager, IDbConnectionFactory dbConnectionFactory)
         {
             _systemManager = systemManager;
             _pluginManager = pluginManager;
-            _dbHelper = dbHelper;
+            _dbConnectionFactory = dbConnectionFactory;
         }
 
         [HttpGet]
@@ -95,7 +95,7 @@ namespace CoolCat.Controllers
                 {
                     using (FileStream fs = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, GlobalConst.PresetFolder, module), FileMode.Open))
                     {
-                        _pluginManager.AddPlugins(new Core.DomainModel.PluginPackage(fs, _dbHelper));
+                        _pluginManager.AddPlugins(new Core.DomainModel.PluginPackage(fs, _dbConnectionFactory));
                     }
                 }
             }

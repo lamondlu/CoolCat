@@ -5,10 +5,10 @@ namespace BookInventory
 {
     public class NotificationProvider : INotificationProvider
     {
-        public Dictionary<string, List<INotificationHandler>> GetNotifications(IDbHelper dbHelper)
+        public Dictionary<string, List<INotificationHandler>> GetNotifications(IDbConnectionFactory dbConnectionFactory)
         {
-            List<INotificationHandler> inHandlers = new List<INotificationHandler> { new BookInEventHandler(dbHelper) };
-            List<INotificationHandler> outHandlers = new List<INotificationHandler> { new BookOutEventHandler(dbHelper) };
+            List<INotificationHandler> inHandlers = new List<INotificationHandler> { new BookInEventHandler(dbConnectionFactory) };
+            List<INotificationHandler> outHandlers = new List<INotificationHandler> { new BookOutEventHandler(dbConnectionFactory) };
             Dictionary<string, List<INotificationHandler>> result = new Dictionary<string, List<INotificationHandler>>
             {
                 { "BookInEvent", inHandlers },

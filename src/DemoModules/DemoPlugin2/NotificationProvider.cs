@@ -5,7 +5,7 @@ namespace DemoPlugin2
 {
     public class NotificationProvider : INotificationProvider
     {
-        public Dictionary<string, List<INotificationHandler>> GetNotifications(IDbHelper dbHelper)
+        public Dictionary<string, List<INotificationHandler>> GetNotifications(IDbConnectionFactory dbConnectionFactory)
         {
             List<INotificationHandler> handlers = new List<INotificationHandler> { new LoadHelloWorldEventHandler() };
             Dictionary<string, List<INotificationHandler>> result = new Dictionary<string, List<INotificationHandler>>
