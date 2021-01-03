@@ -8,17 +8,18 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Dapper;
 
 namespace CoolCat.Core.Repository.MySql
 {
     public class SiteRepository : ISiteRepository
     {
-        private readonly IDbHelper _dbHelper = null;
+        private readonly IDbConnection _dbConnection = null;
         private readonly List<Command> _commands = null;
 
-        public SiteRepository(IDbHelper dbHelper, List<Command> commands)
+        public SiteRepository(IDbConnection dbConnection, List<Command> commands)
         {
-            _dbHelper = dbHelper;
+            _dbConnection = dbConnection;
             _commands = commands;
         }
 
@@ -26,18 +27,18 @@ namespace CoolCat.Core.Repository.MySql
         {
             var sql = "SELECT * FROM SiteSettings";
 
-            var rows = _dbHelper.ExecuteDataTable(sql).Rows.Cast<DataRow>().ToList();
+            var keyPairs = _dbConnection.Query<KeyValueViewModel>(sql);
 
             var result = new SiteSettingsViewModel();
 
-            if (rows.Any(p => p["Key"].ToString() == SiteSettingKeyConst.SiteCSS))
+            if (keyPairs.Any(p => p.Key == SiteSettingKeyConst.SiteCSS))
             {
-                result.SiteCSS = rows.FirstOrDefault(p => p["Key"].ToString() == SiteSettingKeyConst.SiteCSS)?.Field<string>("Value");
+                result.SiteCSS = keyPairs.First(p => p.Key == SiteSettingKeyConst.SiteCSS).Value;
             }
 
-            if (rows.Any(p => p["Key"].ToString() == SiteSettingKeyConst.SiteTemplateId))
+            if (keyPairs.Any(p => p.Key == SiteSettingKeyConst.SiteTemplateId))
             {
-                var val = rows.FirstOrDefault(p => p["Key"].ToString() == SiteSettingKeyConst.SiteTemplateId)?.Field<string>("Value");
+                var val = keyPairs.First(p => p.Key == SiteSettingKeyConst.SiteTemplateId).Value;
 
                 Guid guidVal;
                 if (!string.IsNullOrWhiteSpace(val) && Guid.TryParse(val, out guidVal))
@@ -53,15 +54,8 @@ namespace CoolCat.Core.Repository.MySql
         {
             var sql = "UPDATE SiteSettings SET `Value`=@val WHERE `Key`=@key";
 
-            _dbHelper.ExecuteNonQuery(sql, new List<MySqlParameter>() {
-                new MySqlParameter{ ParameterName = "@val", MySqlDbType = MySqlDbType.VarChar, Value = dto.SiteCSS },
-                 new MySqlParameter{ ParameterName = "@key", MySqlDbType = MySqlDbType.VarChar, Value = SiteSettingKeyConst.SiteCSS }
-            }.ToArray());
-
-            _dbHelper.ExecuteNonQuery(sql, new List<MySqlParameter>() {
-                new MySqlParameter{ ParameterName = "@val", MySqlDbType = MySqlDbType.VarChar, Value = dto.SiteTemplateId?.ToString() },
-                 new MySqlParameter{ ParameterName = "@key", MySqlDbType = MySqlDbType.VarChar, Value = SiteSettingKeyConst.SiteTemplateId }
-            }.ToArray());
+            _dbConnection.Execute(sql, new { val = dto.SiteCSS, key = SiteSettingKeyConst.SiteCSS });
+            _dbConnection.Execute(sql, new { val = dto.SiteTemplateId?.ToString(), key = SiteSettingKeyConst.SiteTemplateId });
         }
     }
 }

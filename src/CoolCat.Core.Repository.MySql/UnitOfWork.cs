@@ -1,22 +1,30 @@
 ﻿using CoolCat.Core.Contracts;
 using CoolCat.Core.Repositories;
+using Dapper;
+using System;
 using System.Collections.Generic;
-using MySqlClient = MySql.Data.MySqlClient;
+using System.Data;
 
 namespace CoolCat.Core.Repository.MySql
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private readonly IDbHelper _dbHelper = null;
+        private IDbConnectionFactory _dbConnectionFactory = null;
+        private IDbConnection _dbConnection = null;
         private IPluginRepository _pluginRepository = null;
         private ISiteRepository _siteRepository = null;
+        private IDbTransaction _transactionScope = null;
         private readonly List<Command> _commands;
 
-        public UnitOfWork(IDbHelper dbHelper)
+        public UnitOfWork(IDbConnectionFactory dbConnectionFactory)
         {
             _commands = new List<Command>();
-            _dbHelper = dbHelper;
+            _dbConnectionFactory = dbConnectionFactory;
+            _dbConnection = _dbConnectionFactory.GetConnection();
+            _dbConnection.Open();
         }
+
+
 
         public IPluginRepository PluginRepository
         {
@@ -24,7 +32,7 @@ namespace CoolCat.Core.Repository.MySql
             {
                 if (_pluginRepository == null)
                 {
-                    _pluginRepository = new PluginRepository(_dbHelper, _commands);
+                    _pluginRepository = new PluginRepository(_dbConnection, _commands);
                 }
 
                 return _pluginRepository;
@@ -37,32 +45,54 @@ namespace CoolCat.Core.Repository.MySql
             {
                 if (_siteRepository == null)
                 {
-                    _siteRepository = new SiteRepository(_dbHelper, _commands);
+                    _siteRepository = new SiteRepository(_dbConnection, _commands);
                 }
 
                 return _siteRepository;
             }
         }
 
+        public void Begin()
+        {
+            _transactionScope = _dbConnection.BeginTransaction();
+        }
+
+        public void RollBack()
+        {
+            if (_transactionScope == null)
+            {
+                throw new Exception("Transaction is missing. Please call the Begin method first.");
+            }
+
+            _transactionScope.Rollback();
+        }
+
         public void Commit()
         {
-            _dbHelper.ExecuteNonQuery(_commands);
+            if (_transactionScope == null)
+            {
+                throw new Exception("Transaction is missing. Please call the Begin method first.");
+            }
+
+            _transactionScope.Commit();
         }
 
         public bool CheckDatabase()
         {
-            object o = _dbHelper.ExecuteScalarWithObjReturn("SELECT `Value` FROM SiteSettings WHERE `Key` = @key", new List<MySqlClient.MySqlParameter> {
-               new MySqlClient.MySqlParameter { ParameterName = "@key", Value = "SYSTEM_INSTALLED"}
-            }.ToArray());
-
-            return (o != null && o.ToString() == "1");
+            var dbSetting = _dbConnection.QueryFirstOrDefault<string>("SELECT `Value` FROM SiteSettings WHERE `Key` = @key", new { key = "SYSTEM_INSTALLED" });
+            return (dbSetting != null && dbSetting.ToString() == "1");
         }
 
         public void MarkAsInstalled()
         {
-            _dbHelper.ExecuteNonQuery("UPDATE SiteSettings SET `Value`='1' WHERE `Key`=@key", new List<MySqlClient.MySqlParameter> {
-               new MySqlClient.MySqlParameter { ParameterName = "@key", Value = "SYSTEM_INSTALLED"}
-            }.ToArray());
+            _dbConnection.Execute("UPDATE SiteSettings SET `Value`='1' WHERE `Key`=@key", new { key = "SYSTEM_INSTALLED" });
+        }
+
+        public void Dispose()
+        {
+            _dbConnection.Close();
+            _dbConnection.Dispose();
+            _dbConnection = null;
         }
     }
 }

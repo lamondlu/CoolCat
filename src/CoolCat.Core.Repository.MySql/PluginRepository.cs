@@ -16,9 +16,9 @@ namespace CoolCat.Core.Repository.MySql
         private readonly IDbConnection _dbConnection = null;
         private readonly List<Command> _commands = null;
 
-        public PluginRepository(IDbConnectionFactory dbConnectionFactory, List<Command> commands)
+        public PluginRepository(IDbConnection dbConnection, List<Command> commands)
         {
-            _dbConnection = dbConnectionFactory.GetConnection();
+            _dbConnection = dbConnection;
             _commands = commands;
         }
 
@@ -123,29 +123,12 @@ namespace CoolCat.Core.Repository.MySql
         {
             string sql = "SELECT * from Plugins where PluginId = @pluginId";
 
-            DataTable table = _dbHelper.ExecuteDataTable(sql, new MySqlParameter
-            {
-                ParameterName = "@pluginId",
-                Value = pluginId,
-                MySqlDbType = MySqlDbType.Guid
-            });
+            var plugin = _dbConnection.QueryFirstOrDefault<PluginViewModel>(sql, new { pluginId });
 
-            if (table.Rows.Cast<DataRow>().Count() == 0)
+            if (plugin == null)
             {
                 throw new Exception("The plugin is missing in the system.");
             }
-
-            DataRow row = table.Rows.Cast<DataRow>().First();
-
-            PluginViewModel plugin = new PluginViewModel
-            {
-                PluginId = Guid.Parse(row["PluginId"].ToString()),
-                Name = row["Name"].ToString(),
-                UniqueKey = row["UniqueKey"].ToString(),
-                Version = row["Version"].ToString(),
-                DisplayName = row["DisplayName"].ToString(),
-                IsEnable = Convert.ToBoolean(row["Enable"])
-            };
 
             return plugin;
 
@@ -155,39 +138,22 @@ namespace CoolCat.Core.Repository.MySql
         {
             string sqlPluginMigrations = "DELETE PluginMigrations where PluginId = @pluginId";
 
-            _dbHelper.ExecuteNonQuery(sqlPluginMigrations, new List<MySqlParameter>{new MySqlParameter
-            {
-                ParameterName = "@pluginId",
-                Value = pluginId,
-                MySqlDbType = MySqlDbType.Guid
-            } }.ToArray());
+            _dbConnection.Execute(sqlPluginMigrations, new { pluginId });
 
             string sqlPlugins = "DELETE Plugins where PluginId = @pluginId";
 
-            _dbHelper.ExecuteNonQuery(sqlPlugins, new List<MySqlParameter>{new MySqlParameter
-            {
-                ParameterName = "@pluginId",
-                Value = pluginId,
-                MySqlDbType = MySqlDbType.Guid
-            } }.ToArray());
+            _dbConnection.Execute(sqlPlugins, new { pluginId });
         }
 
         public void RunDownMigrations(Guid pluginId)
         {
             string sql = "SELECT Down from PluginMigrations WHERE PluginId = @pluginId ORDER BY [Version] DESC";
 
-            DataTable table = _dbHelper.ExecuteDataTable(sql, new MySqlParameter
-            {
-                ParameterName = "@pluginId",
-                Value = pluginId,
-                MySqlDbType = MySqlDbType.Guid
-            });
+            var scripts = _dbConnection.Query<string>(sql, new { pluginId });
 
-            foreach (DataRow item in table.Rows.Cast<DataRow>())
+            foreach (var script in scripts)
             {
-                string script = item[0].ToString();
-
-                _dbHelper.ExecuteNonQuery(script);
+                _dbConnection.Execute(script);
             }
         }
     }

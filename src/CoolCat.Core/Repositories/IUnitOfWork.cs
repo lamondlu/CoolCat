@@ -11,6 +11,12 @@
 
         void MarkAsInstalled();
 
+
+        void Begin();
+
+        void RollBack();
+
+
         void Commit();
     }
 }
