@@ -21,10 +21,7 @@ namespace CoolCat.Core.Repository.MySql
             _commands = new List<Command>();
             _dbConnectionFactory = dbConnectionFactory;
             _dbConnection = _dbConnectionFactory.GetConnection();
-            _dbConnection.Open();
         }
-
-
 
         public IPluginRepository PluginRepository
         {

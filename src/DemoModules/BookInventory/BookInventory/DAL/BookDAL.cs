@@ -17,7 +17,6 @@ namespace BookInventory.DAL
         public BookDAL(IDbConnectionFactory dbConnectionFactory)
         {
             _dbConnection = dbConnectionFactory.GetConnection();
-            _dbConnection.Open();
         }
 
         public List<BookListViewModel> GetBooks()
