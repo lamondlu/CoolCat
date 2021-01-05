@@ -30,7 +30,7 @@
                     <td>@row.Name</td>
                     <td>@row.DisplayName</td>
                     <td style="text-align: center;">
-                        @if (row.IsEnable)
+                        @if (row.Enable)
                         {
                             <button type="button" class="btn-disabled" onclick="window.location = '@Url.Action("Disable","Plugins", new { id = row.PluginId })';">Disable</button>
                         }

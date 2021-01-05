@@ -14,6 +14,6 @@ namespace CoolCat.Core.ViewModels
 
         public string Version { get; set; }
 
-        public bool IsEnable { get; set; }
+        public bool Enable { get; set; }
     }
 }

@@ -10,6 +10,7 @@ namespace CoolCat.Core.Mvc.Infrastructure
 
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseEndpoints(routes =>
             {
                 routes.MapAreaControllerRoute(
@@ -20,13 +21,9 @@ namespace CoolCat.Core.Mvc.Infrastructure
                        name: "Customer",
                        pattern: "Modules/{area}/{controller=Home}/{action=Dashboard}/{id?}");
 
-
-
                 routes.MapControllerRoute(
                     name: "Customer",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-
             });
 
             return app;

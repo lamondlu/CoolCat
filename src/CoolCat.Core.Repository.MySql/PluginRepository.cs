@@ -86,7 +86,7 @@ namespace CoolCat.Core.Repository.MySql
 
         public List<PluginListItemViewModel> GetAllEnabledPlugins()
         {
-            return GetAllPlugins().Where(p => p.IsEnable).ToList();
+            return GetAllPlugins().Where(p => p.Enable).ToList();
         }
 
         public void SetPluginStatus(Guid pluginId, bool enable)
