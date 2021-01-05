@@ -32,6 +32,11 @@ namespace CoolCat.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (User != null)
+            {
+                return RedirectToAction("Dashboard", "Home", new { Area = "Admin" });
+            }
+
             return View();
         }
 
